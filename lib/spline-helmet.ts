@@ -117,8 +117,13 @@ export function setCameraView(spline: Application, view: CameraView) {
   const camera = spline.findObjectByName('Camera');
   if (camera) {
     const preset = CAMERA_PRESETS[view];
-    camera.position.set(preset.position.x, preset.position.y, preset.position.z);
-    camera.rotation.set(preset.rotation.x, preset.rotation.y, preset.rotation.z);
+    // Spline camera uses plain objects, not THREE.Vector3/Euler
+    camera.position.x = preset.position.x;
+    camera.position.y = preset.position.y;
+    camera.position.z = preset.position.z;
+    camera.rotation.x = preset.rotation.x;
+    camera.rotation.y = preset.rotation.y;
+    camera.rotation.z = preset.rotation.z;
   }
 }
 
