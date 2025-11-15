@@ -117,8 +117,8 @@ export function setCameraView(spline: Application, view: CameraView) {
   const camera = spline.findObjectByName('Camera');
   if (camera) {
     const preset = CAMERA_PRESETS[view];
-    camera.position.copy(preset.position);
-    camera.rotation.copy(preset.rotation);
+    camera.position.set(preset.position.x, preset.position.y, preset.position.z);
+    camera.rotation.set(preset.rotation.x, preset.rotation.y, preset.rotation.z);
   }
 }
 
