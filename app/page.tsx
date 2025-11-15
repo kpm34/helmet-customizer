@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react';
 import Spline from '@splinetool/react-spline/next';
 import type { Application } from '@splinetool/runtime';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import ConsolePanel from './components/ConsolePanel';
 
 export default function Home() {
@@ -28,91 +27,37 @@ export default function Home() {
       camera.position.z += 3;
     }
 
+    // Find the helmet (should be in scene now)
+    const helmet = spline.findObjectByName('helmet_for_spline')
+                || spline.findObjectByName('Helmet')
+                || spline.findObjectByName('helmet');
+
     // Find the placeholder football
     const placeholder = spline.findObjectByName('Mesh_0')
                      || spline.findObjectByName('football')
                      || spline.findObjectByName('mesh_0');
 
-    if (!placeholder) {
-      console.error('❌ Placeholder not found');
+    if (!helmet) {
+      console.error('❌ Helmet not found in scene');
       console.log('💡 Available objects:', allObjects.map(o => o.name).join(', '));
+      setHelmetLoaded(false);
       return;
     }
 
-    console.log('✓ Placeholder found:', placeholder.name);
-    console.log('  - Position:', placeholder.position);
-    console.log('  - Rotation:', placeholder.rotation);
-    console.log('  - Scale:', placeholder.scale);
+    console.log('✓ Helmet found:', helmet.name);
+    console.log('  - Position:', helmet.position);
+    console.log('  - Initial visibility:', helmet.visible);
 
-    // Load helmet GLB at runtime
-    loadHelmetGLB(spline, placeholder);
-  }
+    // Toggle visibility: Hide placeholder (if exists), show helmet
+    if (placeholder) {
+      placeholder.visible = false;
+      console.log('👁️ Placeholder hidden:', placeholder.name);
+    }
 
-  function loadHelmetGLB(spline: Application, placeholder: any) {
-    console.log('📦 Loading helmet GLB...');
+    helmet.visible = true;
+    console.log('✅ Helmet is now visible!');
 
-    const loader = new GLTFLoader();
-    loader.load(
-      '/models/helmet_for_spline.glb',
-      (gltf) => {
-        console.log('✅ GLB loaded successfully!');
-        const helmet = gltf.scene;
-
-        // Access Spline's internal THREE.js scene
-        const splineScene = (spline as any)._scene;
-
-        if (!splineScene) {
-          console.error('❌ Could not access Spline scene');
-          return;
-        }
-
-        // Match placeholder transform
-        helmet.position.set(
-          placeholder.position.x,
-          placeholder.position.y,
-          placeholder.position.z
-        );
-        helmet.rotation.set(
-          placeholder.rotation.x,
-          placeholder.rotation.y,
-          placeholder.rotation.z
-        );
-        helmet.scale.set(
-          placeholder.scale.x,
-          placeholder.scale.y,
-          placeholder.scale.z
-        );
-
-        // Add helmet to Spline's THREE.js scene
-        splineScene.add(helmet);
-        console.log('➕ Helmet added to scene');
-
-        // Hide placeholder
-        placeholder.visible = false;
-        console.log('👁️ Placeholder hidden');
-
-        // Log helmet structure for debugging
-        console.log('🔍 Helmet structure:');
-        helmet.traverse((child: any) => {
-          if (child.isMesh) {
-            console.log(`  - Mesh: ${child.name}`);
-          }
-        });
-
-        setHelmetLoaded(true);
-        console.log('✅ Helmet loaded and visible!');
-      },
-      (progress) => {
-        if (progress.total > 0) {
-          const percent = ((progress.loaded / progress.total) * 100).toFixed(0);
-          console.log(`📊 Loading: ${percent}%`);
-        }
-      },
-      (error) => {
-        console.error('❌ Error loading helmet GLB:', error);
-        setHelmetLoaded(false);
-      }
-    );
+    setHelmetLoaded(true);
   }
 
   return (
