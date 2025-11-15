@@ -8,9 +8,16 @@ export default function Home() {
   const splineRef = useRef<Application>();
   const [helmetLoaded, setHelmetLoaded] = useState(false);
 
-  async function onLoad(spline: Application) {
+  function onLoad(spline: Application) {
     splineRef.current = spline;
     console.log('🎬 Spline scene loaded');
+
+    // List all objects in scene for debugging
+    console.log('=== ALL SCENE OBJECTS ===');
+    const allObjects = spline.getAllObjects();
+    allObjects.forEach(obj => {
+      console.log(`  - ${obj.name} (${obj.uuid})`);
+    });
 
     // Adjust camera zoom
     const camera = spline.findObjectByName('Camera');
@@ -19,36 +26,28 @@ export default function Home() {
       camera.position.z += 3;
     }
 
-    // Find placeholder mesh
-    const placeholderName = 'football' || 'mesh_0' || 'Mesh_0';
-    const placeholder = spline.findObjectByName('football')
-                     || spline.findObjectByName('mesh_0')
-                     || spline.findObjectByName('Mesh_0');
+    // Find the helmet (should already be in scene from Spline import)
+    const helmet = spline.findObjectByName('Helmet')
+                || spline.findObjectByName('helmet')
+                || spline.findObjectByName('helmet_for_spline');
 
-    if (!placeholder) {
-      console.error('❌ Placeholder mesh not found');
+    if (!helmet) {
+      console.error('❌ Helmet not found in scene');
+      console.log('💡 Available objects:', allObjects.map(o => o.name).join(', '));
       setHelmetLoaded(false);
       return;
     }
 
-    console.log('✓ Placeholder found:', placeholder.name);
+    console.log('✓ Helmet found:', helmet.name);
+    console.log('  - Position:', helmet.position);
+    console.log('  - Visible:', helmet.visible);
 
-    // Load helmet using Spline's native swapGeometry method
-    try {
-      console.log('📦 Loading helmet geometry...');
+    // Make helmet visible (in case it was hidden in Spline)
+    helmet.visible = true;
+    // helmet.show(); // Alternative method
 
-      // Note: helmet.splinegeometry file must be created first in Spline Editor
-      // by importing helmet_for_spline.glb and exporting as geometry
-      await spline.swapGeometry(placeholder.name, '/models/helmet.splinegeometry');
-
-      console.log('✅ Helmet geometry loaded successfully!');
-      setHelmetLoaded(true);
-    } catch (error) {
-      console.error('❌ Error loading helmet geometry:', error);
-      console.log('💡 Make sure helmet.splinegeometry exists in /public/models/');
-      console.log('💡 Create it by: Import GLB in Spline Editor → Right-click → Export Geometry');
-      setHelmetLoaded(false);
-    }
+    console.log('✅ Helmet is now visible!');
+    setHelmetLoaded(true);
   }
 
   return (

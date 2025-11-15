@@ -61,11 +61,12 @@ export function applyShellFinish(spline: Application, finish: FinishType) {
   const shell = spline.findObjectByName('UV01_Shell');
   if (shell) {
     const preset = FINISH_PRESETS[finish];
-    // Note: Spline's material system may differ from THREE.js
-    // These properties may need adjustment based on Spline's API
-    if (shell.material) {
-      shell.material.metalness = preset.metalness;
-      shell.material.roughness = preset.roughness;
+    // Note: Spline's material system uses type assertion
+    // Material properties may need runtime testing
+    const obj = shell as any;
+    if (obj.material) {
+      obj.material.metalness = preset.metalness;
+      obj.material.roughness = preset.roughness;
     }
   }
 }
@@ -74,9 +75,10 @@ export function applyFacemaskFinish(spline: Application, finish: FinishType) {
   const facemask = spline.findObjectByName('Facemask_Complete');
   if (facemask) {
     const preset = FINISH_PRESETS[finish];
-    if (facemask.material) {
-      facemask.material.metalness = preset.metalness;
-      facemask.material.roughness = preset.roughness;
+    const obj = facemask as any;
+    if (obj.material) {
+      obj.material.metalness = preset.metalness;
+      obj.material.roughness = preset.roughness;
     }
   }
 }
