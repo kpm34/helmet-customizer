@@ -44,9 +44,9 @@ export default function Home() {
         const helmet = gltf.scene;
 
         // Match placeholder transform
-        helmet.position.copy(placeholder.position);
-        helmet.rotation.copy(placeholder.rotation);
-        helmet.scale.copy(placeholder.scale);
+        helmet.position.set(placeholder.position.x, placeholder.position.y, placeholder.position.z);
+        helmet.rotation.set(placeholder.rotation.x, placeholder.rotation.y, placeholder.rotation.z);
+        helmet.scale.set(placeholder.scale.x, placeholder.scale.y, placeholder.scale.z);
 
         // Add to scene
         if (placeholder.parent) {
