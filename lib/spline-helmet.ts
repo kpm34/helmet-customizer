@@ -1,30 +1,25 @@
 /**
  * Helmet Customization Logic
- * All helmet manipulation functions in ONE file
+ * All helmet manipulation functions using Spline API
  */
 
-import * as THREE from 'three';
 import type { Application } from '@splinetool/runtime';
 
 // ============================================================
 // HELMET COLOR CUSTOMIZATION
 // ============================================================
 
-export function changeShellColor(helmet: THREE.Object3D, color: string) {
-  const shell = helmet.getObjectByName('UV01_Shell');
-  if (shell && (shell as THREE.Mesh).material) {
-    const mesh = shell as THREE.Mesh;
-    const material = mesh.material as THREE.MeshStandardMaterial;
-    material.color.set(color);
+export function changeShellColor(spline: Application, color: string) {
+  const shell = spline.findObjectByName('UV01_Shell');
+  if (shell) {
+    shell.color = color;
   }
 }
 
-export function changeFacemaskColor(helmet: THREE.Object3D, color: string) {
-  const facemask = helmet.getObjectByName('Facemask_Complete');
-  if (facemask && (facemask as THREE.Mesh).material) {
-    const mesh = facemask as THREE.Mesh;
-    const material = mesh.material as THREE.MeshStandardMaterial;
-    material.color.set(color);
+export function changeFacemaskColor(spline: Application, color: string) {
+  const facemask = spline.findObjectByName('Facemask_Complete');
+  if (facemask) {
+    facemask.color = color;
   }
 }
 
@@ -62,29 +57,27 @@ export const FINISH_PRESETS = {
 
 export type FinishType = keyof typeof FINISH_PRESETS;
 
-export function applyShellFinish(helmet: THREE.Object3D, finish: FinishType) {
-  const shell = helmet.getObjectByName('UV01_Shell');
-  if (shell && (shell as THREE.Mesh).material) {
-    const mesh = shell as THREE.Mesh;
-    const material = mesh.material as THREE.MeshStandardMaterial;
+export function applyShellFinish(spline: Application, finish: FinishType) {
+  const shell = spline.findObjectByName('UV01_Shell');
+  if (shell) {
     const preset = FINISH_PRESETS[finish];
-
-    material.metalness = preset.metalness;
-    material.roughness = preset.roughness;
-    material.needsUpdate = true;
+    // Note: Spline's material system may differ from THREE.js
+    // These properties may need adjustment based on Spline's API
+    if (shell.material) {
+      shell.material.metalness = preset.metalness;
+      shell.material.roughness = preset.roughness;
+    }
   }
 }
 
-export function applyFacemaskFinish(helmet: THREE.Object3D, finish: FinishType) {
-  const facemask = helmet.getObjectByName('Facemask_Complete');
-  if (facemask && (facemask as THREE.Mesh).material) {
-    const mesh = facemask as THREE.Mesh;
-    const material = mesh.material as THREE.MeshStandardMaterial;
+export function applyFacemaskFinish(spline: Application, finish: FinishType) {
+  const facemask = spline.findObjectByName('Facemask_Complete');
+  if (facemask) {
     const preset = FINISH_PRESETS[finish];
-
-    material.metalness = preset.metalness;
-    material.roughness = preset.roughness;
-    material.needsUpdate = true;
+    if (facemask.material) {
+      facemask.material.metalness = preset.metalness;
+      facemask.material.roughness = preset.roughness;
+    }
   }
 }
 
@@ -94,20 +87,20 @@ export function applyFacemaskFinish(helmet: THREE.Object3D, finish: FinishType) 
 
 export const CAMERA_PRESETS = {
   front: {
-    position: new THREE.Vector3(0, 0, 5),
-    rotation: new THREE.Euler(0, 0, 0),
+    position: { x: 0, y: 0, z: 5 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   side: {
-    position: new THREE.Vector3(5, 0, 0),
-    rotation: new THREE.Euler(0, Math.PI / 2, 0),
+    position: { x: 5, y: 0, z: 0 },
+    rotation: { x: 0, y: Math.PI / 2, z: 0 },
   },
   back: {
-    position: new THREE.Vector3(0, 0, -5),
-    rotation: new THREE.Euler(0, Math.PI, 0),
+    position: { x: 0, y: 0, z: -5 },
+    rotation: { x: 0, y: Math.PI, z: 0 },
   },
   threequarter: {
-    position: new THREE.Vector3(4, 2, 4),
-    rotation: new THREE.Euler(-0.3, Math.PI / 4, 0),
+    position: { x: 4, y: 2, z: 4 },
+    rotation: { x: -0.3, y: Math.PI / 4, z: 0 },
   },
 } as const;
 
@@ -131,7 +124,7 @@ export function setCameraView(spline: Application, view: CameraView) {
 // PATTERN OVERLAYS (Future implementation)
 // ============================================================
 
-export function applyPattern(helmet: THREE.Object3D, patternUrl: string) {
-  // TODO: Load texture and apply to shell material.map
+export function applyPattern(spline: Application, patternUrl: string) {
+  // TODO: Implement pattern system using Spline's texture loading
   console.log('Pattern system:', patternUrl);
 }
