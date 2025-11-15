@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import Spline from '@splinetool/react-spline/next';
 import type { Application } from '@splinetool/runtime';
+import ConsolePanel from './components/ConsolePanel';
 
 export default function Home() {
   const splineRef = useRef<Application>();
@@ -70,6 +71,9 @@ export default function Home() {
         wasmPath="/"
         onLoad={onLoad}
       />
+
+      {/* Console Panel for debugging */}
+      <ConsolePanel />
     </main>
   );
 }
