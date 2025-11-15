@@ -48,10 +48,8 @@ export default function Home() {
         helmet.rotation.set(placeholder.rotation.x, placeholder.rotation.y, placeholder.rotation.z);
         helmet.scale.set(placeholder.scale.x, placeholder.scale.y, placeholder.scale.z);
 
-        // Add to scene
-        if (placeholder.parent) {
-          placeholder.parent.add(helmet);
-        }
+        // Add helmet to Spline scene (using emitEvent to add to scene)
+        spline._scene.add(helmet);
 
         // Hide placeholder
         placeholder.visible = false;
