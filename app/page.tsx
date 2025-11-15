@@ -26,6 +26,15 @@ export default function Home() {
       camera.position.z += 3;
     }
 
+    // Find the placeholder football
+    const football = spline.findObjectByName('football')
+                  || spline.findObjectByName('mesh_0')
+                  || spline.findObjectByName('Mesh_0');
+
+    if (football) {
+      console.log('✓ Football placeholder found:', football.name);
+    }
+
     // Find the helmet (should already be in scene from Spline import)
     const helmet = spline.findObjectByName('Helmet')
                 || spline.findObjectByName('helmet')
@@ -40,13 +49,17 @@ export default function Home() {
 
     console.log('✓ Helmet found:', helmet.name);
     console.log('  - Position:', helmet.position);
-    console.log('  - Visible:', helmet.visible);
+    console.log('  - Initial visibility:', helmet.visible);
 
-    // Make helmet visible (in case it was hidden in Spline)
+    // Toggle visibility: Hide football, show helmet
+    if (football) {
+      football.visible = false;
+      console.log('👁️ Football placeholder hidden');
+    }
+
     helmet.visible = true;
-    // helmet.show(); // Alternative method
-
     console.log('✅ Helmet is now visible!');
+
     setHelmetLoaded(true);
   }
 
