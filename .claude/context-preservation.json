@@ -1,0 +1,278 @@
+{
+  "$schema": "https://claude.ai/schemas/context-preservation.json",
+  "version": "1.0.0",
+  "description": "Context preservation rules to minimize token usage and maintain focus",
+
+  "globalRules": {
+    "maxContextTokens": 100000,
+    "tokenWarningThreshold": 75000,
+    "autoTruncate": true,
+    "preserveRecent": true,
+    "recentMessagesCount": 10
+  },
+
+  "fileReadLimits": {
+    "maxFileSize": 100000,
+    "maxLinesPerFile": 2000,
+    "autoSummarizeAbove": 1000,
+    "excludeExtensions": [
+      ".map",
+      ".lock",
+      ".log",
+      ".min.js",
+      ".min.css"
+    ]
+  },
+
+  "searchOptimization": {
+    "Grep": {
+      "defaultHeadLimit": 20,
+      "maxHeadLimit": 100,
+      "excludeDirectories": [
+        "node_modules",
+        ".next",
+        "public/assets",
+        ".git",
+        "dist",
+        "build"
+      ],
+      "prioritizeFiles": [
+        "**/*.ts",
+        "**/*.tsx",
+        "lib/**",
+        "components/**"
+      ]
+    },
+
+    "Glob": {
+      "maxResults": 50,
+      "excludePatterns": [
+        "**/node_modules/**",
+        "**/.next/**",
+        "**/public/assets/**",
+        "**/*.map",
+        "**/*.lock"
+      ]
+    },
+
+    "Read": {
+      "smartTruncation": true,
+      "preserveSections": [
+        "imports",
+        "exports",
+        "type definitions",
+        "function signatures",
+        "comments"
+      ]
+    }
+  },
+
+  "agentContextLimits": {
+    "general-purpose": {
+      "maxTokens": 100000,
+      "preserveHistory": true,
+      "allowFullContext": true
+    },
+
+    "testing-suite:test-engineer": {
+      "maxTokens": 50000,
+      "preserveHistory": false,
+      "focusFiles": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "playwright.config.ts"
+      ]
+    },
+
+    "api-integration-specialist": {
+      "maxTokens": 75000,
+      "preserveHistory": true,
+      "focusFiles": [
+        "app/api/**",
+        "lib/api/**",
+        "types/api.ts"
+      ]
+    },
+
+    "Explore": {
+      "maxTokens": 30000,
+      "preserveHistory": false,
+      "searchOnly": true
+    },
+
+    "ui-ux-designer": {
+      "maxTokens": 50000,
+      "preserveHistory": true,
+      "focusFiles": [
+        "components/**",
+        "app/**/*.tsx",
+        "**/*.css"
+      ]
+    }
+  },
+
+  "taskContextPresets": {
+    "spline-integration": {
+      "loadFiles": [
+        "lib/spline-helmet.ts",
+        "docs/SPLINE_RUNTIME_API.md",
+        "types/helmet.ts"
+      ],
+      "tokenBudget": 30000,
+      "summarizeOthers": true
+    },
+
+    "ui-customization": {
+      "loadFiles": [
+        "components/CustomizationPanel.tsx",
+        "store/helmetStore.ts",
+        "app/page.tsx"
+      ],
+      "tokenBudget": 25000,
+      "summarizeOthers": true
+    },
+
+    "helmet-logic": {
+      "loadFiles": [
+        "lib/spline-helmet.ts",
+        "lib/helmetConfig.ts",
+        "store/helmetStore.ts"
+      ],
+      "tokenBudget": 20000,
+      "summarizeOthers": true
+    },
+
+    "documentation": {
+      "loadFiles": [
+        "docs/**/*.md",
+        "README.md"
+      ],
+      "tokenBudget": 40000,
+      "summarizeOthers": false
+    }
+  },
+
+  "intelligentSummarization": {
+    "enabled": true,
+    "strategy": "hierarchical",
+    "levels": [
+      {
+        "name": "full",
+        "trigger": "tokens < 50000",
+        "action": "load-full-content"
+      },
+      {
+        "name": "detailed",
+        "trigger": "tokens 50000-75000",
+        "action": "summarize-non-critical-files",
+        "preserve": [
+          "function signatures",
+          "type definitions",
+          "exports"
+        ]
+      },
+      {
+        "name": "compact",
+        "trigger": "tokens > 75000",
+        "action": "aggressive-summarization",
+        "preserve": [
+          "function names only",
+          "type names only"
+        ]
+      }
+    ],
+
+    "preserveAlways": [
+      "lib/spline-helmet.ts",
+      "types/helmet.ts",
+      "app/page.tsx"
+    ],
+
+    "summarizeFirst": [
+      "docs/**",
+      "**/*.md",
+      "**/*.css"
+    ]
+  },
+
+  "memoryManagement": {
+    "clearOldContext": {
+      "enabled": true,
+      "afterMessages": 50,
+      "keepRecent": 10
+    },
+
+    "compressionRules": [
+      {
+        "fileType": "typescript",
+        "action": "remove-comments",
+        "keepJSDoc": true
+      },
+      {
+        "fileType": "markdown",
+        "action": "summarize-sections",
+        "keepHeadings": true
+      },
+      {
+        "fileType": "json",
+        "action": "minify",
+        "keepStructure": true
+      }
+    ]
+  },
+
+  "smartLoading": {
+    "dependencyTracking": true,
+    "autoLoadImports": false,
+    "loadOnDemand": true,
+    "cacheStrategy": "lru",
+    "maxCacheSize": 10
+  },
+
+  "exclusionPatterns": {
+    "neverLoad": [
+      "**/node_modules/**",
+      "**/.next/**",
+      "**/public/assets/**",
+      "**/*.splinecode",
+      "**/*.glb",
+      "**/*.gltf",
+      "**/*.png",
+      "**/*.jpg",
+      "**/*.jpeg",
+      "**/*.gif",
+      "**/*.svg",
+      "**/*.woff",
+      "**/*.woff2",
+      "**/*.ttf",
+      "**/*.eot"
+    ],
+
+    "summarizeAlways": [
+      "package.json",
+      "package-lock.json",
+      "tsconfig.json",
+      "next.config.js"
+    ]
+  },
+
+  "warnings": {
+    "highTokenUsage": {
+      "threshold": 75000,
+      "message": "Context usage high. Consider using task-specific scope or launching parallel agents.",
+      "suggestAgent": true
+    },
+
+    "excessiveFileReads": {
+      "threshold": 20,
+      "message": "Many files loaded. Consider using Explore agent for better scoping.",
+      "suggestExplore": true
+    },
+
+    "largeFileWarning": {
+      "threshold": 50000,
+      "message": "Large file detected. Auto-summarizing to preserve context.",
+      "autoSummarize": true
+    }
+  }
+}

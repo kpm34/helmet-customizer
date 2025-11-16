@@ -1,0 +1,159 @@
+{
+  "$schema": "https://claude.ai/schemas/mcp-scope.json",
+  "version": "1.0.0",
+  "description": "MCP tool scoping per agent type to reduce token usage and improve focus",
+
+  "agentScopes": {
+    "general-purpose": {
+      "description": "General development tasks with full MCP access",
+      "mcpTools": {
+        "n8n-mcp-skills": "all",
+        "playwright-server": "all"
+      },
+      "contextLimit": 100000
+    },
+
+    "testing-suite:test-engineer": {
+      "description": "Testing-focused agent with limited MCP scope",
+      "mcpTools": {
+        "playwright-server": "all",
+        "n8n-mcp-skills": "none"
+      },
+      "allowedTools": [
+        "browser_snapshot",
+        "browser_click",
+        "browser_type",
+        "browser_navigate",
+        "browser_take_screenshot",
+        "browser_evaluate",
+        "getDiagnostics"
+      ],
+      "contextLimit": 50000
+    },
+
+    "api-integration-specialist": {
+      "description": "API integration focused, no browser testing needed",
+      "mcpTools": {
+        "playwright-server": "none",
+        "n8n-mcp-skills": "all"
+      },
+      "allowedTools": [
+        "mcp__plugin_n8n-mcp-skills__*"
+      ],
+      "contextLimit": 75000
+    },
+
+    "ui-ux-designer": {
+      "description": "Design focused, only visual testing tools",
+      "mcpTools": {
+        "playwright-server": "visual-only",
+        "n8n-mcp-skills": "none"
+      },
+      "allowedTools": [
+        "browser_snapshot",
+        "browser_take_screenshot",
+        "browser_resize"
+      ],
+      "contextLimit": 50000
+    },
+
+    "Explore": {
+      "description": "Codebase exploration, no external tools needed",
+      "mcpTools": {
+        "playwright-server": "none",
+        "n8n-mcp-skills": "none"
+      },
+      "allowedTools": [],
+      "contextLimit": 30000
+    }
+  },
+
+  "taskScopes": {
+    "spline-documentation": {
+      "description": "Spline API documentation tasks",
+      "requiredMcp": [],
+      "preferredAgent": "general-purpose",
+      "contextFocus": [
+        "docs/04-development/**",
+        "lib/spline-*.ts",
+        "types/spline.ts"
+      ]
+    },
+
+    "helmet-customization": {
+      "description": "Helmet 3D customization features",
+      "requiredMcp": [],
+      "preferredAgent": "general-purpose",
+      "contextFocus": [
+        "lib/spline-helmet.ts",
+        "lib/helmetConfig.ts",
+        "store/helmetStore.ts",
+        "components/CustomizationPanel.tsx"
+      ]
+    },
+
+    "testing": {
+      "description": "Test creation and execution",
+      "requiredMcp": ["playwright-server"],
+      "preferredAgent": "testing-suite:test-engineer",
+      "contextFocus": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "cypress/**",
+        "playwright.config.ts"
+      ]
+    },
+
+    "api-integration": {
+      "description": "Backend API integration work",
+      "requiredMcp": ["n8n-mcp-skills"],
+      "preferredAgent": "api-integration-specialist",
+      "contextFocus": [
+        "app/api/**",
+        "lib/api/**",
+        "types/api.ts"
+      ]
+    }
+  },
+
+  "contextPreservation": {
+    "rules": [
+      {
+        "name": "exclude-node-modules",
+        "pattern": "**/node_modules/**",
+        "action": "exclude",
+        "reason": "Never search node_modules"
+      },
+      {
+        "name": "exclude-build-artifacts",
+        "pattern": "**/.next/**",
+        "action": "exclude",
+        "reason": "Build artifacts not relevant"
+      },
+      {
+        "name": "exclude-public-assets",
+        "pattern": "**/public/assets/**",
+        "action": "exclude",
+        "reason": "Static assets not code-relevant"
+      },
+      {
+        "name": "limit-documentation-scope",
+        "pattern": "**/docs/**",
+        "action": "scope",
+        "limit": "only when task includes 'docs' or 'documentation'"
+      }
+    ],
+
+    "autoSummarize": {
+      "enabled": true,
+      "threshold": 50000,
+      "strategy": "hierarchical",
+      "preserveKeys": [
+        "function signatures",
+        "type definitions",
+        "component props",
+        "API endpoints"
+      ]
+    }
+  }
+}

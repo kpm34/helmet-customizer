@@ -1,0 +1,274 @@
+{
+  "$schema": "https://claude.ai/schemas/hooks.json",
+  "version": "1.0.0",
+  "description": "Task-based hooks that automatically apply directory scoping and context preservation",
+
+  "beforeToolUse": {
+    "Read": [
+      {
+        "name": "check-file-relevance",
+        "condition": "!taskContext.includeDirs.includes(file)",
+        "action": "warn",
+        "message": "⚠️ Reading file outside task scope. This may waste context. Continue?",
+        "allowOverride": true
+      },
+      {
+        "name": "large-file-detection",
+        "condition": "file.size > 50000",
+        "action": "suggest-summarize",
+        "message": "📄 Large file detected. Auto-summarizing to preserve context.",
+        "autoExecute": true
+      },
+      {
+        "name": "binary-file-block",
+        "condition": "file.extension in ['.splinecode', '.glb', '.gltf', '.png', '.jpg']",
+        "action": "block",
+        "message": "❌ Cannot read binary file. This file type is not code-readable.",
+        "suggest": "Use Spline Editor or 3D viewer for this file."
+      }
+    ],
+
+    "Grep": [
+      {
+        "name": "auto-scope-search",
+        "condition": "taskContext.defined",
+        "action": "apply-scope",
+        "scope": "taskContext.searchScope",
+        "message": "🔍 Auto-scoping search to task-relevant directories"
+      },
+      {
+        "name": "exclude-common-noise",
+        "condition": "always",
+        "action": "exclude-patterns",
+        "patterns": [
+          "**/node_modules/**",
+          "**/.next/**",
+          "**/public/assets/**"
+        ]
+      },
+      {
+        "name": "limit-results",
+        "condition": "!head_limit",
+        "action": "set-head-limit",
+        "value": 20,
+        "message": "🎯 Limiting search results to 20 for efficiency"
+      }
+    ],
+
+    "Glob": [
+      {
+        "name": "auto-exclude-build",
+        "condition": "always",
+        "action": "exclude-patterns",
+        "patterns": [
+          "**/node_modules/**",
+          "**/.next/**",
+          "**/dist/**",
+          "**/build/**"
+        ]
+      },
+      {
+        "name": "task-scope-glob",
+        "condition": "taskContext.defined",
+        "action": "limit-to-scope",
+        "scope": "taskContext.searchScope"
+      }
+    ],
+
+    "Task": [
+      {
+        "name": "suggest-parallel-execution",
+        "condition": "complexity === 'high' && canParallelize",
+        "action": "suggest",
+        "message": "💡 This task could be parallelized. Launch multiple agents? [Y/n]",
+        "defaultAction": "yes"
+      },
+      {
+        "name": "apply-mcp-scope",
+        "condition": "always",
+        "action": "load-mcp-scope",
+        "config": ".claude/mcp-scope.json",
+        "message": "🔧 Loading MCP scope for agent type"
+      }
+    ]
+  },
+
+  "afterToolUse": {
+    "Read": [
+      {
+        "name": "track-context-usage",
+        "action": "update-context-counter",
+        "warnAt": 75000,
+        "message": "⚠️ Context usage at {tokens}. Consider task-scoping or agent delegation."
+      }
+    ],
+
+    "Write": [
+      {
+        "name": "suggest-testing",
+        "condition": "file.includes('test') || file.includes('spec')",
+        "action": "suggest-agent",
+        "agent": "testing-suite:test-engineer",
+        "message": "🧪 Test file created. Run tests with testing agent? [Y/n]"
+      }
+    ],
+
+    "Grep": [
+      {
+        "name": "suggest-explore-agent",
+        "condition": "results.length > 50",
+        "action": "suggest-agent",
+        "agent": "Explore",
+        "message": "🔍 Many results found ({count}). Use Explore agent for better navigation?"
+      }
+    ]
+  },
+
+  "onTaskStart": {
+    "detect-task-type": {
+      "enabled": true,
+      "keywords": {
+        "spline-integration": ["spline", "3d", "helmet", "scene", "runtime"],
+        "ui-customization": ["ui", "component", "panel", "customization", "interface"],
+        "helmet-logic": ["customize", "color", "zone", "material", "finish"],
+        "documentation": ["docs", "document", "write guide", "readme", "api reference"],
+        "testing": ["test", "spec", "playwright", "cypress", "e2e"],
+        "debug": ["bug", "error", "fix", "debug", "issue"]
+      },
+      "action": "load-context-preset",
+      "source": ".claude/directory-map.json"
+    },
+
+    "load-directory-scope": {
+      "enabled": true,
+      "action": "apply-task-directory-mapping",
+      "config": ".claude/directory-map.json",
+      "message": "📁 Loading task-specific directory scope"
+    },
+
+    "initialize-context-preservation": {
+      "enabled": true,
+      "action": "apply-preservation-rules",
+      "config": ".claude/context-preservation.json",
+      "message": "💾 Context preservation rules active"
+    }
+  },
+
+  "onAgentLaunch": {
+    "apply-mcp-scope": {
+      "enabled": true,
+      "action": "load-agent-mcp-scope",
+      "config": ".claude/mcp-scope.json",
+      "message": "🤖 Agent-specific MCP tools loaded"
+    },
+
+    "set-context-limit": {
+      "enabled": true,
+      "action": "apply-agent-context-limit",
+      "config": ".claude/mcp-scope.json",
+      "message": "📊 Context limit set for agent type"
+    },
+
+    "isolate-context": {
+      "enabled": true,
+      "action": "create-isolated-context",
+      "preserveMain": false,
+      "message": "🔒 Agent context isolated from main thread"
+    }
+  },
+
+  "intelligentSuggestions": {
+    "enabled": true,
+    "rules": [
+      {
+        "trigger": "user mentions 'search' and pattern.complex",
+        "suggest": "Use Explore agent for complex codebase searches",
+        "agent": "Explore",
+        "autoScope": true
+      },
+      {
+        "trigger": "user mentions 'test' or 'testing'",
+        "suggest": "Launch testing-suite agent for test automation",
+        "agent": "testing-suite:test-engineer",
+        "autoScope": true
+      },
+      {
+        "trigger": "user mentions 'api' or 'endpoint' or 'integration'",
+        "suggest": "Use api-integration-specialist for API work",
+        "agent": "api-integration-specialist",
+        "autoScope": true
+      },
+      {
+        "trigger": "tokens > 75000",
+        "suggest": "High context usage. Delegate to specialized agent?",
+        "action": "recommend-agent-split",
+        "showTaskTypes": true
+      },
+      {
+        "trigger": "file.reads > 20",
+        "suggest": "Many files loaded. Use task-scoping or Explore agent?",
+        "action": "show-scope-options",
+        "scopes": [
+          "spline-integration",
+          "ui-customization",
+          "helmet-logic",
+          "documentation"
+        ]
+      }
+    ]
+  },
+
+  "parallelExecution": {
+    "enabled": true,
+    "maxConcurrentAgents": 5,
+    "autoDetectParallelizable": true,
+    "patterns": {
+      "documentation-split": {
+        "trigger": "task includes 'create documentation' and sections > 3",
+        "action": "split-by-sections",
+        "agentType": "general-purpose",
+        "execution": "parallel"
+      },
+      "multi-file-refactor": {
+        "trigger": "edit files > 5",
+        "action": "split-by-files",
+        "agentType": "general-purpose",
+        "execution": "parallel"
+      },
+      "test-suite-creation": {
+        "trigger": "create tests for multiple components",
+        "action": "split-by-component",
+        "agentType": "testing-suite:test-engineer",
+        "execution": "parallel"
+      }
+    }
+  },
+
+  "contextMonitoring": {
+    "enabled": true,
+    "checkInterval": 10,
+    "alerts": [
+      {
+        "threshold": 50000,
+        "level": "info",
+        "message": "ℹ️ Context at 50K tokens"
+      },
+      {
+        "threshold": 75000,
+        "level": "warning",
+        "message": "⚠️ Context at 75K tokens. Consider scoping or agent delegation."
+      },
+      {
+        "threshold": 100000,
+        "level": "critical",
+        "message": "🚨 Context at 100K tokens. Immediate action required!"
+      }
+    ],
+
+    "autoActions": {
+      "at75k": "suggest-task-scoping",
+      "at100k": "force-agent-delegation",
+      "at150k": "emergency-context-cleanup"
+    }
+  }
+}

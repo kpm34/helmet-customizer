@@ -1,0 +1,336 @@
+{
+  "$schema": "https://claude.ai/schemas/directory-map.json",
+  "version": "1.0.0",
+  "projectName": "helmet-customizer",
+  "projectRoot": "/Users/kashyapmaheshwari/projects/helmet-customizer",
+
+  "directoryStructure": {
+    "app": {
+      "description": "Next.js 15 app directory with routes and pages",
+      "relevantFor": ["ui", "routing", "spline-integration"],
+      "priority": "high",
+      "files": {
+        "page.tsx": "Main Spline viewer component",
+        "layout.tsx": "Root layout with metadata",
+        "globals.css": "Global styles and Tailwind"
+      },
+      "subdirectories": {
+        "api": {
+          "description": "Next.js API routes (if any)",
+          "relevantFor": ["backend", "api-integration"],
+          "priority": "medium"
+        },
+        "components": {
+          "description": "Page-specific components",
+          "relevantFor": ["ui", "react-components"],
+          "priority": "high"
+        }
+      }
+    },
+
+    "components": {
+      "description": "Reusable React components",
+      "relevantFor": ["ui", "react-components", "customization"],
+      "priority": "high",
+      "keyFiles": [
+        "CustomizationPanel.tsx - Main helmet customization UI",
+        "ConsolePanel.tsx - Debug console overlay"
+      ]
+    },
+
+    "lib": {
+      "description": "Core business logic and utilities",
+      "relevantFor": ["spline-api", "helmet-logic", "utilities"],
+      "priority": "critical",
+      "files": {
+        "spline-helmet.ts": "Spline helmet manipulation API (CRITICAL)",
+        "helmetConfig.ts": "Helmet configuration and presets",
+        "utils.ts": "Utility functions"
+      }
+    },
+
+    "store": {
+      "description": "Zustand state management",
+      "relevantFor": ["state-management", "customization"],
+      "priority": "high",
+      "files": {
+        "helmetStore.ts": "Global helmet state with Zustand"
+      }
+    },
+
+    "types": {
+      "description": "TypeScript type definitions",
+      "relevantFor": ["types", "typescript", "api-contracts"],
+      "priority": "high",
+      "files": {
+        "helmet.ts": "Helmet-specific types",
+        "spline.ts": "Spline API types (if exists)"
+      }
+    },
+
+    "public": {
+      "description": "Static assets and Spline scenes",
+      "relevantFor": ["assets", "3d-models"],
+      "priority": "low",
+      "excludeFromSearch": true,
+      "note": "Large binary files - exclude from code search",
+      "files": {
+        "scene.splinecode": "Main Spline 3D scene"
+      }
+    },
+
+    "docs": {
+      "description": "Project documentation",
+      "relevantFor": ["documentation", "reference"],
+      "priority": "medium",
+      "keyFiles": [
+        "SPLINE_SCENE_HIERARCHY.md - Scene object reference",
+        "SPLINE_RUNTIME_API.md - Complete Spline API docs"
+      ]
+    },
+
+    ".next": {
+      "description": "Next.js build output",
+      "relevantFor": [],
+      "priority": "none",
+      "excludeFromSearch": true,
+      "excludeFromContext": true
+    },
+
+    "node_modules": {
+      "description": "NPM dependencies",
+      "relevantFor": [],
+      "priority": "none",
+      "excludeFromSearch": true,
+      "excludeFromContext": true
+    }
+  },
+
+  "taskDirectoryMapping": {
+    "spline-integration": {
+      "description": "Working with Spline runtime and 3D scene",
+      "includeDirs": [
+        "lib/spline-helmet.ts",
+        "lib/helmetConfig.ts",
+        "types/helmet.ts",
+        "app/page.tsx",
+        "docs/SPLINE_RUNTIME_API.md",
+        "docs/SPLINE_SCENE_HIERARCHY.md"
+      ],
+      "excludeDirs": [
+        "public/**",
+        ".next/**",
+        "node_modules/**",
+        "components/**"
+      ],
+      "maxFiles": 10,
+      "tokenBudget": 30000
+    },
+
+    "ui-customization": {
+      "description": "Building/modifying customization UI",
+      "includeDirs": [
+        "components/CustomizationPanel.tsx",
+        "components/ConsolePanel.tsx",
+        "store/helmetStore.ts",
+        "app/page.tsx",
+        "app/globals.css"
+      ],
+      "excludeDirs": [
+        "lib/**",
+        "public/**",
+        ".next/**",
+        "node_modules/**",
+        "docs/**"
+      ],
+      "maxFiles": 8,
+      "tokenBudget": 25000
+    },
+
+    "helmet-logic": {
+      "description": "Helmet customization business logic",
+      "includeDirs": [
+        "lib/spline-helmet.ts",
+        "lib/helmetConfig.ts",
+        "store/helmetStore.ts",
+        "types/helmet.ts"
+      ],
+      "excludeDirs": [
+        "components/**",
+        "app/**",
+        "public/**",
+        ".next/**",
+        "node_modules/**",
+        "docs/**"
+      ],
+      "maxFiles": 5,
+      "tokenBudget": 20000
+    },
+
+    "documentation": {
+      "description": "Writing or updating documentation",
+      "includeDirs": [
+        "docs/**",
+        "README.md",
+        "lib/spline-helmet.ts",
+        "types/helmet.ts"
+      ],
+      "excludeDirs": [
+        "components/**",
+        "public/**",
+        ".next/**",
+        "node_modules/**"
+      ],
+      "maxFiles": 15,
+      "tokenBudget": 40000
+    },
+
+    "testing": {
+      "description": "Testing and QA work",
+      "includeDirs": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "cypress/**",
+        "playwright/**",
+        "lib/**",
+        "components/**"
+      ],
+      "excludeDirs": [
+        "public/**",
+        ".next/**",
+        "node_modules/**",
+        "docs/**"
+      ],
+      "maxFiles": 20,
+      "tokenBudget": 35000
+    },
+
+    "debug": {
+      "description": "Debugging issues",
+      "includeDirs": [
+        "app/page.tsx",
+        "lib/spline-helmet.ts",
+        "store/helmetStore.ts",
+        "components/**",
+        "package.json"
+      ],
+      "excludeDirs": [
+        "public/**",
+        ".next/**",
+        "node_modules/**"
+      ],
+      "maxFiles": 12,
+      "tokenBudget": 30000
+    },
+
+    "full-context": {
+      "description": "When full project context is needed (use sparingly!)",
+      "includeDirs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.json",
+        "**/*.md"
+      ],
+      "excludeDirs": [
+        "node_modules/**",
+        ".next/**",
+        "public/**"
+      ],
+      "maxFiles": 50,
+      "tokenBudget": 100000,
+      "warning": "High token usage - only use when absolutely necessary"
+    }
+  },
+
+  "searchScopes": {
+    "quick": {
+      "description": "Fast searches in core files only",
+      "paths": [
+        "lib/**/*.ts",
+        "components/**/*.tsx",
+        "app/page.tsx"
+      ],
+      "maxResults": 10
+    },
+
+    "comprehensive": {
+      "description": "Thorough search excluding build artifacts",
+      "paths": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.json"
+      ],
+      "excludePaths": [
+        "node_modules/**",
+        ".next/**",
+        "public/**"
+      ],
+      "maxResults": 50
+    },
+
+    "docs-only": {
+      "description": "Documentation files only",
+      "paths": [
+        "docs/**/*.md",
+        "README.md",
+        "*.md"
+      ],
+      "maxResults": 20
+    }
+  },
+
+  "autoContextRules": {
+    "rules": [
+      {
+        "trigger": "user mentions 'spline' or '3d' or 'helmet'",
+        "action": "load-task-context",
+        "taskType": "spline-integration",
+        "reason": "Spline-related query detected"
+      },
+      {
+        "trigger": "user mentions 'ui' or 'component' or 'panel'",
+        "action": "load-task-context",
+        "taskType": "ui-customization",
+        "reason": "UI modification query detected"
+      },
+      {
+        "trigger": "user mentions 'customize' or 'color' or 'zone'",
+        "action": "load-task-context",
+        "taskType": "helmet-logic",
+        "reason": "Helmet customization logic query detected"
+      },
+      {
+        "trigger": "user mentions 'docs' or 'document' or 'write guide'",
+        "action": "load-task-context",
+        "taskType": "documentation",
+        "reason": "Documentation task detected"
+      },
+      {
+        "trigger": "user mentions 'test' or 'spec' or 'playwright'",
+        "action": "load-task-context",
+        "taskType": "testing",
+        "reason": "Testing task detected"
+      },
+      {
+        "trigger": "user mentions 'bug' or 'error' or 'fix' or 'debug'",
+        "action": "load-task-context",
+        "taskType": "debug",
+        "reason": "Debugging task detected"
+      }
+    ]
+  },
+
+  "contextOptimization": {
+    "enableAutoScope": true,
+    "defaultScope": "quick",
+    "maxTokensPerFile": 5000,
+    "summarizeLargeFiles": true,
+    "excludePatterns": [
+      "**/*.map",
+      "**/*.lock",
+      "**/package-lock.json",
+      "**/.DS_Store",
+      "**/*.log"
+    ]
+  }
+}
