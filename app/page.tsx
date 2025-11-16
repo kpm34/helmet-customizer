@@ -47,9 +47,9 @@ export default function Home() {
     }
 
     // Hide circular ring/spiral background objects
-    // Comprehensive list based on common Spline naming conventions
+    // Only hiding decorative elements, keeping floor/platform
     const objectsToHide = [
-      // Rings and ellipses
+      // Rings and ellipses (decorative background elements)
       'Ellipse', 'Ellipse 2', 'Ellipse 3', 'Ellipse 4', 'Ellipse 5',
       'Ellipse 6', 'Ellipse 7', 'Ellipse 8', 'Ellipse 9', 'Ellipse 10',
       'Circle', 'Circle 2', 'Circle 3',
@@ -59,8 +59,6 @@ export default function Home() {
       // Background elements
       'Background', 'background',
       'Boolean', 'Boolean 2', 'Boolean 3',
-      // Platform/ground
-      'platform', 'Platform', 'Floor', 'Ground',
       // Shape primitives that might be background elements
       'Shape', 'Shape 2', 'Shape 3',
       'Curve', 'Curve 2', 'Curve 3',
