@@ -60,18 +60,32 @@ function findZoneObjects(spline: Application, zone: HelmetZone): any[] {
 // ============================================================
 
 /**
- * Change color for a specific zone
+ * Change color for a specific zone using material overlay
+ * Applies color to material emissive property for better texture support
  * Handles zones with multiple objects (chinstrap, padding, hardware)
  */
 export function changeZoneColor(spline: Application, zone: HelmetZone, color: string) {
   const objects = findZoneObjects(spline, zone);
 
   objects.forEach(obj => {
-    obj.color = color;
+    const typedObj = obj as any;
+
+    // Apply color to material emissive for overlay effect
+    if (typedObj.material) {
+      // Set emissive color for overlay effect (works with textures)
+      typedObj.material.emissive = color;
+      typedObj.material.emissiveIntensity = 0.7; // Moderate intensity
+
+      // Also set base color as fallback
+      typedObj.material.color = color;
+    } else {
+      // Fallback to direct color if no material
+      obj.color = color;
+    }
   });
 
   if (objects.length > 0) {
-    console.log(`✅ Changed ${zone} color to ${color} (${objects.length} objects)`);
+    console.log(`✅ Changed ${zone} overlay color to ${color} (${objects.length} objects)`);
   }
 }
 

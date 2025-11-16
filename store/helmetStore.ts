@@ -65,11 +65,11 @@ interface HelmetState {
 // Default zone colors (CFB themed)
 const defaultConfig: HelmetConfig = {
   shell: {
-    color: '#FF6600', // Clemson orange
+    color: '#FFFFFF', // White
     finish: 'glossy',
   },
   facemask: {
-    color: '#4B0082', // Purple
+    color: '#7F7F7F', // Medium gray
     finish: 'brushed',
   },
   chinstrap: {
