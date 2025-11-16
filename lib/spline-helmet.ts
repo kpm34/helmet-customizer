@@ -4,23 +4,84 @@
  */
 
 import type { Application } from '@splinetool/runtime';
+import type { HelmetZone, MaterialFinish } from '@/store/helmetStore';
 
 // ============================================================
-// HELMET COLOR CUSTOMIZATION
+// ZONE OBJECT NAME PATTERNS
 // ============================================================
 
-export function changeShellColor(spline: Application, color: string) {
-  const shell = spline.findObjectByName('UV01_Shell');
-  if (shell) {
-    shell.color = color;
+// Map zones to their object name patterns in Spline scene
+const ZONE_PATTERNS: Record<HelmetZone, string[]> = {
+  shell: ['UV01_Shell'],
+  facemask: ['Facemask_Complete'],
+  chinstrap: ['UV01_Chinst', 'UV02_Chinst', 'UV03_Chinst'], // Multiple chinstrap parts
+  padding: ['UV01_Padding', 'UV03_Padding'], // Multiple padding parts
+  hardware: ['Hardware_'], // Prefix for all hardware pieces (Hardware_01 - Hardware_20+)
+};
+
+/**
+ * Find all objects for a given zone
+ * Some zones have multiple objects (chinstrap, padding, hardware)
+ */
+function findZoneObjects(spline: Application, zone: HelmetZone): any[] {
+  const allObjects = spline.getAllObjects();
+  const patterns = ZONE_PATTERNS[zone];
+  const foundObjects: any[] = [];
+
+  patterns.forEach(pattern => {
+    // If pattern ends with underscore, it's a prefix match (for hardware)
+    if (pattern.endsWith('_')) {
+      const matches = allObjects.filter(obj =>
+        obj.name && obj.name.startsWith(pattern)
+      );
+      foundObjects.push(...matches);
+    } else {
+      // Exact or partial match
+      const obj = spline.findObjectByName(pattern);
+      if (obj) {
+        foundObjects.push(obj);
+      }
+    }
+  });
+
+  if (foundObjects.length === 0) {
+    console.warn(`⚠️ No objects found for zone: ${zone}`);
+  } else {
+    console.log(`✓ Found ${foundObjects.length} object(s) for ${zone}:`,
+      foundObjects.map(o => o.name).join(', ')
+    );
+  }
+
+  return foundObjects;
+}
+
+// ============================================================
+// HELMET COLOR CUSTOMIZATION (All 5 Zones)
+// ============================================================
+
+/**
+ * Change color for a specific zone
+ * Handles zones with multiple objects (chinstrap, padding, hardware)
+ */
+export function changeZoneColor(spline: Application, zone: HelmetZone, color: string) {
+  const objects = findZoneObjects(spline, zone);
+
+  objects.forEach(obj => {
+    obj.color = color;
+  });
+
+  if (objects.length > 0) {
+    console.log(`✅ Changed ${zone} color to ${color} (${objects.length} objects)`);
   }
 }
 
+// Legacy functions (for backwards compatibility)
+export function changeShellColor(spline: Application, color: string) {
+  changeZoneColor(spline, 'shell', color);
+}
+
 export function changeFacemaskColor(spline: Application, color: string) {
-  const facemask = spline.findObjectByName('Facemask_Complete');
-  if (facemask) {
-    facemask.color = color;
-  }
+  changeZoneColor(spline, 'facemask', color);
 }
 
 // ============================================================
@@ -57,30 +118,36 @@ export const FINISH_PRESETS = {
 
 export type FinishType = keyof typeof FINISH_PRESETS;
 
-export function applyShellFinish(spline: Application, finish: FinishType) {
-  const shell = spline.findObjectByName('UV01_Shell');
-  if (shell) {
-    const preset = FINISH_PRESETS[finish];
+/**
+ * Apply material finish to a specific zone
+ * Handles zones with multiple objects
+ */
+export function applyZoneFinish(spline: Application, zone: HelmetZone, finish: MaterialFinish) {
+  const objects = findZoneObjects(spline, zone);
+  const preset = FINISH_PRESETS[finish];
+
+  objects.forEach(obj => {
     // Note: Spline's material system uses type assertion
     // Material properties may need runtime testing
-    const obj = shell as any;
-    if (obj.material) {
-      obj.material.metalness = preset.metalness;
-      obj.material.roughness = preset.roughness;
+    const typedObj = obj as any;
+    if (typedObj.material) {
+      typedObj.material.metalness = preset.metalness;
+      typedObj.material.roughness = preset.roughness;
     }
+  });
+
+  if (objects.length > 0) {
+    console.log(`✅ Applied ${finish} finish to ${zone} (${objects.length} objects)`);
   }
 }
 
+// Legacy functions (for backwards compatibility)
+export function applyShellFinish(spline: Application, finish: FinishType) {
+  applyZoneFinish(spline, 'shell', finish as MaterialFinish);
+}
+
 export function applyFacemaskFinish(spline: Application, finish: FinishType) {
-  const facemask = spline.findObjectByName('Facemask_Complete');
-  if (facemask) {
-    const preset = FINISH_PRESETS[finish];
-    const obj = facemask as any;
-    if (obj.material) {
-      obj.material.metalness = preset.metalness;
-      obj.material.roughness = preset.roughness;
-    }
-  }
+  applyZoneFinish(spline, 'facemask', finish as MaterialFinish);
 }
 
 // ============================================================
