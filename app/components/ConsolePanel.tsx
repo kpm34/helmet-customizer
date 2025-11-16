@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useConsoleCapture, ConsoleMessage } from '../hooks/useConsoleCapture';
+import { getMessageConfig } from '@/lib/constants';
 
 export default function ConsolePanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,24 +12,6 @@ export default function ConsolePanel() {
   const filteredMessages = filter === 'all'
     ? messages
     : messages.filter(m => m.type === filter);
-
-  const getMessageColor = (type: ConsoleMessage['type']) => {
-    switch (type) {
-      case 'error': return 'text-red-400';
-      case 'warn': return 'text-yellow-400';
-      case 'info': return 'text-blue-400';
-      default: return 'text-gray-300';
-    }
-  };
-
-  const getMessageIcon = (type: ConsoleMessage['type']) => {
-    switch (type) {
-      case 'error': return '❌';
-      case 'warn': return '⚠️';
-      case 'info': return 'ℹ️';
-      default: return '📝';
-    }
-  };
 
   return (
     <>
@@ -103,17 +86,12 @@ export default function ConsolePanel() {
               filteredMessages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`p-2 rounded bg-gray-800 border-l-2 ${
-                    msg.type === 'error' ? 'border-red-500' :
-                    msg.type === 'warn' ? 'border-yellow-500' :
-                    msg.type === 'info' ? 'border-blue-500' :
-                    'border-gray-600'
-                  }`}
+                  className={`p-2 rounded bg-gray-800 border-l-2 ${getMessageConfig(msg.type).borderColor}`}
                 >
                   <div className="flex items-start gap-2">
-                    <span className="flex-shrink-0">{getMessageIcon(msg.type)}</span>
+                    <span className="flex-shrink-0">{getMessageConfig(msg.type).icon}</span>
                     <div className="flex-1">
-                      <div className={`${getMessageColor(msg.type)} whitespace-pre-wrap break-words`}>
+                      <div className={`${getMessageConfig(msg.type).color} whitespace-pre-wrap break-words`}>
                         {msg.message}
                       </div>
                       <div className="text-gray-500 text-[10px] mt-1">

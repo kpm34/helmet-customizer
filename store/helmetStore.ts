@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { FINISH_PRESETS, DEFAULT_HELMET_CONFIG, type FinishProperties } from '@/lib/constants';
 
 // Zone types
 export type HelmetZone = 'shell' | 'facemask' | 'chinstrap' | 'padding' | 'hardware';
@@ -8,12 +9,6 @@ export type MaterialFinish = 'glossy' | 'matte' | 'chrome' | 'brushed' | 'satin'
 
 // Pattern types
 export type PatternType = 'none' | 'camo' | 'tiger_stripe';
-
-// Finish properties (metalness, roughness)
-export interface FinishProperties {
-  metalness: number;
-  roughness: number;
-}
 
 // Zone configuration
 export interface ZoneConfig {
@@ -62,53 +57,8 @@ interface HelmetState {
   getFinishProperties: (finish: MaterialFinish) => FinishProperties;
 }
 
-// Default zone colors (CFB themed)
-const defaultConfig: HelmetConfig = {
-  shell: {
-    color: '#FFFFFF', // White
-    finish: 'glossy',
-  },
-  facemask: {
-    color: '#7F7F7F', // Medium gray
-    finish: 'brushed',
-  },
-  chinstrap: {
-    color: '#1C1C1C', // Dark gray
-    finish: 'matte',
-  },
-  padding: {
-    color: '#333333', // Charcoal
-    finish: 'matte',
-  },
-  hardware: {
-    color: '#C0C0C0', // Silver
-    finish: 'chrome',
-  },
-};
-
-// Material finish presets (matching Spline helper)
-const finishPresets: Record<MaterialFinish, FinishProperties> = {
-  glossy: {
-    metalness: 0.0,
-    roughness: 0.1,
-  },
-  matte: {
-    metalness: 0.0,
-    roughness: 0.8,
-  },
-  chrome: {
-    metalness: 1.0,
-    roughness: 0.05,
-  },
-  brushed: {
-    metalness: 0.9,
-    roughness: 0.35,
-  },
-  satin: {
-    metalness: 0.1,
-    roughness: 0.5,
-  },
-};
+// Default zone colors (imported from centralized constants)
+const defaultConfig: HelmetConfig = DEFAULT_HELMET_CONFIG;
 
 // Create Zustand store
 export const useHelmetStore = create<HelmetState>((set, get) => ({
@@ -197,9 +147,6 @@ export const useHelmetStore = create<HelmetState>((set, get) => ({
   },
 
   getFinishProperties: (finish) => {
-    return finishPresets[finish];
+    return FINISH_PRESETS[finish];
   },
 }));
-
-// Export types and presets for use in components
-export { finishPresets };

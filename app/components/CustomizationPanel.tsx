@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useHelmetStore, type HelmetZone } from '@/store/helmetStore';
 import { ColorPicker } from './ColorPicker';
 import { FinishSelector } from './FinishSelector';
-import { ZONE_LABELS, ZONE_DESCRIPTIONS } from '@/lib/helmetConfig';
+import { ZONES_CONFIG, getZoneConfig } from '@/lib/constants';
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 
 type TabId = 'colors' | 'finishes' | 'patterns' | 'presets';
@@ -27,8 +27,6 @@ export function CustomizationPanel() {
   const [activeZone, setActiveZone] = useState<HelmetZone>('shell');
 
   const { config, setZoneColor, setZoneFinish } = useHelmetStore();
-
-  const zones: HelmetZone[] = ['shell', 'facemask', 'chinstrap', 'padding', 'hardware'];
 
   if (isCollapsed) {
     return (
@@ -111,7 +109,7 @@ export function CustomizationPanel() {
           Select Zone
         </div>
         <div className="flex flex-wrap gap-2">
-          {zones.map((zone) => (
+          {ZONES_CONFIG.map(({ id: zone, label }) => (
             <button
               key={zone}
               onClick={() => setActiveZone(zone)}
@@ -126,7 +124,7 @@ export function CustomizationPanel() {
                     : 'none',
               }}
             >
-              {ZONE_LABELS[zone]}
+              {label}
             </button>
           ))}
         </div>
@@ -145,10 +143,10 @@ export function CustomizationPanel() {
           <div className="space-y-4">
             <div className="bg-gray-900/30 rounded-lg p-4 border border-gray-700/50">
               <div className="text-sm font-medium text-gray-300 mb-1">
-                {ZONE_LABELS[activeZone]}
+                {getZoneConfig(activeZone)?.label}
               </div>
               <div className="text-xs text-gray-500 mb-4">
-                {ZONE_DESCRIPTIONS[activeZone]}
+                {getZoneConfig(activeZone)?.description}
               </div>
               <ColorPicker
                 value={currentZoneConfig.color}
@@ -163,10 +161,10 @@ export function CustomizationPanel() {
           <div className="space-y-4">
             <div className="bg-gray-900/30 rounded-lg p-4 border border-gray-700/50">
               <div className="text-sm font-medium text-gray-300 mb-1">
-                {ZONE_LABELS[activeZone]}
+                {getZoneConfig(activeZone)?.label}
               </div>
               <div className="text-xs text-gray-500 mb-4">
-                {ZONE_DESCRIPTIONS[activeZone]}
+                {getZoneConfig(activeZone)?.description}
               </div>
               <FinishSelector
                 value={currentZoneConfig.finish}
