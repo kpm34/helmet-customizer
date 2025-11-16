@@ -11,12 +11,14 @@ import type { HelmetZone, MaterialFinish } from '@/store/helmetStore';
 // ============================================================
 
 // Map zones to their object name patterns in Spline scene
+// Based on actual hierarchy: helmet_for_spline > [parts]
+// Reference: See SPLINE_SCENE_HIERARCHY.md for complete scene mapping
 const ZONE_PATTERNS: Record<HelmetZone, string[]> = {
   shell: ['UV01_Shell'],
   facemask: ['Facemask_Complete'],
-  chinstrap: ['UV01_Chinst', 'UV02_Chinst', 'UV03_Chinst'], // Multiple chinstrap parts
-  padding: ['UV01_Padding', 'UV03_Padding'], // Multiple padding parts
-  hardware: ['Hardware_'], // Prefix for all hardware pieces (Hardware_01 - Hardware_20+)
+  chinstrap: ['UV01_Chinstrap', 'UV02_Chinstrap_Strap', 'UV03_Chinstrap'], // 3 chinstrap parts
+  padding: ['UV01_Padding', 'UV03_Padding'], // 2 padding parts
+  hardware: ['Hardware_'], // Prefix: Hardware_01-20, Hardware_P_Clip_01-02, Hardware_Tiny
 };
 
 /**
@@ -50,6 +52,12 @@ function findZoneObjects(spline: Application, zone: HelmetZone): any[] {
     console.log(`✓ Found ${foundObjects.length} object(s) for ${zone}:`,
       foundObjects.map(o => o.name).join(', ')
     );
+
+    // Debug material availability
+    foundObjects.forEach(obj => {
+      const hasMaterial = !!(obj as any).material;
+      console.log(`  - ${obj.name}: material=${hasMaterial ? '✓' : '✗'}`);
+    });
   }
 
   return foundObjects;

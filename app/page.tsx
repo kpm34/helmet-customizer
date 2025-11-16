@@ -46,23 +46,11 @@ export default function Home() {
       console.log('✓ Camera found - controls disabled in Spline');
     }
 
-    // Hide circular ring/spiral background objects
-    // Only hiding decorative elements, keeping floor/platform
-    const objectsToHide = [
-      // Rings and ellipses (decorative background elements)
-      'Ellipse', 'Ellipse 2', 'Ellipse 3', 'Ellipse 4', 'Ellipse 5',
-      'Ellipse 6', 'Ellipse 7', 'Ellipse 8', 'Ellipse 9', 'Ellipse 10',
-      'Circle', 'Circle 2', 'Circle 3',
-      'Ring', 'Ring 2', 'Ring 3',
-      'Torus', 'Torus 2', 'Torus 3',
-      'Spiral', 'Spiral 2', 'Spiral 3',
-      // Background elements
-      'Background', 'background',
-      'Boolean', 'Boolean 2', 'Boolean 3',
-      // Shape primitives that might be background elements
-      'Shape', 'Shape 2', 'Shape 3',
-      'Curve', 'Curve 2', 'Curve 3',
-      'Path', 'Path 2', 'Path 3',
+    // Hide specific decorative elements based on actual scene hierarchy
+    // Reference: See SPLINE_SCENE_HIERARCHY.md for complete scene mapping
+    // Currently: NO objects to hide (all scene elements are needed)
+    const objectsToHide: string[] = [
+      // Empty - no decorative elements to hide in this scene
     ];
 
     let hiddenCount = 0;
