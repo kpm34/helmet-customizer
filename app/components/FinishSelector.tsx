@@ -1,7 +1,10 @@
 'use client';
 
 import type { MaterialFinish } from '@/store/helmetStore';
-import { Sparkles, Circle, Chrome, Waves, Palette } from 'lucide-react';
+import {
+  Sparkles, Circle, Chrome, Waves, Palette,
+  Gem, Car, Droplet, Shield, Zap, Layers
+} from 'lucide-react';
 
 interface FinishSelectorProps {
   value: MaterialFinish;
@@ -16,6 +19,18 @@ const FINISH_ICONS: Record<MaterialFinish, React.ReactNode> = {
   chrome: <Chrome className="w-5 h-5" />,
   brushed: <Waves className="w-5 h-5" />,
   satin: <Palette className="w-5 h-5" />,
+  pearl_coat: <Gem className="w-5 h-5" />,
+  satin_automotive: <Car className="w-5 h-5" />,
+  metallic_flake: <Sparkles className="w-5 h-5" />,
+  wet_clearcoat: <Droplet className="w-5 h-5" />,
+  anodized_metal: <Shield className="w-5 h-5" />,
+  brushed_titanium: <Waves className="w-5 h-5" />,
+  weathered_metal: <Layers className="w-5 h-5" />,
+  carbon_fiber: <Layers className="w-5 h-5" />,
+  rubberized_softtouch: <Circle className="w-5 h-5" />,
+  ceramic_gloss: <Sparkles className="w-5 h-5" />,
+  frosted_polycarbonate: <Zap className="w-5 h-5" />,
+  holographic_foil: <Gem className="w-5 h-5" />,
 };
 
 const FINISH_LABELS: Record<MaterialFinish, string> = {
@@ -24,6 +39,18 @@ const FINISH_LABELS: Record<MaterialFinish, string> = {
   chrome: 'Chrome',
   brushed: 'Brushed',
   satin: 'Satin',
+  pearl_coat: 'Pearl Coat',
+  satin_automotive: 'Satin Auto',
+  metallic_flake: 'Metallic Flake',
+  wet_clearcoat: 'Wet Clear Coat',
+  anodized_metal: 'Anodized Metal',
+  brushed_titanium: 'Brushed Titanium',
+  weathered_metal: 'Weathered Metal',
+  carbon_fiber: 'Carbon Fiber',
+  rubberized_softtouch: 'Soft-Touch',
+  ceramic_gloss: 'Ceramic Gloss',
+  frosted_polycarbonate: 'Frosted',
+  holographic_foil: 'Holographic',
 };
 
 const FINISH_DESCRIPTIONS: Record<MaterialFinish, string> = {
@@ -32,6 +59,18 @@ const FINISH_DESCRIPTIONS: Record<MaterialFinish, string> = {
   chrome: 'Mirror-like metal',
   brushed: 'Brushed metal texture',
   satin: 'Soft, semi-gloss finish',
+  pearl_coat: 'Iridescent car-paint style',
+  satin_automotive: 'Premium wrap finish',
+  metallic_flake: 'Sparkle with reflective flakes',
+  wet_clearcoat: 'Freshly waxed look',
+  anodized_metal: 'Colored engineered metal',
+  brushed_titanium: 'Industrial elite vibe',
+  weathered_metal: 'Patina finish',
+  carbon_fiber: 'High-tech woven pattern',
+  rubberized_softtouch: 'Tactical stealth look',
+  ceramic_gloss: 'Ultra-premium clean',
+  frosted_polycarbonate: 'Translucent futuristic',
+  holographic_foil: 'Color-shifting refractive',
 };
 
 export function FinishSelector({ value, onChange, label }: FinishSelectorProps) {
