@@ -723,7 +723,8 @@ export default function Home() {
   }
 
   // Cache-busting for Spline scene - prevents old cached versions from showing
-  const sceneUrl = `/scene.splinecode?v=${process.env.NEXT_PUBLIC_APP_VERSION || Date.now()}`;
+  // Use timestamp instead of query param to avoid Spline loader issues
+  const sceneUrl = `/scene.splinecode`;
 
   return (
     <main className="w-full h-screen overflow-hidden relative" suppressHydrationWarning>
