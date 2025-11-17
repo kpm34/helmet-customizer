@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Helmet Material Sandbox - SplineLoader + THREE.js Direct Control</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/": "https://cdn.jsdelivr.net/npm/three@0.160.0/"
+      }
+    }
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    #container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      height: 100vh;
+    }
+
+    #controls {
+      background: rgba(20, 20, 20, 0.95);
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #canvas-container {
+      position: relative;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #87CEEB;
+    }
+
+    h2 {
+      font-size: 14px;
+      margin: 20px 0 10px 0;
+      color: #667eea;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .control-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #aaa;
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #console {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .log-entry {
+      margin: 2px 0;
+      padding: 2px 0;
+    }
+
+    .log-success { color: #4ade80; }
+    .log-error { color: #f87171; }
+    .log-warn { color: #fbbf24; }
+    .log-info { color: #60a5fa; }
+
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .value-display {
+      font-size: 11px;
+      color: #667eea;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="controls">
+      <h1>🎨 Helmet Material Sandbox</h1>
+      <p style="font-size: 11px; color: #888; margin-bottom: 20px;">
+        Direct THREE.js material control via SplineLoader
+      </p>
+
+      <h2>Shell Zone</h2>
+      <div class="control-group">
+        <label>Color</label>
+        <input type="color" id="shellColor" value="#FF0000">
+      </div>
+      <div class="control-group">
+        <label>Opacity: <span id="shellOpacityValue" class="value-display">1.00</span></label>
+        <input type="range" id="shellOpacity" min="0" max="1" step="0.01" value="1">
+      </div>
+      <div class="control-group">
+        <label>Metalness: <span id="shellMetalnessValue" class="value-display">0.00</span></label>
+        <input type="range" id="shellMetalness" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div class="control-group">
+        <label>Roughness: <span id="shellRoughnessValue" class="value-display">0.70</span></label>
+        <input type="range" id="shellRoughness" min="0" max="1" step="0.01" value="0.7">
+      </div>
+      <button onclick="applyShellMaterial()">Apply Shell Material</button>
+
+      <h2>Facemask Zone</h2>
+      <div class="control-group">
+        <label>Color</label>
+        <input type="color" id="facemaskColor" value="#000000">
+      </div>
+      <button onclick="applyFacemaskMaterial()">Apply Facemask Material</button>
+
+      <h2>Actions</h2>
+      <button onclick="forceAllOpacity()">Force All Opacity to 100%</button>
+      <button onclick="debugScene()">Debug Scene Materials</button>
+      <button onclick="clearConsole()">Clear Console</button>
+
+      <div id="console"></div>
+    </div>
+
+    <div id="canvas-container">
+      <div id="loading">
+        <div class="spinner"></div>
+        <div>Loading Spline scene...</div>
+      </div>
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+    import SplineLoader from 'https://unpkg.com/@splinetool/loader@latest/build/SplineLoader.js';
+
+    // Make THREE globally available for SplineLoader
+    window.THREE = THREE;
+
+    let scene, camera, renderer, splineScene, controls;
+    let helmetObjects = {};
+
+    // Console logging
+    function log(message, type = 'info') {
+      const consoleDiv = document.getElementById('console');
+      const entry = document.createElement('div');
+      entry.className = `log-entry log-${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleDiv.appendChild(entry);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+      console.log(message);
+    }
+
+    window.clearConsole = function() {
+      document.getElementById('console').innerHTML = '';
+    };
+
+    // Initialize THREE.js and SplineLoader
+    function init() {
+      const canvas = document.getElementById('canvas');
+      const container = document.getElementById('canvas-container');
+
+      log('Initializing THREE.js renderer...', 'info');
+
+      // Renderer - 20x bigger render size for detail
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true
+      });
+      const renderWidth = container.clientWidth * 20;
+      const renderHeight = container.clientHeight * 20;
+      renderer.setSize(renderWidth, renderHeight, false);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap at 2x for performance
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+      // Set canvas display size (CSS)
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+
+      // Scene
+      scene = new THREE.Scene();
+      scene.background = null;
+
+      // Camera - wider FOV for large scene
+      camera = new THREE.PerspectiveCamera(
+        45,
+        renderWidth / renderHeight,
+        0.1,
+        50000
+      );
+      camera.position.set(0, 0, 2000); // Pull WAY back for large Spline scene
+
+      // OrbitControls for zoom, pan, rotate
+      controls = new OrbitControls(camera, canvas);
+      controls.enableDamping = true; // Smooth camera movements
+      controls.dampingFactor = 0.05;
+      controls.screenSpacePanning = false;
+      controls.minDistance = 50; // Minimum zoom
+      controls.maxDistance = 5000; // Maximum zoom - WAY out
+      controls.maxPolarAngle = Math.PI; // Allow full rotation
+      controls.enableZoom = true;
+      controls.zoomSpeed = 2.0; // Faster zoom speed for large distances
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(5, 5, 5);
+      scene.add(directionalLight);
+
+      log('✅ THREE.js initialized (20x render size, OrbitControls enabled)', 'success');
+
+      // Load Spline scene
+      loadSplineScene();
+
+      // Handle resize
+      window.addEventListener('resize', onResize);
+
+      // Start render loop
+      animate();
+    }
+
+    function loadSplineScene() {
+      log('Loading scene.splinecode with SplineLoader...', 'info');
+
+      const loader = new SplineLoader();
+      loader.load(
+        '/scene.splinecode',
+        (loadedScene) => {
+          splineScene = loadedScene;
+          scene.add(splineScene);
+
+          log('✅ Spline scene loaded!', 'success');
+          document.getElementById('loading').style.display = 'none';
+
+          // Auto-frame: calculate bounding box and position camera
+          const box = new THREE.Box3().setFromObject(splineScene);
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const fov = camera.fov * (Math.PI / 180);
+          let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+          cameraZ *= 2.5; // Add extra distance so we see the whole scene
+
+          camera.position.set(center.x, center.y, center.z + cameraZ);
+          camera.lookAt(center);
+          controls.target.copy(center);
+          controls.update();
+
+          log(`✅ Auto-framed scene: size=${maxDim.toFixed(0)}, camera distance=${cameraZ.toFixed(0)}`, 'success');
+
+          // Debug: List ALL objects in scene
+          log('=== ALL SCENE OBJECTS ===', 'info');
+          splineScene.traverse((child) => {
+            if (child.name) {
+              const hasMaterial = child.material ? '✓' : '✗';
+              log(`${child.name} [material: ${hasMaterial}]`, 'info');
+            }
+          });
+          log('=== END OBJECT LIST ===', 'info');
+
+          // Collect helmet objects
+          collectHelmetObjects();
+
+          // Force initial opacity
+          forceAllOpacity();
+
+          log('✅ Sandbox ready! Try changing materials.', 'success');
+        },
+        (xhr) => {
+          const percent = Math.round((xhr.loaded / xhr.total) * 100);
+          if (percent % 10 === 0) {
+            log(`Loading: ${percent}%`, 'info');
+          }
+        },
+        (error) => {
+          log(`❌ Failed to load scene: ${error.message || error}`, 'error');
+          console.error(error);
+        }
+      );
+    }
+
+
+    function collectHelmetObjects() {
+      if (!splineScene) {
+        log('❌ No scene loaded', 'error');
+        return;
+      }
+
+      helmetObjects = {
+        shell: [],
+        facemask: [],
+        chinstrap: [],
+        padding: [],
+        hardware: []
+      };
+
+      // Simple: find all objects with materials and check their name or parent name
+      splineScene.traverse((child) => {
+        if (!child.material) return;
+
+        const name = child.name || '';
+        const parentName = child.parent?.name || '';
+        const grandparentName = child.parent?.parent?.name || '';
+
+        // Check all ancestor names
+        const ancestors = [name, parentName, grandparentName].join(' ');
+
+        // Shell
+        if (ancestors.includes('Shell_Combined')) {
+          helmetObjects.shell.push(child);
+          log(`Found shell: ${name}`, 'info');
+        }
+        // Facemask
+        else if (ancestors.includes('Facemask_Combined') || ancestors.includes('facemask_Helmet_Mount')) {
+          helmetObjects.facemask.push(child);
+          log(`Found facemask: ${name}`, 'info');
+        }
+        // Chinstrap
+        else if (ancestors.includes('Chinstrap_Cup') || ancestors.includes('Chinstrap_Left') || ancestors.includes('Chinstrap_Right')) {
+          helmetObjects.chinstrap.push(child);
+          log(`Found chinstrap: ${name}`, 'info');
+        }
+        // Padding
+        else if (ancestors.includes('UV03_Padding')) {
+          helmetObjects.padding.push(child);
+          log(`Found padding: ${name}`, 'info');
+        }
+        // Hardware
+        else if (ancestors.includes('Hardware_')) {
+          helmetObjects.hardware.push(child);
+          log(`Found hardware: ${name}`, 'info');
+        }
+      });
+
+      // Log summary
+      Object.entries(helmetObjects).forEach(([zone, meshes]) => {
+        log(`${zone}: ${meshes.length} objects`, 'info');
+      });
+    }
+
+    window.applyShellMaterial = function() {
+      const color = document.getElementById('shellColor').value;
+      const opacity = parseFloat(document.getElementById('shellOpacity').value);
+      const metalness = parseFloat(document.getElementById('shellMetalness').value);
+      const roughness = parseFloat(document.getElementById('shellRoughness').value);
+
+      if (!helmetObjects.shell || helmetObjects.shell.length === 0) {
+        log('⚠️ No shell objects found', 'warn');
+        return;
+      }
+
+      helmetObjects.shell.forEach(mesh => {
+        const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+
+        materials.forEach(mat => {
+          mat.color = new THREE.Color(color);
+          mat.opacity = opacity;
+          mat.transparent = opacity < 1.0;
+          mat.depthWrite = true;
+
+          if (mat.metalness !== undefined) mat.metalness = metalness;
+          if (mat.roughness !== undefined) mat.roughness = roughness;
+
+          mat.needsUpdate = true;
+        });
+
+        log(`✅ Applied to ${mesh.name}: color=${color}, opacity=${opacity.toFixed(2)}, metalness=${metalness.toFixed(2)}, roughness=${roughness.toFixed(2)}`, 'success');
+      });
+    };
+
+    window.applyFacemaskMaterial = function() {
+      const color = document.getElementById('facemaskColor').value;
+
+      if (!helmetObjects.facemask || helmetObjects.facemask.length === 0) {
+        log('⚠️ No facemask objects found', 'warn');
+        return;
+      }
+
+      helmetObjects.facemask.forEach(mesh => {
+        const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+
+        materials.forEach(mat => {
+          mat.color = new THREE.Color(color);
+          mat.opacity = 1.0;
+          mat.transparent = false;
+          mat.depthWrite = true;
+          mat.needsUpdate = true;
+        });
+
+        log(`✅ Applied to ${mesh.name}: color=${color}`, 'success');
+      });
+    };
+
+    window.forceAllOpacity = function() {
+      if (!splineScene) {
+        log('⚠️ Scene not loaded yet', 'warn');
+        return;
+      }
+
+      let count = 0;
+      Object.values(helmetObjects).forEach(meshes => {
+        meshes.forEach(mesh => {
+          const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+
+          materials.forEach(mat => {
+            mat.opacity = 1.0;
+            mat.transparent = false;
+            mat.depthWrite = true;
+            mat.alphaTest = 0;
+            mat.needsUpdate = true;
+            count++;
+          });
+        });
+      });
+
+      log(`🔒 Forced opacity to 100% for ${count} materials`, 'success');
+    };
+
+    window.debugScene = function() {
+      if (!splineScene) {
+        log('⚠️ Scene not loaded yet', 'warn');
+        return;
+      }
+
+      log('=== SCENE DEBUG ===', 'info');
+
+      Object.entries(helmetObjects).forEach(([zone, meshes]) => {
+        log(`\n${zone.toUpperCase()}:`, 'info');
+        meshes.forEach(mesh => {
+          const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+
+          materials.forEach((mat, i) => {
+            log(`  ${mesh.name} [mat ${i}]:`, 'info');
+            log(`    color: #${mat.color?.getHexString() || 'N/A'}`, 'info');
+            log(`    opacity: ${mat.opacity !== undefined ? mat.opacity.toFixed(2) : 'N/A'}`, 'info');
+            log(`    transparent: ${mat.transparent !== undefined ? mat.transparent : 'N/A'}`, 'info');
+            log(`    metalness: ${mat.metalness !== undefined ? mat.metalness.toFixed(2) : 'N/A'}`, 'info');
+            log(`    roughness: ${mat.roughness !== undefined ? mat.roughness.toFixed(2) : 'N/A'}`, 'info');
+          });
+        });
+      });
+    };
+
+    function onResize() {
+      const container = document.getElementById('canvas-container');
+      const renderWidth = container.clientWidth * 20;
+      const renderHeight = container.clientHeight * 20;
+
+      camera.aspect = renderWidth / renderHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(renderWidth, renderHeight, false);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Update controls for smooth damping
+      if (controls) {
+        controls.update();
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Update value displays
+    document.getElementById('shellOpacity').addEventListener('input', (e) => {
+      document.getElementById('shellOpacityValue').textContent = parseFloat(e.target.value).toFixed(2);
+    });
+
+    document.getElementById('shellMetalness').addEventListener('input', (e) => {
+      document.getElementById('shellMetalnessValue').textContent = parseFloat(e.target.value).toFixed(2);
+    });
+
+    document.getElementById('shellRoughness').addEventListener('input', (e) => {
+      document.getElementById('shellRoughnessValue').textContent = parseFloat(e.target.value).toFixed(2);
+    });
+
+    // Initialize when DOM is ready
+    init();
+  </script>
+</body>
+</html>
