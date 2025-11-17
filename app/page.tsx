@@ -7,13 +7,14 @@ import ConsolePanel from './components/ConsolePanel';
 import { CustomizationPanel } from './components/CustomizationPanel';
 import { CustomizationWizard } from './components/CustomizationWizard';
 import { useHelmetStore } from '@/store/helmetStore';
-import { changeZoneColor, applyZoneFinish, setVariable, getVariable } from '@/lib/spline-helmet';
 import {
   changeZoneColorDirect,
   applyZoneFinishDirect,
   forceHelmetOpacityDirect,
   startOpacityEnforcement,
-} from '@/lib/spline-helmet-hybrid';
+  setVariable,
+  getVariable,
+} from '@/lib/spline-helmet';
 
 export default function Home() {
   const splineRef = useRef<Application>();

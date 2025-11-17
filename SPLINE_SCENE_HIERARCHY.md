@@ -59,6 +59,52 @@ Complete mapping of the Spline scene for helmet customizer.
 
 ---
 
+## Floor Group Transform Reference
+
+Critical transform values for the Floor group objects. These values ensure proper scene framing, helmet scale, and platform positioning.
+
+### Floor (shape)
+```
+Position: X 214.2,  Y -604,   Z -0.00
+Scale:    X 45,     Y 55,     Z 13.80
+Rotation: X -90,    Y 0,      Z -90
+```
+
+**Purpose:** Main platform base for the helmet display
+
+---
+
+### Bottom Floating (shape)
+```
+Position: X -319,   Y 287.9,  Z 188.7
+Scale:    X 2,      Y 2,      Z 2.40
+Rotation: X -90,    Y 0,      Z -90
+```
+
+**Purpose:** Secondary floating platform element
+
+---
+
+### Platform floor (shape)
+```
+Position: X 46.18,  Y 43.66,  Z 151.13
+Scale:    X 3,      Y 3.00,   Z 3.00
+Rotation: X -90,    Y 0,      Z -90
+```
+
+**Purpose:** Third platform component
+
+---
+
+### Usage Notes
+- **All rotations are consistent:** X -90, Y 0, Z -90
+- These values provide correct helmet framing in the viewport
+- Platform scales vary to create layered depth effect
+- Use these values when rebuilding or syncing Spline scenes
+- Deviating from these transforms will affect scene composition and helmet appearance
+
+---
+
 ## Helmet Zone Mapping (Current vs Actual)
 
 ### Zone: `shell` ✅

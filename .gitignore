@@ -16,6 +16,14 @@
 # misc
 .DS_Store
 *.pem
+*.backup
+
+# blender files
+*.blend
+*.blend1
+
+# output files
+output/
 
 # debug
 npm-debug.log*
@@ -23,6 +31,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
 
 # vercel

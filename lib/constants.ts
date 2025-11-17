@@ -60,6 +60,22 @@ export function getZoneConfig(zoneId: HelmetZone) {
   return ZONES_CONFIG.find(z => z.id === zoneId);
 }
 
+/**
+ * Zone labels (for backward compatibility)
+ * Prefer using ZONES_CONFIG directly
+ */
+export const ZONE_LABELS: Record<HelmetZone, string> = Object.fromEntries(
+  ZONES_CONFIG.map(z => [z.id, z.label])
+) as Record<HelmetZone, string>;
+
+/**
+ * Zone descriptions (for backward compatibility)
+ * Prefer using ZONES_CONFIG directly
+ */
+export const ZONE_DESCRIPTIONS: Record<HelmetZone, string> = Object.fromEntries(
+  ZONES_CONFIG.map(z => [z.id, z.description])
+) as Record<HelmetZone, string>;
+
 // ============================================================
 // MATERIAL FINISH PRESETS
 // ============================================================
