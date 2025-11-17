@@ -13,10 +13,12 @@ import { FINISH_PRESETS } from '@/lib/constants';
 // ZONE OBJECT NAME PATTERNS
 // ============================================================
 
+// Map zones to their PARENT CONTAINER names in Spline
+// We'll color all children inside these containers
 const ZONE_PATTERNS: Record<HelmetZone, string[]> = {
-  shell: ['UV01_Shell'],
-  facemask: ['Facemask_Complete'],
-  chinstrap: ['UV01_Chinstrap', 'UV02_Chinstrap_Strap', 'UV03_Chinstrap'],
+  shell: ['Helmet_Parent'],  // Parent container for all helmet parts
+  facemask: ['Facemask_Combined'],  // Facemask parent group
+  chinstrap: ['Chinstrap_Cup', 'Chinstrap_Left', 'Chinstrap_Right'],  // All chinstrap groups
   padding: ['UV01_Padding', 'UV03_Padding'],
   hardware: ['Hardware_'],
 };
@@ -330,6 +332,7 @@ export function getVariable(spline: Application, variableName: string): any {
 /**
  * Fallback color change using Spline's native API
  * Use when THREE.js scene is not accessible
+ * Colors the parent container AND all its children
  */
 function changeZoneColorSplineAPI(
   spline: Application,
@@ -341,18 +344,33 @@ function changeZoneColorSplineAPI(
   let successCount = 0;
 
   patterns.forEach(pattern => {
-    const objects = pattern.endsWith('_')
+    // Find parent containers
+    const parents = pattern.endsWith('_')
       ? allObjects.filter(obj => obj.name && obj.name.startsWith(pattern))
       : allObjects.filter(obj => obj.name === pattern);
 
-    objects.forEach(obj => {
+    parents.forEach(parent => {
       try {
-        // Spline's .color property is a working setter (even though getter returns undefined)
-        (obj as any).color = color;
-        console.log(`✅ Set color for ${obj.name} to ${color} (Spline API)`);
+        // Color the parent
+        (parent as any).color = color;
+        console.log(`✅ Set color for ${parent.name} to ${color} (Spline API - parent)`);
         successCount++;
+
+        // Find and color ALL children of this parent
+        const parentUuid = (parent as any).uuid;
+        const children = allObjects.filter(obj => (obj as any).parentUuid === parentUuid);
+
+        children.forEach(child => {
+          try {
+            (child as any).color = color;
+            console.log(`✅ Set color for ${child.name} to ${color} (Spline API - child)`);
+            successCount++;
+          } catch (e) {
+            console.warn(`⚠️ Failed to set color on child ${child.name}:`, e);
+          }
+        });
       } catch (e) {
-        console.warn(`⚠️ Failed to set color on ${obj.name}:`, e);
+        console.warn(`⚠️ Failed to set color on parent ${parent.name}:`, e);
       }
     });
   });
