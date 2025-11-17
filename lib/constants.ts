@@ -120,6 +120,66 @@ export const FINISH_PRESETS: Record<MaterialFinish, FinishProperties> = {
     metalness: 0.1,
     roughness: 0.5,
   },
+  pearl_coat: {
+    name: 'Pearl Coat',
+    metalness: 0.7,
+    roughness: 0.2,
+  },
+  satin_automotive: {
+    name: 'Satin Auto',
+    metalness: 0.3,
+    roughness: 0.6,
+  },
+  metallic_flake: {
+    name: 'Metallic Flake',
+    metalness: 0.8,
+    roughness: 0.25,
+  },
+  wet_clearcoat: {
+    name: 'Wet Clear Coat',
+    metalness: 0.1,
+    roughness: 0.05,
+  },
+  anodized_metal: {
+    name: 'Anodized Metal',
+    metalness: 0.95,
+    roughness: 0.15,
+  },
+  brushed_titanium: {
+    name: 'Brushed Titanium',
+    metalness: 0.9,
+    roughness: 0.35,
+  },
+  weathered_metal: {
+    name: 'Weathered Metal',
+    metalness: 0.7,
+    roughness: 0.65,
+  },
+  carbon_fiber: {
+    name: 'Carbon Fiber',
+    metalness: 0.4,
+    roughness: 0.3,
+  },
+  rubberized_softtouch: {
+    name: 'Rubberized Soft Touch',
+    metalness: 0.0,
+    roughness: 0.9,
+  },
+  ceramic_gloss: {
+    name: 'Ceramic Gloss',
+    metalness: 0.1,
+    roughness: 0.05,
+  },
+  frosted_polycarbonate: {
+    name: 'Frosted Polycarbonate',
+    metalness: 0.0,
+    roughness: 0.4,
+  },
+  holographic_foil: {
+    name: 'Holographic Foil',
+    metalness: 0.9,
+    roughness: 0.1,
+  },
 };
 
 /**
