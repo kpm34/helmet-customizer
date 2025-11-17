@@ -385,7 +385,7 @@ function changeZoneColorSplineAPI(
         const parentUuid = (parent as any).uuid;
         const children = allObjects.filter(obj => (obj as any).parentUuid === parentUuid);
 
-        console.log(`Found ${children.length} children of ${parent.name}`);
+        console.log(`Found ${children.length} direct children of ${parent.name}`);
 
         children.forEach((child, index) => {
           try {
@@ -393,10 +393,27 @@ function changeZoneColorSplineAPI(
             (child as any).color = color;
             const childNewColor = (child as any).color;
 
-            console.log(`  Child ${index + 1}/${children.length}: ${child.name}`);
+            console.log(`  Child ${index + 1}/${children.length}: ${child.name} (type: ${(child as any).type})`);
             console.log(`    Color: ${childOldColor} → ${childNewColor}`);
             console.log(`✅ Set color for ${child.name} to ${color} (Spline API - child)`);
             successCount++;
+
+            // RECURSIVELY color grandchildren (nested objects)
+            const childUuid = (child as any).uuid;
+            const grandchildren = allObjects.filter(obj => (obj as any).parentUuid === childUuid);
+
+            if (grandchildren.length > 0) {
+              console.log(`    Found ${grandchildren.length} grandchildren of ${child.name}`);
+              grandchildren.forEach((grandchild, gIndex) => {
+                try {
+                  (grandchild as any).color = color;
+                  console.log(`      Grandchild ${gIndex + 1}: ${grandchild.name}`);
+                  successCount++;
+                } catch (e) {
+                  console.error(`      ❌ Failed to color grandchild ${grandchild.name}:`, e);
+                }
+              });
+            }
           } catch (e) {
             console.error(`❌ Failed to set color on child ${child.name}:`, e);
           }
