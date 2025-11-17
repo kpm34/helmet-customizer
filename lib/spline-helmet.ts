@@ -117,33 +117,45 @@ export function changeZoneColorDirect(
   const threeColor = new THREE.Color(color);
   let successCount = 0;
 
-  objects.forEach(obj => {
-    const mesh = obj as THREE.Mesh;
+  // Helper function to recursively color all meshes in a hierarchy
+  const colorMeshRecursive = (obj: THREE.Object3D, depth: number = 0) => {
+    const indent = '  '.repeat(depth);
 
-    if (!mesh.material) {
-      console.warn(`⚠️ No material on ${obj.name}`);
-      return;
+    // Try to color this object if it has a material
+    const mesh = obj as THREE.Mesh;
+    if (mesh.material) {
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+
+      materials.forEach((material: THREE.Material) => {
+        // Set color
+        if ('color' in material && material.color instanceof THREE.Color) {
+          material.color.copy(threeColor);
+        }
+
+        // CRITICAL: Force 100% opacity
+        if ('opacity' in material) (material as any).opacity = 1.0;
+        if ('transparent' in material) (material as any).transparent = false;
+        if ('depthWrite' in material) (material as any).depthWrite = true;
+        if ('alphaTest' in material) (material as any).alphaTest = 0;
+
+        material.needsUpdate = true;
+        successCount++;
+
+        console.log(`${indent}✅ Set color for ${obj.name} to ${color} (direct THREE.js)`);
+      });
+    } else if (depth === 0) {
+      console.log(`${indent}⚠️ No material on ${obj.name} - traversing children...`);
     }
 
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    // Recursively traverse children
+    if (obj.children && obj.children.length > 0) {
+      console.log(`${indent}📂 Traversing ${obj.children.length} children of ${obj.name}`);
+      obj.children.forEach(child => colorMeshRecursive(child, depth + 1));
+    }
+  };
 
-    materials.forEach((material: THREE.Material) => {
-      // Set color
-      if ('color' in material && material.color instanceof THREE.Color) {
-        material.color.copy(threeColor);
-      }
-
-      // CRITICAL: Force 100% opacity
-      if ('opacity' in material) (material as any).opacity = 1.0;
-      if ('transparent' in material) (material as any).transparent = false;
-      if ('depthWrite' in material) (material as any).depthWrite = true;
-      if ('alphaTest' in material) (material as any).alphaTest = 0;
-
-      material.needsUpdate = true;
-      successCount++;
-
-      console.log(`✅ Set color for ${obj.name} to ${color} (direct THREE.js)`);
-    });
+  objects.forEach(obj => {
+    colorMeshRecursive(obj);
   });
 
   console.log(`🎨 Changed ${zone} color to ${color} (${successCount} materials updated)`);
@@ -168,22 +180,34 @@ export function applyZoneFinishDirect(
   const preset = FINISH_PRESETS[finish];
   let successCount = 0;
 
-  objects.forEach(obj => {
+  // Helper function to recursively apply finish to all meshes in a hierarchy
+  const applyFinishRecursive = (obj: THREE.Object3D, depth: number = 0) => {
+    const indent = '  '.repeat(depth);
+
+    // Try to apply finish if this object has a material
     const mesh = obj as THREE.Mesh;
+    if (mesh.material) {
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
 
-    if (!mesh.material) return;
+      materials.forEach((material: THREE.Material) => {
+        if ('metalness' in material) (material as any).metalness = preset.metalness;
+        if ('roughness' in material) (material as any).roughness = preset.roughness;
 
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        material.needsUpdate = true;
+        successCount++;
 
-    materials.forEach((material: THREE.Material) => {
-      if ('metalness' in material) (material as any).metalness = preset.metalness;
-      if ('roughness' in material) (material as any).roughness = preset.roughness;
+        console.log(`${indent}✅ Applied ${finish} finish to ${obj.name} (direct THREE.js)`);
+      });
+    }
 
-      material.needsUpdate = true;
-      successCount++;
+    // Recursively traverse children
+    if (obj.children && obj.children.length > 0) {
+      obj.children.forEach(child => applyFinishRecursive(child, depth + 1));
+    }
+  };
 
-      console.log(`✅ Applied ${finish} finish to ${obj.name} (direct THREE.js)`);
-    });
+  objects.forEach(obj => {
+    applyFinishRecursive(obj);
   });
 
   console.log(`✨ Applied ${finish} finish to ${zone} (${successCount} materials)`);
