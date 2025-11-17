@@ -24,8 +24,21 @@ const PREVIEW_COLORS = [
 const FINISH_DATA: Record<MaterialFinish, { label: string; description: string }> = {
   glossy: { label: 'Glossy', description: 'Shiny plastic finish with clear reflections' },
   matte: { label: 'Matte', description: 'Non-reflective, flat surface' },
-  metallic: { label: 'Metallic', description: 'Brushed metal appearance' },
   chrome: { label: 'Chrome', description: 'Mirror-like polished metal' },
+  brushed: { label: 'Brushed', description: 'Brushed metal texture' },
+  satin: { label: 'Satin', description: 'Soft, semi-gloss finish' },
+  pearl_coat: { label: 'Pearl Coat', description: 'Iridescent car-paint style' },
+  satin_automotive: { label: 'Satin Auto', description: 'Premium wrap finish' },
+  metallic_flake: { label: 'Metallic Flake', description: 'Sparkle with reflective flakes' },
+  wet_clearcoat: { label: 'Wet Clear Coat', description: 'Freshly waxed look' },
+  anodized_metal: { label: 'Anodized Metal', description: 'Colored engineered metal' },
+  brushed_titanium: { label: 'Brushed Titanium', description: 'Industrial elite vibe' },
+  weathered_metal: { label: 'Weathered Metal', description: 'Patina finish' },
+  carbon_fiber: { label: 'Carbon Fiber', description: 'High-tech woven pattern' },
+  rubberized_softtouch: { label: 'Soft-Touch', description: 'Tactical stealth look' },
+  ceramic_gloss: { label: 'Ceramic Gloss', description: 'Ultra-premium clean' },
+  frosted_polycarbonate: { label: 'Frosted', description: 'Translucent futuristic' },
+  holographic_foil: { label: 'Holographic', description: 'Color-shifting refractive' },
 };
 
 export function MaterialPreviewGrid({
@@ -48,7 +61,7 @@ export function MaterialPreviewGrid({
   // Get current color name from hex
   const currentColorName = PREVIEW_COLORS.find((c) => c.hex === selectedColor)?.name || 'red';
 
-  const finishes: MaterialFinish[] = ['glossy', 'matte', 'metallic', 'chrome'];
+  const finishes: MaterialFinish[] = ['glossy', 'matte', 'chrome', 'brushed'];
 
   return (
     <div className="space-y-6">
