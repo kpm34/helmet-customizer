@@ -16,9 +16,9 @@ import { FINISH_PRESETS } from '@/lib/constants';
 // Map zones to their PARENT CONTAINER names in Spline
 // We'll color all children inside these containers
 const ZONE_PATTERNS: Record<HelmetZone, string[]> = {
-  shell: ['Helmet_Parent'],  // Parent container for all helmet parts
+  shell: ['helmet_for_spline'],  // FIXED: Correct parent name from SPLINE_SCENE_HIERARCHY.md
   facemask: ['Facemask_Combined'],  // Facemask parent group
-  chinstrap: ['Chinstrap_Cup', 'Chinstrap_Left', 'Chinstrap_Right'],  // All chinstrap groups
+  chinstrap: ['UV01_Chinstrap', 'UV02_Chinstrap_Strap', 'UV03_Chinstrap'],  // FIXED: Added missing UV02_Chinstrap_Strap
   padding: ['UV01_Padding', 'UV03_Padding'],
   hardware: ['Hardware_'],
 };
@@ -99,119 +99,34 @@ export function findZoneObjectsDirect(
 }
 
 /**
- * Change zone color using direct THREE.js material access
- * Falls back to Spline API if THREE.js not accessible
+ * Change zone color - PRIORITIZES SPLINE NATIVE API
+ * Spline uses custom materials that don't respect THREE.js material.color changes
+ * We must use Spline's native getAllObjects() and direct color assignment
  */
 export function changeZoneColorDirect(
   spline: Application,
   zone: HelmetZone,
   color: string
 ): boolean {
-  const objects = findZoneObjectsDirect(spline, zone);
-  if (objects.length === 0) {
-    // Fallback: Try using Spline's native API
-    console.log(`⚠️ THREE.js not accessible, falling back to Spline API for ${zone}`);
-    return changeZoneColorSplineAPI(spline, zone, color);
-  }
-
-  const threeColor = new THREE.Color(color);
-  let successCount = 0;
-
-  // Helper function to recursively color all meshes in a hierarchy
-  const colorMeshRecursive = (obj: THREE.Object3D, depth: number = 0) => {
-    const indent = '  '.repeat(depth);
-
-    // Try to color this object if it has a material
-    const mesh = obj as THREE.Mesh;
-    if (mesh.material) {
-      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-
-      materials.forEach((material: THREE.Material) => {
-        // Set color
-        if ('color' in material && material.color instanceof THREE.Color) {
-          material.color.copy(threeColor);
-        }
-
-        // CRITICAL: Force 100% opacity
-        if ('opacity' in material) (material as any).opacity = 1.0;
-        if ('transparent' in material) (material as any).transparent = false;
-        if ('depthWrite' in material) (material as any).depthWrite = true;
-        if ('alphaTest' in material) (material as any).alphaTest = 0;
-
-        material.needsUpdate = true;
-        successCount++;
-
-        console.log(`${indent}✅ Set color for ${obj.name} to ${color} (direct THREE.js)`);
-      });
-    } else if (depth === 0) {
-      console.log(`${indent}⚠️ No material on ${obj.name} - traversing children...`);
-    }
-
-    // Recursively traverse children
-    if (obj.children && obj.children.length > 0) {
-      console.log(`${indent}📂 Traversing ${obj.children.length} children of ${obj.name}`);
-      obj.children.forEach(child => colorMeshRecursive(child, depth + 1));
-    }
-  };
-
-  objects.forEach(obj => {
-    colorMeshRecursive(obj);
-  });
-
-  console.log(`🎨 Changed ${zone} color to ${color} (${successCount} materials updated)`);
-  return successCount > 0;
+  // CRITICAL: Use Spline's native API FIRST (not as fallback)
+  // Spline's custom material system ignores THREE.js material.color changes
+  console.log(`🎨 Using Spline native API for ${zone} (custom materials)`);
+  return changeZoneColorSplineAPI(spline, zone, color);
 }
 
 /**
- * Apply finish using direct THREE.js material access
+ * Apply finish - NOTE: Spline API doesn't support metalness/roughness
+ * Finishes may not work with Spline's custom materials
  */
 export function applyZoneFinishDirect(
   spline: Application,
   zone: HelmetZone,
   finish: MaterialFinish
 ): boolean {
-  const objects = findZoneObjectsDirect(spline, zone);
-  if (objects.length === 0) {
-    // Fallback: Try using Spline API (though it won't support metalness/roughness)
-    console.log(`⚠️ THREE.js not accessible, falling back to Spline API for finish`);
-    return applyZoneFinishSplineAPI(spline, zone, finish);
-  }
-
-  const preset = FINISH_PRESETS[finish];
-  let successCount = 0;
-
-  // Helper function to recursively apply finish to all meshes in a hierarchy
-  const applyFinishRecursive = (obj: THREE.Object3D, depth: number = 0) => {
-    const indent = '  '.repeat(depth);
-
-    // Try to apply finish if this object has a material
-    const mesh = obj as THREE.Mesh;
-    if (mesh.material) {
-      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-
-      materials.forEach((material: THREE.Material) => {
-        if ('metalness' in material) (material as any).metalness = preset.metalness;
-        if ('roughness' in material) (material as any).roughness = preset.roughness;
-
-        material.needsUpdate = true;
-        successCount++;
-
-        console.log(`${indent}✅ Applied ${finish} finish to ${obj.name} (direct THREE.js)`);
-      });
-    }
-
-    // Recursively traverse children
-    if (obj.children && obj.children.length > 0) {
-      obj.children.forEach(child => applyFinishRecursive(child, depth + 1));
-    }
-  };
-
-  objects.forEach(obj => {
-    applyFinishRecursive(obj);
-  });
-
-  console.log(`✨ Applied ${finish} finish to ${zone} (${successCount} materials)`);
-  return successCount > 0;
+  // NOTE: Spline API doesn't expose metalness/roughness for custom materials
+  // Material finishes may not work correctly - this is a known limitation
+  console.log(`⚠️ Material finishes may not work with Spline custom materials for ${zone}`);
+  return applyZoneFinishSplineAPI(spline, zone, finish);
 }
 
 /**
