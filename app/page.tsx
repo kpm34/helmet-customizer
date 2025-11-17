@@ -27,15 +27,30 @@ export default function Home() {
 
   // Sync Zustand store changes to Spline (using direct THREE.js access)
   useEffect(() => {
-    if (!splineRef.current || !helmetLoaded) return;
+    if (!splineRef.current || !helmetLoaded) {
+      console.log('⏸️ Sync skipped - splineRef or helmetLoaded not ready');
+      console.log('  splineRef.current:', !!splineRef.current);
+      console.log('  helmetLoaded:', helmetLoaded);
+      return;
+    }
 
-    console.log('🔄 Syncing Zustand state to THREE.js scene (direct access)...');
+    console.log('\n🔄 === SYNCING ZUSTAND STATE TO SPLINE ===');
+    console.log('Current config:', JSON.stringify(config, null, 2));
 
     // Update all zone colors using direct THREE.js manipulation
     Object.entries(config).forEach(([zone, zoneConfig]) => {
-      changeZoneColorDirect(splineRef.current!, zone as any, zoneConfig.color);
-      applyZoneFinishDirect(splineRef.current!, zone as any, zoneConfig.finish);
+      console.log(`\n🎯 Updating ${zone}:`);
+      console.log(`  Color: ${zoneConfig.color}`);
+      console.log(`  Finish: ${zoneConfig.finish}`);
+
+      const colorResult = changeZoneColorDirect(splineRef.current!, zone as any, zoneConfig.color);
+      const finishResult = applyZoneFinishDirect(splineRef.current!, zone as any, zoneConfig.finish);
+
+      console.log(`  Color applied: ${colorResult ? '✅' : '❌'}`);
+      console.log(`  Finish applied: ${finishResult ? '✅' : '❌'}`);
     });
+
+    console.log('=== END SYNC ===\n');
   }, [config, helmetLoaded]);
 
   function onLoad(spline: Application) {

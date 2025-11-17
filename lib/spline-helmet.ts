@@ -339,20 +339,45 @@ function changeZoneColorSplineAPI(
   zone: HelmetZone,
   color: string
 ): boolean {
+  console.log(`\n🔍 === DEBUG: changeZoneColorSplineAPI called ===`);
+  console.log(`Zone: ${zone}`);
+  console.log(`Color: ${color}`);
+
   const patterns = ZONE_PATTERNS[zone];
+  console.log(`Looking for patterns:`, patterns);
+
   const allObjects = spline.getAllObjects();
+  console.log(`Total objects in scene: ${allObjects.length}`);
+
   let successCount = 0;
 
   patterns.forEach(pattern => {
+    console.log(`\n🔎 Searching for pattern: "${pattern}"`);
+
     // Find parent containers
     const parents = pattern.endsWith('_')
       ? allObjects.filter(obj => obj.name && obj.name.startsWith(pattern))
       : allObjects.filter(obj => obj.name === pattern);
 
+    console.log(`Found ${parents.length} parent(s) matching pattern "${pattern}":`, parents.map(p => p.name));
+
+    if (parents.length === 0) {
+      console.warn(`⚠️ No parents found for pattern "${pattern}"`);
+      console.log(`Available object names:`, allObjects.slice(0, 20).map(o => o.name));
+    }
+
     parents.forEach(parent => {
       try {
+        console.log(`\n📦 Processing parent: ${parent.name}`);
+        console.log(`Parent UUID: ${(parent as any).uuid}`);
+        console.log(`Parent type: ${(parent as any).type}`);
+
         // Color the parent
+        const oldColor = (parent as any).color;
         (parent as any).color = color;
+        const newColor = (parent as any).color;
+
+        console.log(`Parent color change: ${oldColor} → ${newColor} (expected: ${color})`);
         console.log(`✅ Set color for ${parent.name} to ${color} (Spline API - parent)`);
         successCount++;
 
@@ -360,22 +385,35 @@ function changeZoneColorSplineAPI(
         const parentUuid = (parent as any).uuid;
         const children = allObjects.filter(obj => (obj as any).parentUuid === parentUuid);
 
-        children.forEach(child => {
+        console.log(`Found ${children.length} children of ${parent.name}`);
+
+        children.forEach((child, index) => {
           try {
+            const childOldColor = (child as any).color;
             (child as any).color = color;
+            const childNewColor = (child as any).color;
+
+            console.log(`  Child ${index + 1}/${children.length}: ${child.name}`);
+            console.log(`    Color: ${childOldColor} → ${childNewColor}`);
             console.log(`✅ Set color for ${child.name} to ${color} (Spline API - child)`);
             successCount++;
           } catch (e) {
-            console.warn(`⚠️ Failed to set color on child ${child.name}:`, e);
+            console.error(`❌ Failed to set color on child ${child.name}:`, e);
           }
         });
       } catch (e) {
-        console.warn(`⚠️ Failed to set color on parent ${parent.name}:`, e);
+        console.error(`❌ Failed to set color on parent ${parent.name}:`, e);
       }
     });
   });
 
-  console.log(`🎨 Changed ${zone} color to ${color} (${successCount} objects, Spline API)`);
+  console.log(`\n🎨 === SUMMARY ===`);
+  console.log(`Zone: ${zone}`);
+  console.log(`Target color: ${color}`);
+  console.log(`Objects updated: ${successCount}`);
+  console.log(`Success: ${successCount > 0}`);
+  console.log(`=================\n`);
+
   return successCount > 0;
 }
 
