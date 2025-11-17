@@ -14,13 +14,13 @@ import { FINISH_PRESETS } from '@/lib/constants';
 // ============================================================
 
 // Map zones to their PARENT CONTAINER names in Spline
-// We'll color all children inside these containers
+// Updated from actual Spline scene hierarchy (2024-11-17)
 const ZONE_PATTERNS: Record<HelmetZone, string[]> = {
-  shell: ['helmet_for_spline'],  // FIXED: Correct parent name from SPLINE_SCENE_HIERARCHY.md
-  facemask: ['Facemask_Combined'],  // Facemask parent group
-  chinstrap: ['UV01_Chinstrap', 'UV02_Chinstrap_Strap', 'UV03_Chinstrap'],  // FIXED: Added missing UV02_Chinstrap_Strap
-  padding: ['UV01_Padding', 'UV03_Padding'],
-  hardware: ['Hardware_'],
+  shell: ['Shell_Combined'],  // Shell parent container
+  facemask: ['Facemask_Combined'],  // Facemask parent container
+  chinstrap: ['Chinstrap_Cup', 'Chinstrap_Left', 'Chinstrap_Right'],  // All chinstrap containers
+  padding: ['UV03_Padding'],  // Padding object
+  hardware: ['Hardware_Clips', 'Hardware_Plates', 'Hardware_Screws'],  // All hardware objects
 };
 
 /**
