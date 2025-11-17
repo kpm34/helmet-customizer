@@ -722,10 +722,13 @@ export default function Home() {
     setShowHelmet(newShowHelmet);
   }
 
+  // Cache-busting for Spline scene - prevents old cached versions from showing
+  const sceneUrl = `/scene.splinecode?v=${process.env.NEXT_PUBLIC_APP_VERSION || Date.now()}`;
+
   return (
     <main className="w-full h-screen overflow-hidden relative" suppressHydrationWarning>
       <Spline
-        scene="/scene.splinecode"
+        scene={sceneUrl}
         wasmPath="/"
         onLoad={onLoad}
       />
