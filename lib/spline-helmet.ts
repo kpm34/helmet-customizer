@@ -15,12 +15,13 @@ import { FINISH_PRESETS } from '@/lib/constants';
 
 // Map zones to their PARENT CONTAINER names in Spline
 // Updated from actual Spline scene hierarchy (2024-11-17)
+// Structure: x helmet best -> Helmet_Parent -> zone objects
 const ZONE_PATTERNS: Record<HelmetZone, string[]> = {
-  shell: ['Shell_Combined'],  // Shell parent container
-  facemask: ['Facemask_Combined'],  // Facemask parent container
-  chinstrap: ['Chinstrap_Cup', 'Chinstrap_Left', 'Chinstrap_Right'],  // All chinstrap containers
-  padding: ['UV03_Padding'],  // Padding object
-  hardware: ['Hardware_Clips', 'Hardware_Plates', 'Hardware_Screws'],  // All hardware objects
+  shell: ['Shell_Combined'],  // Shell mesh under Helmet_Parent
+  facemask: ['Facemask_Combined'],  // Facemask container under Helmet_Parent
+  chinstrap: ['Chinstrap_Cup', 'Chinstrap_Left', 'Chinstrap_Right'],  // Chinstrap containers under Helmet_Parent
+  padding: ['UV03_Padding'],  // Padding mesh under Helmet_Parent
+  hardware: ['Hardware_Clips', 'Hardware_Plates', 'Hardware_Screws'],  // Hardware meshes under Helmet_Parent
 };
 
 /**
