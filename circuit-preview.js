@@ -7,6 +7,8 @@ var frameDelay = 16;
 var increment = 2;
 var startOffset = -Math.round(canvas.width * 0.2); // start 20% off-screen to the left
 var rightLimit = Math.round(canvas.width * 1.3); // end 30% beyond the right edge
+var tailRatio = 0.55; // keep only 55% of the route distance for the trailing line
+var maxPointsPerRoute = Math.round(((rightLimit - startOffset) * tailRatio) / increment);
 
 var topGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
 topGradient.addColorStop("0", "#003746");
@@ -32,6 +34,7 @@ var routeConfigs = [
 		startX: startOffset,
 		baseY: topBaseY,
 		yVariance: 20,
+		band: 70,
 		seedMin: 360,
 		seedMax: 460,
 		gradient: topGradient,
@@ -63,6 +66,7 @@ var routeConfigs = [
 		startX: startOffset,
 		baseY: bottomBaseY,
 		yVariance: 30,
+		band: 70,
 		seedMin: 520,
 		seedMax: 640,
 		gradient: bottomGradient,
@@ -93,6 +97,7 @@ var routeConfigs = [
 
 var routes = routeConfigs.map(function (config) {
 	var route = Object.assign({}, config);
+	route.maxPoints = maxPointsPerRoute;
 	resetRoute(route);
 	return route;
 });
@@ -125,7 +130,19 @@ function traceRoute(route) {
 		}
 	});
 
+	if (route.band) {
+		var upper = route.baseY - route.band;
+		var lower = route.baseY + route.band;
+		nextY = Math.max(upper, Math.min(lower, nextY));
+	}
+
 	route.points.push({ x: nextX, y: nextY });
+	if (route.points.length > route.maxPoints) {
+		var removed = route.points.shift();
+		if (route.arcPosition && removed.x >= route.arcPosition.x) {
+			route.arcPosition = null;
+		}
+	}
 	route.x = nextX;
 	route.y = nextY;
 
@@ -147,15 +164,19 @@ function drawRoute(route) {
 	ctx.shadowColor = route.glow;
 	ctx.shadowBlur = route.glowBlur;
 
-	ctx.beginPath();
+	var totalSegments = route.points.length - 1;
 	route.points.forEach(function (point, index) {
 		if (index === 0) {
-			ctx.moveTo(point.x, point.y);
-		} else {
-			ctx.lineTo(point.x, point.y);
+			return;
 		}
+		var ratio = index / totalSegments;
+		ctx.globalAlpha = Math.pow(ratio, 1.5);
+		ctx.beginPath();
+		ctx.moveTo(route.points[index - 1].x, route.points[index - 1].y);
+		ctx.lineTo(point.x, point.y);
+		ctx.stroke();
 	});
-	ctx.stroke();
+	ctx.globalAlpha = 1;
 
 	if (route.arcPosition) {
 		ctx.beginPath();

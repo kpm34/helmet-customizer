@@ -4,8 +4,29 @@ import { FINISH_PRESETS, DEFAULT_HELMET_CONFIG, type FinishProperties } from '@/
 // Zone types
 export type HelmetZone = 'shell' | 'facemask' | 'chinstrap' | 'padding' | 'hardware';
 
-// Material finish types
-export type MaterialFinish = 'glossy' | 'matte' | 'chrome' | 'brushed' | 'satin';
+// Material finish types - Premium finishes
+export type MaterialFinish =
+  | 'glossy'
+  | 'matte'
+  | 'chrome'
+  | 'brushed'
+  | 'satin'
+  // Premium automotive finishes
+  | 'pearl_coat'
+  | 'satin_automotive'
+  | 'metallic_flake'
+  | 'wet_clearcoat'
+  // Metal finishes
+  | 'anodized_metal'
+  | 'brushed_titanium'
+  | 'weathered_metal'
+  // Modern/tactical finishes
+  | 'carbon_fiber'
+  | 'rubberized_softtouch'
+  | 'ceramic_gloss'
+  // Special effects
+  | 'frosted_polycarbonate'
+  | 'holographic_foil';
 
 // Pattern types
 export type PatternType = 'none' | 'camo' | 'tiger_stripe';

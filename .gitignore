@@ -22,6 +22,25 @@
 *.blend
 *.blend1
 
+# 3D model files
+*.obj
+*.glb
+*.gltf
+*.fbx
+*.stl
+*.dae
+*.3ds
+*.ply
+
+# documentation and guides
+*.md
+!README.md
+*.pdf
+
+# material preview images
+public/material-previews/
+material-previews/
+
 # output files
 output/
 
