@@ -723,8 +723,8 @@ export default function Home() {
   }
 
   // Cache-busting for Spline scene - prevents old cached versions from showing
-  // Use timestamp instead of query param to avoid Spline loader issues
-  const sceneUrl = `/scene.splinecode`;
+  // Using renamed file to bypass aggressive browser caching
+  const sceneUrl = `/scene-v2.splinecode`;
 
   return (
     <main className="w-full h-screen overflow-hidden relative" suppressHydrationWarning>

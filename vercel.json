@@ -18,7 +18,7 @@
       ]
     },
     {
-      "source": "/scene.splinecode",
+      "source": "/scene*.splinecode",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
