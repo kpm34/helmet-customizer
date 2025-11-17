@@ -27,12 +27,26 @@ const ZONE_PATTERNS: Record<HelmetZone, string[]> = {
  */
 export function getThreeScene(spline: Application): THREE.Scene | null {
   try {
-    // @ts-ignore - getThreeJsScene exists but may not be in types
-    const scene = spline.getThreeJsScene?.();
+    // Try multiple methods to access THREE.js scene
+    // @ts-ignore - Different Spline versions have different APIs
+    let scene = spline.getThreeJsScene?.();
+
+    if (!scene) {
+      // @ts-ignore - Try alternative method
+      scene = spline._scene;
+    }
+
+    if (!scene) {
+      // @ts-ignore - Try another alternative
+      scene = spline.scene;
+    }
+
     if (scene) {
       console.log('✅ Accessed THREE.js scene from Spline Runtime');
       return scene;
     }
+
+    console.warn('⚠️ THREE.js scene not found in Spline Runtime - will use Spline wrapper API');
   } catch (e) {
     console.warn('⚠️ Could not access THREE.js scene:', e);
   }
@@ -84,7 +98,7 @@ export function findZoneObjectsDirect(
 
 /**
  * Change zone color using direct THREE.js material access
- * This is MORE RELIABLE than using Spline's wrapper
+ * Falls back to Spline API if THREE.js not accessible
  */
 export function changeZoneColorDirect(
   spline: Application,
@@ -92,7 +106,11 @@ export function changeZoneColorDirect(
   color: string
 ): boolean {
   const objects = findZoneObjectsDirect(spline, zone);
-  if (objects.length === 0) return false;
+  if (objects.length === 0) {
+    // Fallback: Try using Spline's native API
+    console.log(`⚠️ THREE.js not accessible, falling back to Spline API for ${zone}`);
+    return changeZoneColorSplineAPI(spline, zone, color);
+  }
 
   const threeColor = new THREE.Color(color);
   let successCount = 0;
@@ -139,7 +157,11 @@ export function applyZoneFinishDirect(
   finish: MaterialFinish
 ): boolean {
   const objects = findZoneObjectsDirect(spline, zone);
-  if (objects.length === 0) return false;
+  if (objects.length === 0) {
+    // Fallback: Try using Spline API (though it won't support metalness/roughness)
+    console.log(`⚠️ THREE.js not accessible, falling back to Spline API for finish`);
+    return applyZoneFinishSplineAPI(spline, zone, finish);
+  }
 
   const preset = FINISH_PRESETS[finish];
   let successCount = 0;
@@ -299,4 +321,55 @@ export function getVariable(spline: Application, variableName: string): any {
     console.error(`❌ Failed to get variable "${variableName}":`, e);
     return undefined;
   }
+}
+
+// ============================================================
+// FALLBACK: SPLINE NATIVE API (when THREE.js not accessible)
+// ============================================================
+
+/**
+ * Fallback color change using Spline's native API
+ * Use when THREE.js scene is not accessible
+ */
+function changeZoneColorSplineAPI(
+  spline: Application,
+  zone: HelmetZone,
+  color: string
+): boolean {
+  const patterns = ZONE_PATTERNS[zone];
+  const allObjects = spline.getAllObjects();
+  let successCount = 0;
+
+  patterns.forEach(pattern => {
+    const objects = pattern.endsWith('_')
+      ? allObjects.filter(obj => obj.name && obj.name.startsWith(pattern))
+      : allObjects.filter(obj => obj.name === pattern);
+
+    objects.forEach(obj => {
+      try {
+        // Spline's .color property is a working setter (even though getter returns undefined)
+        (obj as any).color = color;
+        console.log(`✅ Set color for ${obj.name} to ${color} (Spline API)`);
+        successCount++;
+      } catch (e) {
+        console.warn(`⚠️ Failed to set color on ${obj.name}:`, e);
+      }
+    });
+  });
+
+  console.log(`🎨 Changed ${zone} color to ${color} (${successCount} objects, Spline API)`);
+  return successCount > 0;
+}
+
+/**
+ * Fallback finish application using Spline's native API
+ */
+function applyZoneFinishSplineAPI(
+  spline: Application,
+  zone: HelmetZone,
+  finish: MaterialFinish
+): boolean {
+  console.warn(`⚠️ Material finish not supported with Spline API - THREE.js access required`);
+  console.log(`Attempted to apply ${finish} finish to ${zone} but Spline API doesn't expose metalness/roughness`);
+  return false;
 }
