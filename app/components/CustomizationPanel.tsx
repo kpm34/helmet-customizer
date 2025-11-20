@@ -17,6 +17,7 @@ export function CustomizationPanel() {
   const [currentStep, setCurrentStep] = useState<WizardStep>(1);
   const [completedSteps, setCompletedSteps] = useState<WizardStep[]>([]);
   const [activeZone, setActiveZone] = useState<HelmetZone>('shell');
+  const [lastClickedTeam, setLastClickedTeam] = useState<string | null>(null);
 
   const { config, setZoneColor, setZoneFinish, resetToDefaults } = useHelmetStore();
 
@@ -57,6 +58,27 @@ export function CustomizationPanel() {
     console.log('📦 Exporting helmet to GLB...', config);
     // TODO: Implement GLB export
     alert('Exporting to GLB format...');
+  };
+
+  // Team preset handler - applies colors to shell & facemask, with toggle swap
+  const handleTeamPresetClick = (preset: { primaryColor: string; secondaryColor: string; team: string }) => {
+    // Check if this is the same team clicked again
+    const isSameTeam = lastClickedTeam === preset.team;
+
+    if (isSameTeam) {
+      // Swap colors: shell gets secondary, facemask gets primary
+      setZoneColor('shell', preset.secondaryColor);
+      setZoneColor('facemask', preset.primaryColor);
+      console.log(`🔄 Swapped ${preset.team} colors - Shell: ${preset.secondaryColor}, Facemask: ${preset.primaryColor}`);
+      // Reset last clicked team to allow swapping again
+      setLastClickedTeam(null);
+    } else {
+      // First click or different team: shell gets primary, facemask gets secondary
+      setZoneColor('shell', preset.primaryColor);
+      setZoneColor('facemask', preset.secondaryColor);
+      console.log(`🎨 Applied ${preset.team} colors - Shell: ${preset.primaryColor}, Facemask: ${preset.secondaryColor}`);
+      setLastClickedTeam(preset.team);
+    }
   };
 
   // Check if user can proceed to next step
@@ -145,6 +167,7 @@ export function CustomizationPanel() {
               <ColorPicker
                 value={currentZoneConfig.color}
                 onChange={(color) => setZoneColor(activeZone, color)}
+                onTeamPresetClick={handleTeamPresetClick}
               />
             </div>
           </div>

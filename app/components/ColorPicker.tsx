@@ -9,10 +9,12 @@ interface ColorPickerProps {
   value: string;
   onChange: (color: string) => void;
   label?: string;
+  onTeamPresetClick?: (preset: { primaryColor: string; secondaryColor: string; team: string }) => void;
 }
 
-export function ColorPicker({ value, onChange, label }: ColorPickerProps) {
+export function ColorPicker({ value, onChange, label, onTeamPresetClick }: ColorPickerProps) {
   const [showPicker, setShowPicker] = useState(false);
+  const [lastClickedTeam, setLastClickedTeam] = useState<string | null>(null);
 
   return (
     <div className="space-y-4">
@@ -77,7 +79,16 @@ export function ColorPicker({ value, onChange, label }: ColorPickerProps) {
           {CFB_TEAM_PRESETS.map((preset) => (
             <button
               key={preset.team}
-              onClick={() => onChange(preset.primaryColor)}
+              onClick={() => {
+                if (onTeamPresetClick) {
+                  // Custom handler for dual-zone application
+                  onTeamPresetClick(preset);
+                  setLastClickedTeam(preset.team);
+                } else {
+                  // Fallback to single zone
+                  onChange(preset.primaryColor);
+                }
+              }}
               className="group relative"
               title={preset.name}
             >
