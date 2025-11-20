@@ -9,7 +9,7 @@ export { default as ConsolePanel } from './ConsolePanel';
 // New design system components (Phase 2)
 export { TooltipEnhanced } from './TooltipEnhanced';
 export { WizardProgress } from './WizardProgress';
-export type { WizardStep, WizardScene } from './WizardProgress';
+export type { WizardStep } from './WizardProgress';
 export { WizardNavigation } from './WizardNavigation';
 export { ZoneSelector } from './ZoneSelector';
 export { LiquidGlassInput } from './LiquidGlassInput';
