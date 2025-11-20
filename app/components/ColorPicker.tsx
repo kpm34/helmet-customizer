@@ -75,7 +75,7 @@ export function ColorPicker({ value, onChange, label, onTeamPresetClick }: Color
           <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
           CFB Team Presets
         </div>
-        <div className="grid grid-cols-3 gap-2.5 max-h-52 overflow-y-auto pr-1 custom-scrollbar">
+        <div className="grid grid-cols-2 gap-2.5 max-h-52 overflow-y-auto pr-1 custom-scrollbar">
           {CFB_TEAM_PRESETS.map((preset) => (
             <button
               key={preset.team}
@@ -89,32 +89,16 @@ export function ColorPicker({ value, onChange, label, onTeamPresetClick }: Color
                   onChange(preset.primaryColor);
                 }
               }}
-              className="group relative"
-              title={preset.name}
+              className="group relative py-3 px-3 rounded-xl border-2 border-gray-700/50 hover:border-gray-500/80 transition-all duration-200 hover:scale-105 hover:shadow-xl font-semibold text-xs text-center"
+              style={{
+                backgroundColor: preset.primaryColor,
+                color: preset.secondaryColor,
+                boxShadow: `0 0 16px ${preset.primaryColor}40, 0 4px 12px rgba(0,0,0,0.3)`,
+                textShadow: `0 1px 3px rgba(0,0,0,0.5), 0 0 8px ${preset.secondaryColor}30`
+              }}
+              title={`${preset.name} - Click to apply, click again to swap colors`}
             >
-              <div className="flex items-center gap-1.5 p-2.5 rounded-xl bg-gray-800/60 backdrop-blur-sm hover:bg-gray-700/80 border border-gray-700/50 hover:border-gray-500/50 transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                {/* Primary color swatch with glow */}
-                <div
-                  className="w-7 h-7 rounded-lg border-2 border-gray-600/50 shadow-md transition-transform group-hover:scale-110"
-                  style={{
-                    backgroundColor: preset.primaryColor,
-                    boxShadow: `0 0 12px ${preset.primaryColor}30`
-                  }}
-                />
-                {/* Secondary color swatch with glow */}
-                <div
-                  className="w-7 h-7 rounded-lg border-2 border-gray-600/50 shadow-md transition-transform group-hover:scale-110"
-                  style={{
-                    backgroundColor: preset.secondaryColor,
-                    boxShadow: `0 0 12px ${preset.secondaryColor}30`
-                  }}
-                />
-              </div>
-              {/* Enhanced Tooltip */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900/95 backdrop-blur-sm text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none z-20 shadow-xl border border-gray-700/50">
-                {preset.name}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-gray-900/95" />
-              </div>
+              {preset.name}
             </button>
           ))}
         </div>
