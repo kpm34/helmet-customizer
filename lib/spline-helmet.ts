@@ -135,8 +135,8 @@ export function applyZoneFinishDirect(
   finish: MaterialFinish
 ): boolean {
   try {
-    // Map finish types to numeric values
-    const finishValues: Record<MaterialFinish, number> = {
+    // Map finish types to numeric values (Partial because not all finishes are mapped)
+    const finishValues: Partial<Record<MaterialFinish, number>> = {
       glossy: 0,
       matte: 1,
       chrome: 2,
@@ -146,6 +146,11 @@ export function applyZoneFinishDirect(
 
     const variableName = `${zone}Finish`;
     const finishValue = finishValues[finish];
+
+    if (finishValue === undefined) {
+      console.warn(`⚠️ Finish type "${finish}" not mapped to Spline variable`);
+      return false;
+    }
 
     console.log(`🎨 Setting Spline variable "${variableName}" = ${finishValue} (${finish})`);
 
