@@ -8,11 +8,18 @@ import { tokens } from '@/lib/design/tokens';
 interface ZoneSelectorProps {
   activeZone: HelmetZone;
   onZoneChange: (zone: HelmetZone) => void;
+  currentStep?: number; // Optional: filter zones based on step
 }
 
-export function ZoneSelector({ activeZone, onZoneChange }: ZoneSelectorProps) {
+export function ZoneSelector({ activeZone, onZoneChange, currentStep }: ZoneSelectorProps) {
   const { config } = useHelmetStore();
-  const zones: HelmetZone[] = ['shell', 'facemask', 'chinstrap', 'padding', 'hardware'];
+
+  // All zones for steps 1-2 (Color, Finish), limited zones for steps 3-4 (Pattern, Logo)
+  const allZones: HelmetZone[] = ['shell', 'facemask', 'chinstrap', 'padding', 'hardware'];
+  const limitedZones: HelmetZone[] = ['shell', 'facemask', 'chinstrap'];
+
+  // If currentStep is 3 or 4, only show shell, facemask, chinstrap
+  const zones: HelmetZone[] = currentStep && currentStep >= 3 ? limitedZones : allZones;
 
   return (
     <div className="space-y-3">

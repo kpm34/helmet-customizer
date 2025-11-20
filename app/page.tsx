@@ -6,6 +6,7 @@ import type { Application } from '@splinetool/runtime';
 import ConsolePanel from './components/ConsolePanel';
 import { CustomizationPanel } from './components/CustomizationPanel';
 import { CustomizationWizard } from './components/CustomizationWizard';
+import { QuickFinishTest } from './components/QuickFinishTest';
 import { useHelmetStore } from '@/store/helmetStore';
 import {
   changeZoneColorDirect,
@@ -739,6 +740,9 @@ export default function Home() {
 
       {/* Console Panel for debugging */}
       <ConsolePanel />
+
+      {/* Quick Finish Test Component */}
+      <QuickFinishTest splineApp={splineRef.current} />
     </main>
   );
 }

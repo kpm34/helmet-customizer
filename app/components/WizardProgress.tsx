@@ -4,7 +4,6 @@ import { tokens } from '@/lib/design/tokens';
 import { Check } from 'lucide-react';
 
 export type WizardStep = 1 | 2 | 3 | 4;
-export type WizardScene = 1 | 2;
 
 interface WizardProgressProps {
   currentStep: WizardStep;
@@ -13,16 +12,15 @@ interface WizardProgressProps {
 
 interface StepConfig {
   step: WizardStep;
-  scene: WizardScene;
   label: string;
   description: string;
 }
 
 const STEPS: StepConfig[] = [
-  { step: 1, scene: 1, label: 'Color', description: 'Choose base color' },
-  { step: 2, scene: 1, label: 'Finish', description: 'Select material finish' },
-  { step: 3, scene: 2, label: 'Pattern', description: 'Add pattern design' },
-  { step: 4, scene: 2, label: 'Logo', description: 'Upload custom logo' },
+  { step: 1, label: 'Color', description: 'Choose base color' },
+  { step: 2, label: 'Finish', description: 'Select material finish' },
+  { step: 3, label: 'Pattern', description: 'Add pattern design' },
+  { step: 4, label: 'Logo', description: 'Upload custom logo' },
 ];
 
 export function WizardProgress({ currentStep, completedSteps = [] }: WizardProgressProps) {
@@ -32,12 +30,6 @@ export function WizardProgress({ currentStep, completedSteps = [] }: WizardProgr
 
   return (
     <div className="space-y-4">
-      {/* Scene Headers */}
-      <div className="flex gap-4">
-        <SceneGroup scene={1} currentStep={currentStep} />
-        <SceneGroup scene={2} currentStep={currentStep} />
-      </div>
-
       {/* Step Indicators */}
       <div className="relative">
         {/* Progress Line */}
@@ -101,50 +93,6 @@ export function WizardProgress({ currentStep, completedSteps = [] }: WizardProgr
               </div>
             );
           })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface SceneGroupProps {
-  scene: WizardScene;
-  currentStep: WizardStep;
-}
-
-function SceneGroup({ scene, currentStep }: SceneGroupProps) {
-  const sceneSteps = STEPS.filter((s) => s.scene === scene);
-  const isActive = sceneSteps.some((s) => s.step === currentStep);
-  const sceneLabel = scene === 1 ? 'Base Customization' : 'Advanced Design';
-
-  return (
-    <div
-      className={`
-        flex-1 px-3 py-2 rounded-lg border transition-all duration-300
-        ${
-          isActive
-            ? 'bg-blue-500/10 border-blue-500/30'
-            : 'bg-gray-800/30 border-gray-700/50'
-        }
-      `}
-    >
-      <div className="flex items-center gap-2">
-        <div
-          className={`
-            w-2 h-2 rounded-full transition-colors duration-300
-            ${isActive ? 'bg-blue-400 shadow-lg shadow-blue-400/50' : 'bg-gray-600'}
-          `}
-        />
-        <div>
-          <div
-            className={`
-              text-xs font-semibold transition-colors duration-300
-              ${isActive ? 'text-blue-400' : 'text-gray-400'}
-            `}
-          >
-            Scene {scene}
-          </div>
-          <div className="text-[10px] text-gray-500">{sceneLabel}</div>
         </div>
       </div>
     </div>

@@ -116,18 +116,49 @@ export function changeZoneColorDirect(
 }
 
 /**
- * Apply finish - NOTE: Spline API doesn't support metalness/roughness
- * Finishes may not work with Spline's custom materials
+ * Apply finish using Spline Variables
+ * This is the recommended approach since Spline's custom materials don't support direct property manipulation
+ *
+ * SETUP REQUIRED IN SPLINE EDITOR:
+ * 1. Create Number variables for each zone+finish combination:
+ *    - shellFinish (values: 0=glossy, 1=matte, 2=chrome, 3=brushed, 4=satin)
+ *    - facemaskFinish
+ *    - chinstrapFinish
+ *    - paddingFinish
+ *    - hardwareFinish
+ * 2. Attach these variables to your material's roughness/metalness properties
+ * 3. Set up states/conditions in Spline that respond to variable changes
  */
 export function applyZoneFinishDirect(
   spline: Application,
   zone: HelmetZone,
   finish: MaterialFinish
 ): boolean {
-  // NOTE: Spline API doesn't expose metalness/roughness for custom materials
-  // Material finishes may not work correctly - this is a known limitation
-  console.log(`⚠️ Material finishes may not work with Spline custom materials for ${zone}`);
-  return applyZoneFinishSplineAPI(spline, zone, finish);
+  try {
+    // Map finish types to numeric values
+    const finishValues: Record<MaterialFinish, number> = {
+      glossy: 0,
+      matte: 1,
+      chrome: 2,
+      brushed: 3,
+      satin: 4,
+    };
+
+    const variableName = `${zone}Finish`;
+    const finishValue = finishValues[finish];
+
+    console.log(`🎨 Setting Spline variable "${variableName}" = ${finishValue} (${finish})`);
+
+    // Use Spline's setVariable API
+    setVariable(spline, variableName, finishValue);
+
+    console.log(`✅ Finish variable set for ${zone}: ${finish}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Failed to set finish variable for ${zone}:`, error);
+    // Fallback to legacy approach
+    return applyZoneFinishSplineAPI(spline, zone, finish);
+  }
 }
 
 /**

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@blender-workspace/shared-3d": "file:../../shared",
     "@react-three/drei": "^9.100.0",
     "@react-three/fiber": "^8.15.0",
     "@splinetool/loader": "^1.11.4",

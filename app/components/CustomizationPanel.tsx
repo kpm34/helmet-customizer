@@ -33,6 +33,12 @@ export function CustomizationPanel() {
   // Navigation handlers
   const handleNext = () => {
     completeStep(currentStep, true);
+
+    // If moving to step 3 or 4, and currently on padding/hardware, switch to shell
+    const nextStep = currentStep + 1;
+    if (nextStep >= 3 && (activeZone === 'padding' || activeZone === 'hardware')) {
+      setActiveZone('shell');
+    }
   };
 
   const handlePrevious = () => {
@@ -110,7 +116,11 @@ export function CustomizationPanel() {
 
       {/* Zone Selector - Always Visible */}
       <div className="p-4 border-b border-gray-800/30">
-        <ZoneSelector activeZone={activeZone} onZoneChange={setActiveZone} />
+        <ZoneSelector
+          activeZone={activeZone}
+          onZoneChange={setActiveZone}
+          currentStep={currentStep}
+        />
       </div>
 
       {/* Step Content */}
