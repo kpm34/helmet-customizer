@@ -73,13 +73,13 @@ export const CFB_TEAM_PRESETS: TeamColorPreset[] = [
   {
     name: 'Pitt Panthers',
     team: 'pitt',
-    primaryColor: '#003594', // Navy Blue
-    secondaryColor: '#FFB81C', // Gold
+    primaryColor: '#003594', // Royal Blue
+    secondaryColor: '#FFB81C', // Pittsburgh Gold
   },
   {
     name: 'Louisville Cardinals',
     team: 'louisville',
-    primaryColor: '#AD0000', // Red
+    primaryColor: '#AD0000', // Cardinal Red
     secondaryColor: '#000000', // Black
   },
 ];
