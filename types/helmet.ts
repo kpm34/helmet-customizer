@@ -53,12 +53,6 @@ export const CFB_TEAM_PRESETS: TeamColorPreset[] = [
     secondaryColor: '#FFFFFF', // White
   },
   {
-    name: 'Oklahoma Sooners',
-    team: 'oklahoma',
-    primaryColor: '#841617', // Crimson
-    secondaryColor: '#FFC72C', // Cream
-  },
-  {
     name: 'Oregon Ducks',
     team: 'oregon',
     primaryColor: '#154733', // Green
@@ -77,10 +71,16 @@ export const CFB_TEAM_PRESETS: TeamColorPreset[] = [
     secondaryColor: '#C99700', // Gold
   },
   {
-    name: 'Penn State',
-    team: 'penn-state',
-    primaryColor: '#041E42', // Navy Blue
-    secondaryColor: '#FFFFFF', // White
+    name: 'Pitt Panthers',
+    team: 'pitt',
+    primaryColor: '#003594', // Navy Blue
+    secondaryColor: '#FFB81C', // Gold
+  },
+  {
+    name: 'Louisville Cardinals',
+    team: 'louisville',
+    primaryColor: '#AD0000', // Red
+    secondaryColor: '#000000', // Black
   },
 ];
 
