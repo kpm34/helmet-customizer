@@ -159,7 +159,7 @@ export default function Home() {
           {/* The helmet with adjustable position, scale, rotation, colors AND finishes */}
           <HelmetModel position={position} scale={scale} rotation={rotation} config={config} />
 
-          <Environment preset="studio" intensity={0.3} />
+          <Environment preset="studio" />
         </Canvas>
       </div>
 
