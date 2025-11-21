@@ -5,7 +5,7 @@ import { useHelmetStore, type HelmetZone } from '@/store/helmetStore';
 import { ColorSelector } from './ColorSelector';
 import { MaterialFinishSelector } from './MaterialFinishSelector';
 import { ZONES_CONFIG, getZoneConfig } from '@/lib/constants';
-import { PanelRightClose, PanelRightOpen, Palette, Pipette, X } from 'lucide-react';
+import { PanelRightClose, PanelRightOpen, Palette, Pipette, X, RotateCw } from 'lucide-react';
 import { StepProgressBar, type WizardStep } from './StepProgressBar';
 import { StepNavigationButtons } from './StepNavigationButtons';
 import { ZoneTabs } from './ZoneTabs';
@@ -13,6 +13,15 @@ import { GlassInput } from './GlassInput';
 import { tokens } from '@/lib/design/tokens';
 import { BASIC_COLOR_PALETTE } from '@/types/helmet';
 import { HexColorPicker } from 'react-colorful';
+
+interface HelmetCustomizerProps {
+  rotation: [number, number, number];
+  onRotationChange: {
+    x: (x: number) => void;
+    y: (y: number) => void;
+    z: (z: number) => void;
+  };
+}
 
 // Helper functions for HSL conversion
 function hexToHSL(hex: string): { h: number; s: number; l: number } {
@@ -83,7 +92,7 @@ function getLightness(hex: string): number {
   return hexToHSL(hex).l;
 }
 
-export function HelmetCustomizer() {
+export function HelmetCustomizer({ rotation, onRotationChange }: HelmetCustomizerProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentStep, setCurrentStep] = useState<WizardStep>(1);
   const [completedSteps, setCompletedSteps] = useState<WizardStep[]>([]);
@@ -426,6 +435,67 @@ export function HelmetCustomizer() {
 
       {/* Step Navigation Footer */}
       <footer className="p-4 border-t border-gray-800/50 bg-gray-900/50 backdrop-blur-sm space-y-3">
+        {/* Rotation Controls - Always Visible */}
+        <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-4 border border-gray-700/50 space-y-3">
+          <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+            <RotateCw className="w-3.5 h-3.5 text-blue-400" />
+            Rotation Controls
+          </div>
+
+          <div className="space-y-3">
+            {/* X Rotation */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-xs text-gray-400">Rotate X</label>
+                <span className="text-xs text-gray-500 font-mono">{rotation[0].toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="-3.14"
+                max="3.14"
+                step="0.01"
+                value={rotation[0]}
+                onChange={(e) => onRotationChange.x(parseFloat(e.target.value))}
+                className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-blue-500/20 via-blue-500/40 to-blue-500/20"
+              />
+            </div>
+
+            {/* Y Rotation */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-xs text-gray-400">Rotate Y</label>
+                <span className="text-xs text-gray-500 font-mono">{rotation[1].toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="-3.14"
+                max="3.14"
+                step="0.01"
+                value={rotation[1]}
+                onChange={(e) => onRotationChange.y(parseFloat(e.target.value))}
+                className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-purple-500/20 via-purple-500/40 to-purple-500/20"
+              />
+            </div>
+
+            {/* Z Rotation */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-xs text-gray-400">Rotate Z</label>
+                <span className="text-xs text-gray-500 font-mono">{rotation[2].toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="-3.14"
+                max="3.14"
+                step="0.01"
+                value={rotation[2]}
+                onChange={(e) => onRotationChange.z(parseFloat(e.target.value))}
+                className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-green-500/20 via-green-500/40 to-green-500/20"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Basic Colors - Always Visible at Bottom with Animated Border Effect */}
         {currentStep === 1 && (
           <div className="space-y-3 relative">

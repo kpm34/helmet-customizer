@@ -1,13 +1,14 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { useGLTF, Environment, OrbitControls } from '@react-three/drei';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Spline from '@splinetool/react-spline';
 import * as THREE from 'three';
 import { useHelmetStore, type HelmetConfig } from '@/store/helmetStore';
 import { HelmetCustomizer } from './components/HelmetCustomizer';
 import { getFinishProperties } from '@/lib/constants';
+import type { Application } from '@splinetool/runtime';
 
 // Map zone names to object names in the GLB model
 const ZONE_OBJECT_MAPPING = {
@@ -94,6 +95,37 @@ export default function Home() {
   // Get full helmet config from Zustand store (colors + finishes)
   const config = useHelmetStore((state) => state.config);
 
+  // Set rotation functions in store for UI access
+  const setRotationX = (x: number) => setRotation([x, rotation[1], rotation[2]]);
+  const setRotationY = (y: number) => setRotation([rotation[0], y, rotation[2]]);
+  const setRotationZ = (z: number) => setRotation([rotation[0], rotation[1], z]);
+
+  // Disable all scroll and zoom
+  useEffect(() => {
+    const preventScroll = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+
+    const preventGesture = (e: Event) => {
+      e.preventDefault();
+    };
+
+    // Prevent mouse wheel scroll
+    window.addEventListener('wheel', preventScroll, { passive: false });
+
+    // Prevent touch gestures (pinch zoom)
+    document.addEventListener('gesturestart', preventGesture);
+    document.addEventListener('gesturechange', preventGesture);
+    document.addEventListener('gestureend', preventGesture);
+
+    return () => {
+      window.removeEventListener('wheel', preventScroll);
+      document.removeEventListener('gesturestart', preventGesture);
+      document.removeEventListener('gesturechange', preventGesture);
+      document.removeEventListener('gestureend', preventGesture);
+    };
+  }, []);
+
   return (
     <main className="w-full h-screen bg-gray-900 relative">
       {/* R3F Layer - Behind Spline (z-0) */}
@@ -129,7 +161,7 @@ export default function Home() {
           {/* The helmet with adjustable position, scale, rotation, colors AND finishes */}
           <HelmetModel position={position} scale={scale} rotation={rotation} config={config} />
 
-          <Environment preset="studio" intensity={0.5} />
+          <Environment preset="studio" />
         </Canvas>
       </div>
 
@@ -142,7 +174,14 @@ export default function Home() {
       </div>
 
       {/* Helmet Customizer Panel */}
-      <HelmetCustomizer />
+      <HelmetCustomizer
+        rotation={rotation}
+        onRotationChange={{
+          x: setRotationX,
+          y: setRotationY,
+          z: setRotationZ,
+        }}
+      />
     </main>
   );
 }
