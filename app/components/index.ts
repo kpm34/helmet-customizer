@@ -17,6 +17,3 @@ export { ZoneTabs } from './ZoneTabs';
 
 // Form Components
 export { GlassInput } from './GlassInput';
-
-// Debug/Testing Components
-export { MaterialTester } from './MaterialTester';

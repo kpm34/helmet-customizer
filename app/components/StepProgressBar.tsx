@@ -15,13 +15,14 @@ interface StepConfig {
   step: WizardStep;
   label: string;
   description: string;
+  comingSoon?: boolean;
 }
 
 const STEPS: StepConfig[] = [
   { step: 1, label: 'Color', description: 'Choose base color' },
   { step: 2, label: 'Finish', description: 'Select material finish' },
-  { step: 3, label: 'Pattern', description: 'Add pattern design' },
-  { step: 4, label: 'Logo', description: 'Upload custom logo' },
+  { step: 3, label: 'Pattern', description: 'Add pattern design', comingSoon: true },
+  { step: 4, label: 'Logo', description: 'Upload custom logo', comingSoon: true },
 ];
 
 export function StepProgressBar({ currentStep, completedSteps = [], onStepClick }: WizardProgressProps) {
@@ -56,17 +57,28 @@ export function StepProgressBar({ currentStep, completedSteps = [], onStepClick 
             return (
               <button
                 key={stepConfig.step}
-                onClick={() => onStepClick?.(stepConfig.step)}
-                disabled={!accessible}
-                className="flex flex-col items-center flex-1 group cursor-pointer disabled:cursor-not-allowed"
+                onClick={() => !stepConfig.comingSoon && onStepClick?.(stepConfig.step)}
+                disabled={!accessible || stepConfig.comingSoon}
+                className="flex flex-col items-center flex-1 group cursor-pointer disabled:cursor-not-allowed relative"
               >
+                {/* Coming Soon Tag */}
+                {stepConfig.comingSoon && (
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-10">
+                    <span className="px-2 py-0.5 bg-gray-700 text-gray-400 text-[9px] font-semibold rounded-full uppercase tracking-wider border border-gray-600">
+                      Coming Soon
+                    </span>
+                  </div>
+                )}
+
                 {/* Circle */}
                 <div
                   className={`
                     w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm
                     transition-all duration-300 border-2
                     ${
-                      completed
+                      stepConfig.comingSoon
+                        ? 'bg-gray-900/50 border-gray-700 text-gray-600 opacity-50'
+                        : completed
                         ? 'bg-gradient-to-br from-blue-400 to-purple-500 border-transparent text-white shadow-lg group-hover:scale-110'
                         : current
                         ? 'bg-blue-500/20 border-blue-500 text-blue-400 shadow-lg shadow-blue-500/30'
@@ -76,7 +88,7 @@ export function StepProgressBar({ currentStep, completedSteps = [], onStepClick 
                     }
                   `}
                   style={{
-                    boxShadow: current ? `0 0 20px ${tokens.colors.accent.blue}40` : undefined,
+                    boxShadow: current && !stepConfig.comingSoon ? `0 0 20px ${tokens.colors.accent.blue}40` : undefined,
                   }}
                 >
                   {completed ? <Check className="w-5 h-5" /> : stepConfig.step}
@@ -87,12 +99,20 @@ export function StepProgressBar({ currentStep, completedSteps = [], onStepClick 
                   <div
                     className={`
                       text-xs font-semibold transition-colors duration-300
-                      ${current ? 'text-blue-400' : accessible ? 'text-gray-300 group-hover:text-gray-100' : 'text-gray-600'}
+                      ${
+                        stepConfig.comingSoon
+                          ? 'text-gray-600'
+                          : current
+                          ? 'text-blue-400'
+                          : accessible
+                          ? 'text-gray-300 group-hover:text-gray-100'
+                          : 'text-gray-600'
+                      }
                     `}
                   >
                     {stepConfig.label}
                   </div>
-                  <div className="text-[10px] text-gray-500 mt-0.5">
+                  <div className={`text-[10px] mt-0.5 ${stepConfig.comingSoon ? 'text-gray-700' : 'text-gray-500'}`}>
                     {stepConfig.description}
                   </div>
                 </div>
