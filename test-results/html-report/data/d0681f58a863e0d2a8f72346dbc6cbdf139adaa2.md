@@ -1,0 +1,73 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e7]:
+      - heading "Advanced Material Showcase" [level=1] [ref=e8]
+      - paragraph [ref=e9]: 12 procedural materials • Auto-rotating • Scroll for details
+    - generic [ref=e10]:
+      - heading "Helmet Customizer" [level=2] [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: Base Color
+        - generic [ref=e14]:
+          - slider "Color" [ref=e16]
+          - slider "Hue" [ref=e19]
+        - textbox "#000000" [ref=e21]: "#1a5fb4"
+      - heading "Material Presets (12)" [level=3] [ref=e22]
+      - generic [ref=e23]:
+        - heading "Plastic Finishes" [level=3] [ref=e24]
+        - generic [ref=e25]:
+          - button "Glossy Shiny plastic finish" [ref=e26] [cursor=pointer]:
+            - generic [ref=e27]: Glossy
+            - generic [ref=e28]: Shiny plastic finish
+          - button "Matte Flat non-reflective finish" [ref=e29] [cursor=pointer]:
+            - generic [ref=e30]: Matte
+            - generic [ref=e31]: Flat non-reflective finish
+          - button "Satin Semi-gloss satin finish" [ref=e32] [cursor=pointer]:
+            - generic [ref=e33]: Satin
+            - generic [ref=e34]: Semi-gloss satin finish
+      - generic [ref=e35]:
+        - heading "Automotive Finishes" [level=3] [ref=e36]
+        - generic [ref=e37]:
+          - button "Car Paint Automotive clear coat" [ref=e38] [cursor=pointer]:
+            - generic [ref=e39]: Car Paint
+            - generic [ref=e40]: Automotive clear coat
+          - button "Pearl Pearl coat finish" [ref=e41] [cursor=pointer]:
+            - generic [ref=e42]: Pearl
+            - generic [ref=e43]: Pearl coat finish
+          - button "Wet Look Wet clear coat" [ref=e44] [cursor=pointer]:
+            - generic [ref=e45]: Wet Look
+            - generic [ref=e46]: Wet clear coat
+      - generic [ref=e47]:
+        - heading "Metal Finishes" [level=3] [ref=e48]
+        - generic [ref=e49]:
+          - button "Chrome Mirror chrome finish" [ref=e50] [cursor=pointer]:
+            - generic [ref=e51]: Chrome
+            - generic [ref=e52]: Mirror chrome finish
+          - button "Brushed Metal Brushed metal" [ref=e53] [cursor=pointer]:
+            - generic [ref=e54]: Brushed Metal
+            - generic [ref=e55]: Brushed metal
+          - button "Anodized Anodized aluminum" [ref=e56] [cursor=pointer]:
+            - generic [ref=e57]: Anodized
+            - generic [ref=e58]: Anodized aluminum
+          - button "Metallic Flake Metallic flake paint" [ref=e59] [cursor=pointer]:
+            - generic [ref=e60]: Metallic Flake
+            - generic [ref=e61]: Metallic flake paint
+      - generic [ref=e62]:
+        - heading "Special Finishes" [level=3] [ref=e63]
+        - generic [ref=e64]:
+          - button "Carbon Fiber Carbon fiber weave" [active] [ref=e65] [cursor=pointer]:
+            - generic [ref=e66]: Carbon Fiber
+            - generic [ref=e67]: Carbon fiber weave
+          - button "Rubberized Soft touch coating" [ref=e68] [cursor=pointer]:
+            - generic [ref=e69]: Rubberized
+            - generic [ref=e70]: Soft touch coating
+      - generic [ref=e71]:
+        - heading "Current Material:" [level=3] [ref=e72]
+        - generic [ref=e73]: Carbon Fiber
+      - generic [ref=e74]:
+        - paragraph [ref=e75]: ✨ Advanced Shaders
+        - paragraph [ref=e76]: Procedural materials with noise, bump maps, and complex node setups
+  - alert [ref=e77]
+```

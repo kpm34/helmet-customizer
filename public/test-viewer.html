@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLB Viewer Test</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        #canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            max-width: 300px;
+        }
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div id="info">
+        <h3 style="margin-top:0;">GLB Test Viewer</h3>
+        <p>Testing helmet models with vertex colors</p>
+        <div id="status">Loading...</div>
+    </div>
+
+    <div id="controls">
+        <label>Select Model:</label>
+        <select id="modelSelect">
+            <option value="/models/helmet_glossy_VERSION_A.glb">Glossy (VERSION A)</option>
+            <option value="/models/helmet_matte_VERSION_A.glb">Matte (VERSION A)</option>
+            <option value="/models/helmet_chrome_VERSION_A.glb">Chrome (VERSION A)</option>
+            <option value="/models/helmet_brushed_metal_VERSION_A.glb">Brushed Metal (VERSION A)</option>
+            <option value="/models/helmet_glossy.glb">Glossy (Production)</option>
+            <option value="/models/helmet_matte.glb">Matte (Production)</option>
+            <option value="/models/helmet_chrome.glb">Chrome (Production)</option>
+            <option value="/models/helmet_brushed_metal.glb">Brushed Metal (Production)</option>
+        </select>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a1a1a);
+
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 5);
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('canvas'),
+            antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
+        directionalLight1.position.set(10, 10, 5);
+        scene.add(directionalLight1);
+
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight2.position.set(-10, -10, -5);
+        scene.add(directionalLight2);
+
+        // Controls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // GLB Loader
+        const loader = new GLTFLoader();
+        let currentModel = null;
+
+        function loadModel(path) {
+            document.getElementById('status').textContent = 'Loading...';
+
+            // Remove existing model
+            if (currentModel) {
+                scene.remove(currentModel);
+            }
+
+            loader.load(
+                path,
+                (gltf) => {
+                    currentModel = gltf.scene;
+                    currentModel.scale.set(2, 2, 2);
+                    scene.add(currentModel);
+
+                    // Log material info
+                    console.log('Model loaded:', path);
+                    currentModel.traverse((child) => {
+                        if (child.isMesh) {
+                            console.log(`Mesh: ${child.name}`);
+                            console.log('  Material:', child.material);
+                            console.log('  Vertex Colors:', child.material.vertexColors);
+                            console.log('  Color:', child.material.color);
+                        }
+                    });
+
+                    document.getElementById('status').innerHTML = `
+                        <strong>✓ Loaded!</strong><br>
+                        Model: ${path.split('/').pop()}<br>
+                        <small>Check console for material details</small>
+                    `;
+                },
+                (progress) => {
+                    const percent = (progress.loaded / progress.total * 100).toFixed(0);
+                    document.getElementById('status').textContent = `Loading... ${percent}%`;
+                },
+                (error) => {
+                    console.error('Error loading model:', error);
+                    document.getElementById('status').innerHTML = `<strong style="color:#ff5555;">Error loading model</strong>`;
+                }
+            );
+        }
+
+        // Model selector
+        const modelSelect = document.getElementById('modelSelect');
+        modelSelect.addEventListener('change', (e) => {
+            loadModel(e.target.value);
+        });
+
+        // Load default model
+        loadModel(modelSelect.value);
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

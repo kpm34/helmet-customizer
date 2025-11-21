@@ -1,0 +1,32 @@
+{
+  "name": "@blender-workspace/shared-3d",
+  "version": "1.0.0",
+  "description": "Shared 3D engine abstractions and utilities for helmet-customizer and prism projects. Zero dependencies to avoid Three.js version conflicts.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "./test/run-all-tests.sh",
+    "test:import": "node test/import-test.js",
+    "test:types": "tsc test/type-safety-test.ts --noEmit --skipLibCheck",
+    "test:validate": "node test/final-validation.js"
+  },
+  "keywords": [
+    "3d",
+    "three.js",
+    "interface",
+    "abstraction",
+    "blender"
+  ],
+  "author": "Blender Workspace",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}
