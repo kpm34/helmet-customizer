@@ -9,6 +9,7 @@ import { useHelmetStore, type HelmetConfig } from '@/store/helmetStore';
 import { HelmetCustomizer } from './components/HelmetCustomizer';
 import { getFinishProperties } from '@/lib/constants';
 import type { Application } from '@splinetool/runtime';
+import { RotateCw } from 'lucide-react';
 
 // Map zone names to object names in the GLB model
 const ZONE_OBJECT_MAPPING = {
@@ -143,25 +144,22 @@ export default function Home() {
           }}
           gl={{ alpha: true }}
         >
-          {/* Improved balanced lighting setup */}
-          <ambientLight intensity={0.8} />
+          {/* Subtle lighting setup - Spline provides main lighting */}
+          <ambientLight intensity={0.4} />
 
           {/* Key light - front right */}
-          <directionalLight position={[5, 5, 5]} intensity={0.8} />
+          <directionalLight position={[5, 5, 5]} intensity={0.3} />
 
           {/* Fill light - front left */}
-          <directionalLight position={[-5, 3, 5]} intensity={0.4} />
+          <directionalLight position={[-5, 3, 5]} intensity={0.2} />
 
           {/* Top light - reduces gradient on top of helmet */}
-          <directionalLight position={[0, 10, 0]} intensity={0.6} />
-
-          {/* Back light - subtle rim lighting */}
-          <directionalLight position={[0, 3, -5]} intensity={0.3} />
+          <directionalLight position={[0, 10, 0]} intensity={0.25} />
 
           {/* The helmet with adjustable position, scale, rotation, colors AND finishes */}
           <HelmetModel position={position} scale={scale} rotation={rotation} config={config} />
 
-          <Environment preset="studio" />
+          <Environment preset="studio" intensity={0.3} />
         </Canvas>
       </div>
 
@@ -173,15 +171,77 @@ export default function Home() {
         />
       </div>
 
+      {/* Rotation Controls - Floating Panel (Top Left) */}
+      <div className="fixed top-4 left-4 z-30 bg-gradient-to-br from-gray-800/95 to-gray-900/95 backdrop-blur-xl rounded-xl p-4 border border-gray-700/50 shadow-2xl w-72">
+        <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider flex items-center gap-2 mb-3">
+          <RotateCw className="w-3.5 h-3.5 text-blue-400" />
+          Rotation Controls
+        </div>
+
+        <div className="space-y-3">
+          {/* X Rotation */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center">
+              <label className="text-xs text-gray-400">Rotate X</label>
+              <span className="text-xs text-gray-500 font-mono">{rotation[0].toFixed(2)}</span>
+            </div>
+            <input
+              type="range"
+              min="-3.14"
+              max="3.14"
+              step="0.01"
+              value={rotation[0]}
+              onChange={(e) => setRotationX(parseFloat(e.target.value))}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-blue-500/20 via-blue-500/40 to-blue-500/20"
+            />
+          </div>
+
+          {/* Y Rotation */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center">
+              <label className="text-xs text-gray-400">Rotate Y</label>
+              <span className="text-xs text-gray-500 font-mono">{rotation[1].toFixed(2)}</span>
+            </div>
+            <input
+              type="range"
+              min="-3.14"
+              max="3.14"
+              step="0.01"
+              value={rotation[1]}
+              onChange={(e) => setRotationY(parseFloat(e.target.value))}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-purple-500/20 via-purple-500/40 to-purple-500/20"
+            />
+          </div>
+
+          {/* Z Rotation */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center">
+              <label className="text-xs text-gray-400">Rotate Z</label>
+              <span className="text-xs text-gray-500 font-mono">{rotation[2].toFixed(2)}</span>
+            </div>
+            <input
+              type="range"
+              min="-3.14"
+              max="3.14"
+              step="0.01"
+              value={rotation[2]}
+              onChange={(e) => setRotationZ(parseFloat(e.target.value))}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-green-500/20 via-green-500/40 to-green-500/20"
+            />
+          </div>
+
+          {/* Reset Button */}
+          <button
+            onClick={() => setRotation([0, 0, 0])}
+            className="w-full mt-2 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg text-xs font-medium transition-colors"
+          >
+            Reset Rotation
+          </button>
+        </div>
+      </div>
+
       {/* Helmet Customizer Panel */}
-      <HelmetCustomizer
-        rotation={rotation}
-        onRotationChange={{
-          x: setRotationX,
-          y: setRotationY,
-          z: setRotationZ,
-        }}
-      />
+      <HelmetCustomizer />
     </main>
   );
 }
