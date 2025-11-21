@@ -2,7 +2,7 @@
 
 import { HexColorPicker } from 'react-colorful';
 import { CFB_TEAM_PRESETS, BASIC_COLOR_PALETTE } from '@/types/helmet';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Palette, Pipette, Sparkles } from 'lucide-react';
 
 interface ColorPickerProps {
@@ -15,6 +15,24 @@ interface ColorPickerProps {
 export function ColorSelector({ value, onChange, label, onTeamPresetClick }: ColorPickerProps) {
   const [showPicker, setShowPicker] = useState(false);
   const [lastClickedTeam, setLastClickedTeam] = useState<string | null>(null);
+  const presetsContainerRef = useRef<HTMLDivElement>(null);
+
+  // Allow scrolling in the CFB presets container
+  useEffect(() => {
+    const container = presetsContainerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // Allow scrolling within this container by stopping propagation
+      e.stopPropagation();
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: true });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -75,7 +93,10 @@ export function ColorSelector({ value, onChange, label, onTeamPresetClick }: Col
           <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
           CFB Team Presets
         </div>
-        <div className="grid grid-cols-2 gap-2.5 max-h-52 overflow-y-auto pr-1 custom-scrollbar">
+        <div
+          ref={presetsContainerRef}
+          className="grid grid-cols-2 gap-2.5 max-h-52 overflow-y-auto pr-1 custom-scrollbar"
+        >
           {CFB_TEAM_PRESETS.map((preset) => (
             <button
               key={preset.team}

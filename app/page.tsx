@@ -144,17 +144,18 @@ export default function Home() {
           }}
           gl={{ alpha: true }}
         >
-          {/* Subtle lighting setup - Spline provides main lighting */}
-          <ambientLight intensity={0.4} />
+          {/* Subtle diffused lighting - Spline provides main lighting */}
+          <ambientLight intensity={0.6} />
 
-          {/* Key light - front right */}
-          <directionalLight position={[5, 5, 5]} intensity={0.3} />
+          {/* Soft hemisphere light for natural fill */}
+          <hemisphereLight args={['#ffffff', '#444444', 0.3]} />
 
-          {/* Fill light - front left */}
-          <directionalLight position={[-5, 3, 5]} intensity={0.2} />
+          {/* Very soft key light - front */}
+          <directionalLight position={[3, 3, 5]} intensity={0.15} />
 
-          {/* Top light - reduces gradient on top of helmet */}
-          <directionalLight position={[0, 10, 0]} intensity={0.25} />
+          {/* Soft fill from multiple angles for even distribution */}
+          <pointLight position={[-3, 2, 3]} intensity={0.1} distance={10} decay={2} />
+          <pointLight position={[3, 2, 3]} intensity={0.1} distance={10} decay={2} />
 
           {/* The helmet with adjustable position, scale, rotation, colors AND finishes */}
           <HelmetModel position={position} scale={scale} rotation={rotation} config={config} />
