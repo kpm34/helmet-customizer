@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@helmet/shared-components": "file:../shared-helmet-components",
     "@react-three/drei": "^9.100.0",
     "@react-three/fiber": "^8.15.0",
     "@splinetool/react-spline": "^4.1.0",
