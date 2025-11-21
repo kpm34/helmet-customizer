@@ -6,7 +6,6 @@
  */
 
 import type { HelmetZone, MaterialFinish } from '@/store/helmetStore';
-import type { ConsoleMessage } from '@/app/hooks/useConsoleCapture';
 
 // ============================================================
 // ZONE CONFIGURATION
@@ -230,48 +229,6 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
     rotation: { x: -0.3, y: Math.PI / 4, z: 0 },
   },
 };
-
-// ============================================================
-// CONSOLE MESSAGE CONFIGURATION
-// ============================================================
-
-/**
- * Console message type styling configuration
- * Used by ConsolePanel for consistent message display
- */
-export const MESSAGE_TYPE_CONFIG: Record<ConsoleMessage['type'], {
-  color: string;
-  icon: string;
-  borderColor: string;
-}> = {
-  error: {
-    color: 'text-red-400',
-    icon: '❌',
-    borderColor: 'border-red-500'
-  },
-  warn: {
-    color: 'text-yellow-400',
-    icon: '⚠️',
-    borderColor: 'border-yellow-500'
-  },
-  info: {
-    color: 'text-blue-400',
-    icon: 'ℹ️',
-    borderColor: 'border-blue-500'
-  },
-  log: {
-    color: 'text-gray-300',
-    icon: '📝',
-    borderColor: 'border-gray-600'
-  },
-};
-
-/**
- * Get message styling by type
- */
-export function getMessageConfig(type: ConsoleMessage['type']) {
-  return MESSAGE_TYPE_CONFIG[type];
-}
 
 // ============================================================
 // DEFAULT CONFIGURATIONS
