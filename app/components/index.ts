@@ -8,7 +8,6 @@ export { Tooltip } from './Tooltip';
 export { HelmetCustomizer } from './HelmetCustomizer';
 export { ColorSelector } from './ColorSelector';
 export { MaterialFinishSelector } from './MaterialFinishSelector';
-export { default as DebugConsole } from './DebugConsole';
 
 // Wizard/Step Components
 export { StepProgressBar } from './StepProgressBar';
