@@ -302,13 +302,13 @@ export function HelmetCustomizer() {
         </div>
 
         {/* Step Navigation Tabs - Color, Finish, Pattern, Logo with rotating border */}
-        <div className="flex gap-1 bg-[#D9D9D9] px-2 pt-2 pb-2 mt-2">
+        <div className="flex gap-1 px-2 pt-2 pb-2 mt-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg">
         {/* Shell has all 4 steps */}
         {activeZone === 'shell' && (
           <>
             <button
               onClick={() => setCurrentStep(1)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
                 <span className="relative z-10">Color</span>
@@ -316,7 +316,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(2)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
                 <span className="relative z-10">Finish</span>
@@ -324,7 +324,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(3)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
                 <span className="relative z-10">Pattern</span>
@@ -332,7 +332,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(4)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 4} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
                 <span className="relative z-10">Logo</span>
@@ -346,7 +346,7 @@ export function HelmetCustomizer() {
           <>
             <button
               onClick={() => setCurrentStep(1)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
                 <span className="relative z-10">Color</span>
@@ -354,7 +354,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(2)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
                 <span className="relative z-10">Finish</span>
@@ -362,7 +362,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(3)}
-              className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+              className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
                 <span className="relative z-10">Components</span>
@@ -375,7 +375,7 @@ export function HelmetCustomizer() {
         {activeZone === 'chinstrap' && (
           <button
             onClick={() => setCurrentStep(1)}
-            className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
           >
             <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
               <span className="relative z-10">Color</span>
