@@ -312,9 +312,9 @@ export function HelmetCustomizer() {
             >
               {currentStep === 1 && (
                 <motion.div
-                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl opacity-65"
                   style={{
-                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    background: 'conic-gradient(transparent 200deg, rgba(156, 163, 175, 0.8))',
                     zIndex: 1,
                   }}
                   initial={{ rotate: 0 }}
@@ -335,9 +335,9 @@ export function HelmetCustomizer() {
             >
               {currentStep === 2 && (
                 <motion.div
-                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl opacity-65"
                   style={{
-                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    background: 'conic-gradient(transparent 200deg, rgba(156, 163, 175, 0.8))',
                     zIndex: 1,
                   }}
                   initial={{ rotate: 0 }}
@@ -358,9 +358,9 @@ export function HelmetCustomizer() {
             >
               {currentStep === 3 && (
                 <motion.div
-                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl opacity-65"
                   style={{
-                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    background: 'conic-gradient(transparent 200deg, rgba(156, 163, 175, 0.8))',
                     zIndex: 1,
                   }}
                   initial={{ rotate: 0 }}
@@ -381,9 +381,9 @@ export function HelmetCustomizer() {
             >
               {currentStep === 4 && (
                 <motion.div
-                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl opacity-65"
                   style={{
-                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    background: 'conic-gradient(transparent 200deg, rgba(156, 163, 175, 0.8))',
                     zIndex: 1,
                   }}
                   initial={{ rotate: 0 }}
@@ -410,9 +410,9 @@ export function HelmetCustomizer() {
             >
               {currentStep === 1 && (
                 <motion.div
-                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl opacity-65"
                   style={{
-                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    background: 'conic-gradient(transparent 200deg, rgba(156, 163, 175, 0.8))',
                     zIndex: 1,
                   }}
                   initial={{ rotate: 0 }}
@@ -433,9 +433,9 @@ export function HelmetCustomizer() {
             >
               {currentStep === 2 && (
                 <motion.div
-                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl opacity-65"
                   style={{
-                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    background: 'conic-gradient(transparent 200deg, rgba(156, 163, 175, 0.8))',
                     zIndex: 1,
                   }}
                   initial={{ rotate: 0 }}
@@ -456,9 +456,9 @@ export function HelmetCustomizer() {
             >
               {currentStep === 3 && (
                 <motion.div
-                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl opacity-65"
                   style={{
-                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    background: 'conic-gradient(transparent 200deg, rgba(156, 163, 175, 0.8))',
                     zIndex: 1,
                   }}
                   initial={{ rotate: 0 }}
