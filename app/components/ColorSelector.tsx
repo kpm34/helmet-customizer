@@ -1,9 +1,8 @@
 'use client';
 
-import { HexColorPicker } from 'react-colorful';
 import { CFB_TEAM_PRESETS, BASIC_COLOR_PALETTE } from '@/types/helmet';
 import { useState, useRef, useEffect } from 'react';
-import { Palette, Pipette, Sparkles } from 'lucide-react';
+import { Palette, Sparkles } from 'lucide-react';
 
 interface ColorPickerProps {
   value: string;
@@ -14,7 +13,6 @@ interface ColorPickerProps {
 }
 
 export function ColorSelector({ value, onChange, label, showTeamPresets = true, onTeamPresetClick }: ColorPickerProps) {
-  const [showPicker, setShowPicker] = useState(false);
   const [lastClickedTeam, setLastClickedTeam] = useState<string | null>(null);
   const presetsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -44,20 +42,16 @@ export function ColorSelector({ value, onChange, label, showTeamPresets = true, 
         </label>
       )}
 
-      {/* Current Color Display with Glassmorphism */}
+      {/* Current Color Display - Non-clickable */}
       <div className="flex items-center gap-2.5">
-        <button
-          onClick={() => setShowPicker(!showPicker)}
-          className="group relative w-12 h-12 rounded-xl border-2 border-gray-600/50 hover:border-blue-400/50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+        <div
+          className="w-12 h-12 rounded-xl border-2 border-gray-600/50 shadow-lg"
           style={{
             backgroundColor: value,
             boxShadow: `0 0 20px ${value}40, 0 4px 12px rgba(0,0,0,0.3)`
           }}
-          title="Click to open color picker"
-        >
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <Pipette className="absolute top-1 right-1 w-3.5 h-3.5 text-white/70 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </button>
+          title="Current color"
+        />
         <input
           type="text"
           value={value.toUpperCase()}
@@ -69,24 +63,6 @@ export function ColorSelector({ value, onChange, label, showTeamPresets = true, 
           }}
         />
       </div>
-
-      {/* Full Color Picker (Expandable) with Glass Effect */}
-      {showPicker && (
-        <div className="animate-fade-in space-y-3 p-3 bg-gray-800/40 backdrop-blur-xl rounded-2xl border border-gray-700/50 shadow-2xl">
-          <div className="relative">
-            <HexColorPicker color={value} onChange={onChange} style={{ width: '100%', height: '160px' }} />
-            <div className="absolute top-2 right-2">
-              <Sparkles className="w-4 h-4 text-yellow-400/60" />
-            </div>
-          </div>
-          <button
-            onClick={() => setShowPicker(false)}
-            className="w-full px-3 py-2 text-xs text-gray-300 hover:text-white bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-all duration-200 font-medium"
-          >
-            Close Picker
-          </button>
-        </div>
-      )}
 
       {/* Team Color Presets with Modern Design - Only show if enabled */}
       {showTeamPresets && (
