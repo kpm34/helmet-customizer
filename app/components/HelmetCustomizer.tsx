@@ -308,7 +308,7 @@ export function HelmetCustomizer() {
           <>
             <button
               onClick={() => setCurrentStep(1)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 1 && (
                 <motion.div
@@ -331,7 +331,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(2)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 2 && (
                 <motion.div
@@ -354,7 +354,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(3)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 3 && (
                 <motion.div
@@ -377,7 +377,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(4)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 4 && (
                 <motion.div
@@ -406,7 +406,7 @@ export function HelmetCustomizer() {
           <>
             <button
               onClick={() => setCurrentStep(1)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 1 && (
                 <motion.div
@@ -429,7 +429,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(2)}
-              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 2 && (
                 <motion.div
@@ -452,7 +452,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(3)}
-              className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
+              className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 3 && (
                 <motion.div
