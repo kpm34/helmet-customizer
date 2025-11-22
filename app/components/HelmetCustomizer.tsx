@@ -6,13 +6,14 @@ import { ColorSelector } from './ColorSelector';
 import { MaterialFinishSelector } from './MaterialFinishSelector';
 import PatternSelector from './PatternSelector';
 import { ZONES_CONFIG, getZoneConfig } from '@/lib/constants';
-import { PanelRightClose, PanelRightOpen, Palette, Pipette, X } from 'lucide-react';
+import { PanelRightClose, PanelRightOpen, Palette, Pipette, X, Sparkles } from 'lucide-react';
 import { StepProgressBar, type WizardStep } from './StepProgressBar';
 import { StepNavigationButtons } from './StepNavigationButtons';
 import { ZoneTabs } from './ZoneTabs';
 import { GlassInput } from './GlassInput';
+import { RotatingBorder } from './RotatingBorder';
 import { tokens } from '@/lib/design/tokens';
-import { BASIC_COLOR_PALETTE } from '@/types/helmet';
+import { BASIC_COLOR_PALETTE, CFB_TEAM_PRESETS } from '@/types/helmet';
 import { HexColorPicker } from 'react-colorful';
 
 // Helper functions for HSL conversion
@@ -92,6 +93,7 @@ export function HelmetCustomizer() {
   const [lastClickedTeam, setLastClickedTeam] = useState<string | null>(null);
   const [fineTuneColor, setFineTuneColor] = useState<string | null>(null);
   const [tempColor, setTempColor] = useState<string>('#FF0000');
+  const [showTeamPresets, setShowTeamPresets] = useState(false);
 
   // Resizable panel state
   const [isResizing, setIsResizing] = useState(false);
@@ -270,7 +272,7 @@ export function HelmetCustomizer() {
         </button>
       </header>
 
-      {/* Main Zone Tabs - Shell, Facemask, Chinstrap */}
+      {/* Main Zone Tabs - Shell, Facemask, Chinstrap with 3D pressed effect */}
       <div className="grid grid-cols-3 bg-[#D9D9D9]">
         {(['shell', 'facemask', 'chinstrap'] as const).map((zone) => (
           <button
@@ -278,111 +280,137 @@ export function HelmetCustomizer() {
             onClick={() => setActiveZone(zone)}
             className={`py-4 text-center text-lg font-normal tracking-wide transition-all border-r border-gray-400 last:border-r-0 ${
               activeZone === zone
-                ? 'bg-white text-gray-800 font-medium shadow-sm'
-                : 'bg-[#D9D9D9] text-gray-700 hover:bg-gray-200'
+                ? 'bg-[#C0C0C0] text-gray-800 font-medium shadow-inner'
+                : 'bg-[#D9D9D9] text-gray-700 hover:bg-gray-200 shadow-sm'
             }`}
+            style={
+              activeZone === zone
+                ? {
+                    boxShadow: 'inset 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.2)',
+                    transform: 'translateY(2px)',
+                  }
+                : {
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  }
+            }
           >
             {zone === 'facemask' ? 'FACEMASK' : zone.toUpperCase()}
           </button>
         ))}
       </div>
 
-      {/* Step Navigation Tabs - Color, Finish, Pattern, Logo */}
+      {/* Step Navigation Tabs - Color, Finish, Pattern, Logo with rotating border */}
       <div className="grid grid-cols-4 gap-0 bg-white border-b border-gray-300">
         {/* Shell has all 4 steps */}
         {activeZone === 'shell' && (
           <>
-            <button
-              onClick={() => setCurrentStep(1)}
-              className={`py-3 text-center text-base transition-all border-r border-gray-300 ${
-                currentStep === 1
-                  ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Color
-            </button>
-            <button
-              onClick={() => setCurrentStep(2)}
-              className={`py-3 text-center text-base transition-all border-r border-gray-300 ${
-                currentStep === 2
-                  ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Finish
-            </button>
-            <button
-              onClick={() => setCurrentStep(3)}
-              className={`py-3 text-center text-base transition-all border-r border-gray-300 ${
-                currentStep === 3
-                  ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Pattern
-            </button>
-            <button
-              onClick={() => setCurrentStep(4)}
-              className={`py-3 text-center text-base transition-all ${
-                currentStep === 4
-                  ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Logo
-            </button>
+            <RotatingBorder isActive={currentStep === 1} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+              <button
+                onClick={() => setCurrentStep(1)}
+                className={`w-full h-full py-3 text-center text-base transition-all border-r border-gray-300 ${
+                  currentStep === 1
+                    ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Color
+              </button>
+            </RotatingBorder>
+            <RotatingBorder isActive={currentStep === 2} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+              <button
+                onClick={() => setCurrentStep(2)}
+                className={`w-full h-full py-3 text-center text-base transition-all border-r border-gray-300 ${
+                  currentStep === 2
+                    ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Finish
+              </button>
+            </RotatingBorder>
+            <RotatingBorder isActive={currentStep === 3} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+              <button
+                onClick={() => setCurrentStep(3)}
+                className={`w-full h-full py-3 text-center text-base transition-all border-r border-gray-300 ${
+                  currentStep === 3
+                    ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Pattern
+              </button>
+            </RotatingBorder>
+            <RotatingBorder isActive={currentStep === 4} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+              <button
+                onClick={() => setCurrentStep(4)}
+                className={`w-full h-full py-3 text-center text-base transition-all ${
+                  currentStep === 4
+                    ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Logo
+              </button>
+            </RotatingBorder>
           </>
         )}
 
         {/* Facemask has Color, Finish, Components */}
         {activeZone === 'facemask' && (
           <>
-            <button
-              onClick={() => setCurrentStep(1)}
-              className={`py-3 text-center text-base transition-all border-r border-gray-300 ${
-                currentStep === 1
-                  ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Color
-            </button>
-            <button
-              onClick={() => setCurrentStep(2)}
-              className={`py-3 text-center text-base transition-all border-r border-gray-300 ${
-                currentStep === 2
-                  ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Finish
-            </button>
-            <button
-              onClick={() => setCurrentStep(3)}
-              className={`py-3 text-center text-base transition-all col-span-2 ${
-                currentStep === 3
-                  ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Components
-            </button>
+            <RotatingBorder isActive={currentStep === 1} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+              <button
+                onClick={() => setCurrentStep(1)}
+                className={`w-full h-full py-3 text-center text-base transition-all border-r border-gray-300 ${
+                  currentStep === 1
+                    ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Color
+              </button>
+            </RotatingBorder>
+            <RotatingBorder isActive={currentStep === 2} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+              <button
+                onClick={() => setCurrentStep(2)}
+                className={`w-full h-full py-3 text-center text-base transition-all border-r border-gray-300 ${
+                  currentStep === 2
+                    ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Finish
+              </button>
+            </RotatingBorder>
+            <RotatingBorder isActive={currentStep === 3} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+              <button
+                onClick={() => setCurrentStep(3)}
+                className={`w-full h-full py-3 text-center text-base transition-all col-span-2 ${
+                  currentStep === 3
+                    ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Components
+              </button>
+            </RotatingBorder>
           </>
         )}
 
         {/* Chinstrap has only Color */}
         {activeZone === 'chinstrap' && (
-          <button
-            onClick={() => setCurrentStep(1)}
-            className={`py-3 text-center text-base transition-all col-span-4 ${
-              currentStep === 1
-                ? 'bg-[#D9D9D9] text-gray-800 font-medium shadow-sm'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            Color
-          </button>
+          <RotatingBorder isActive={currentStep === 1} borderColor="#3B82F6" animationDuration={3} borderRadius={0}>
+            <button
+              onClick={() => setCurrentStep(1)}
+              className={`w-full h-full py-3 text-center text-base transition-all col-span-4 ${
+                currentStep === 1
+                  ? 'bg-[#D9D9D9] text-gray-800 font-medium'
+                  : 'bg-white text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              Color
+            </button>
+          </RotatingBorder>
         )}
       </div>
 
@@ -397,7 +425,7 @@ export function HelmetCustomizer() {
         {/* Step 1: Color Selection */}
         {currentStep === 1 && (
           <div className="space-y-3 animate-fade-in">
-            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-3 border border-gray-700/50">
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-3 border border-gray-700/50 relative">
               <h3 className="text-xs font-semibold text-gray-200 mb-2 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                 Step 1: Choose Zone Color
@@ -405,10 +433,25 @@ export function HelmetCustomizer() {
               <p className="text-[11px] text-gray-400 mb-2.5">
                 Select a color for the {zoneInfo?.label} zone
               </p>
+
+              {/* Team Presets Button - Only on Shell */}
+              {activeZone === 'shell' && (
+                <button
+                  onClick={() => setShowTeamPresets(true)}
+                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all duration-200 group"
+                  title="Team Presets"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  <span className="absolute -bottom-8 right-0 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    Team Presets
+                  </span>
+                </button>
+              )}
+
               <ColorSelector
                 value={currentZoneConfig.color}
                 onChange={(color) => setZoneColor(activeZone, color)}
-                onTeamPresetClick={handleTeamPresetClick}
+                showTeamPresets={false}
               />
             </div>
           </div>
@@ -730,6 +773,55 @@ export function HelmetCustomizer() {
           Reset to Defaults
         </button>
       </footer>
+
+      {/* Team Presets Modal */}
+      {showTeamPresets && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="bg-[#676767] px-6 py-4 flex items-center justify-between">
+              <h2 className="text-white text-xl font-light tracking-wide">TEAM PRESETS</h2>
+              <button
+                onClick={() => setShowTeamPresets(false)}
+                className="p-2 hover:bg-gray-600/50 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="grid grid-cols-3 gap-4">
+                {CFB_TEAM_PRESETS.map((preset) => (
+                  <button
+                    key={preset.team}
+                    onClick={() => {
+                      handleTeamPresetClick(preset);
+                      setShowTeamPresets(false);
+                    }}
+                    className="group relative py-6 px-4 rounded-xl border-2 border-gray-700/50 hover:border-gray-500/80 transition-all duration-200 hover:scale-105 hover:shadow-2xl font-semibold text-base text-center"
+                    style={{
+                      backgroundColor: preset.primaryColor,
+                      color: preset.secondaryColor,
+                      boxShadow: `0 0 24px ${preset.primaryColor}40, 0 8px 16px rgba(0,0,0,0.3)`,
+                      textShadow: `0 2px 4px rgba(0,0,0,0.5), 0 0 12px ${preset.secondaryColor}30`
+                    }}
+                  >
+                    {preset.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-gray-800/50 px-6 py-4 border-t border-gray-700">
+              <p className="text-xs text-gray-400 text-center">
+                Select a team to apply their colors to Shell and Facemask. Click again to swap colors.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
