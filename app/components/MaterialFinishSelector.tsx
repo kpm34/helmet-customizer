@@ -77,14 +77,14 @@ export function MaterialFinishSelector({ value, onChange, label }: FinishSelecto
   const finishes: MaterialFinish[] = ['glossy', 'matte', 'brushed', 'satin'];
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {label && (
         <label className="block text-sm font-medium text-gray-300">
           {label}
         </label>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-1.5">
         {finishes.map((finish) => (
           <button
             key={finish}

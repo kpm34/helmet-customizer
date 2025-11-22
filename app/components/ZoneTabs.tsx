@@ -22,12 +22,12 @@ export function ZoneTabs({ activeZone, onZoneChange, currentStep }: ZoneTabsProp
   const zones: HelmetZone[] = currentStep && currentStep >= 3 ? limitedZones : allZones;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wide">
         Select Zone to Customize
       </label>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-1.5">
         {zones.map((zone) => {
           const isActive = activeZone === zone;
           const zoneColor = config[zone].color;
@@ -50,7 +50,7 @@ export function ZoneTabs({ activeZone, onZoneChange, currentStep }: ZoneTabsProp
               <button
                 onClick={() => onZoneChange(zone)}
                 className={`
-                  relative w-full px-3 py-3 rounded-lg text-xs font-medium transition-all duration-200
+                  relative w-full px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-200
                   border-2 group overflow-hidden
                   ${
                     isActive
@@ -64,7 +64,7 @@ export function ZoneTabs({ activeZone, onZoneChange, currentStep }: ZoneTabsProp
               >
                 {/* Color indicator */}
                 <div
-                  className="absolute top-2 right-2 w-4 h-4 rounded-full border-2 border-white/20"
+                  className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full border-2 border-white/20"
                   style={{
                     backgroundColor: zoneColor,
                     boxShadow: `0 0 8px ${zoneColor}40`,

@@ -29,7 +29,15 @@ export type MaterialFinish =
   | 'holographic_foil';
 
 // Pattern types
-export type PatternType = 'none' | 'camo' | 'tiger_stripe';
+export type PatternType =
+  | 'none'
+  | 'stripe_single'
+  | 'stripe_double'
+  | 'camo'
+  | 'tiger'
+  | 'leopard'
+  | 'ram'
+  | 'wolverine';
 
 // Zone configuration
 export interface ZoneConfig {

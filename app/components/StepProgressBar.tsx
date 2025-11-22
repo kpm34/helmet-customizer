@@ -31,7 +31,7 @@ export function StepProgressBar({ currentStep, completedSteps = [], onStepClick 
   const isStepAccessible = (step: WizardStep) => step <= currentStep || isStepCompleted(step);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Step Indicators */}
       <div className="relative">
         {/* Progress Line */}
@@ -73,7 +73,7 @@ export function StepProgressBar({ currentStep, completedSteps = [], onStepClick 
                 {/* Circle */}
                 <div
                   className={`
-                    w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm
+                    w-9 h-9 rounded-full flex items-center justify-center font-semibold text-xs
                     transition-all duration-300 border-2
                     ${
                       stepConfig.comingSoon
@@ -91,11 +91,11 @@ export function StepProgressBar({ currentStep, completedSteps = [], onStepClick 
                     boxShadow: current && !stepConfig.comingSoon ? `0 0 20px ${tokens.colors.accent.blue}40` : undefined,
                   }}
                 >
-                  {completed ? <Check className="w-5 h-5" /> : stepConfig.step}
+                  {completed ? <Check className="w-4 h-4" /> : stepConfig.step}
                 </div>
 
                 {/* Label */}
-                <div className="mt-2 text-center">
+                <div className="mt-1.5 text-center">
                   <div
                     className={`
                       text-xs font-semibold transition-colors duration-300
