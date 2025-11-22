@@ -452,7 +452,7 @@ export function HelmetCustomizer() {
             </button>
             <button
               onClick={() => setCurrentStep(3)}
-              className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-white/20 backdrop-blur-sm border border-white/30"
             >
               {currentStep === 3 && (
                 <motion.div
