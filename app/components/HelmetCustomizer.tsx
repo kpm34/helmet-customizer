@@ -306,97 +306,81 @@ export function HelmetCustomizer() {
         {/* Shell has all 4 steps */}
         {activeZone === 'shell' && (
           <>
-            <div className="flex-1 relative">
+            <button
+              onClick={() => setCurrentStep(1)}
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            >
               <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <button
-                  onClick={() => setCurrentStep(1)}
-                  className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-                >
-                  Color
-                </button>
+                <span className="relative z-10">Color</span>
               </RotatingBorder>
-            </div>
-            <div className="flex-1 relative">
+            </button>
+            <button
+              onClick={() => setCurrentStep(2)}
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            >
               <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <button
-                  onClick={() => setCurrentStep(2)}
-                  className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-                >
-                  Finish
-                </button>
+                <span className="relative z-10">Finish</span>
               </RotatingBorder>
-            </div>
-            <div className="flex-1 relative">
+            </button>
+            <button
+              onClick={() => setCurrentStep(3)}
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            >
               <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <button
-                  onClick={() => setCurrentStep(3)}
-                  className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-                >
-                  Pattern
-                </button>
+                <span className="relative z-10">Pattern</span>
               </RotatingBorder>
-            </div>
-            <div className="flex-1 relative">
+            </button>
+            <button
+              onClick={() => setCurrentStep(4)}
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            >
               <RotatingBorder isActive={currentStep === 4} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <button
-                  onClick={() => setCurrentStep(4)}
-                  className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-                >
-                  Logo
-                </button>
+                <span className="relative z-10">Logo</span>
               </RotatingBorder>
-            </div>
+            </button>
           </>
         )}
 
         {/* Facemask has Color, Finish, Components */}
         {activeZone === 'facemask' && (
           <>
-            <div className="flex-1 relative">
+            <button
+              onClick={() => setCurrentStep(1)}
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            >
               <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <button
-                  onClick={() => setCurrentStep(1)}
-                  className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-                >
-                  Color
-                </button>
+                <span className="relative z-10">Color</span>
               </RotatingBorder>
-            </div>
-            <div className="flex-1 relative">
+            </button>
+            <button
+              onClick={() => setCurrentStep(2)}
+              className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            >
               <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <button
-                  onClick={() => setCurrentStep(2)}
-                  className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-                >
-                  Finish
-                </button>
+                <span className="relative z-10">Finish</span>
               </RotatingBorder>
-            </div>
-            <div className="flex-[2] relative">
+            </button>
+            <button
+              onClick={() => setCurrentStep(3)}
+              className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+            >
               <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <button
-                  onClick={() => setCurrentStep(3)}
-                  className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-                >
-                  Components
-                </button>
+                <span className="relative z-10">Components</span>
               </RotatingBorder>
-            </div>
+            </button>
           </>
         )}
 
         {/* Chinstrap has only Color */}
         {activeZone === 'chinstrap' && (
-          <div className="flex-1 relative">
+          <button
+            onClick={() => setCurrentStep(1)}
+            className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900"
+          >
             <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-              <button
-                onClick={() => setCurrentStep(1)}
-                className="w-full h-full py-2.5 text-center text-sm transition-all rounded-xl bg-transparent text-gray-800 hover:text-gray-900"
-              >
-                Color
-              </button>
+              <span className="relative z-10">Color</span>
             </RotatingBorder>
-          </div>
+          </button>
         )}
       </div>
       </div>
