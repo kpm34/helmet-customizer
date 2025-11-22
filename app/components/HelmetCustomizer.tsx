@@ -311,7 +311,7 @@ export function HelmetCustomizer() {
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <span className="relative z-10">Color</span>
+                Color
               </RotatingBorder>
             </button>
             <button
@@ -319,7 +319,7 @@ export function HelmetCustomizer() {
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <span className="relative z-10">Finish</span>
+                Finish
               </RotatingBorder>
             </button>
             <button
@@ -327,7 +327,7 @@ export function HelmetCustomizer() {
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <span className="relative z-10">Pattern</span>
+                Pattern
               </RotatingBorder>
             </button>
             <button
@@ -335,7 +335,7 @@ export function HelmetCustomizer() {
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 4} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <span className="relative z-10">Logo</span>
+                Logo
               </RotatingBorder>
             </button>
           </>
@@ -349,7 +349,7 @@ export function HelmetCustomizer() {
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <span className="relative z-10">Color</span>
+                Color
               </RotatingBorder>
             </button>
             <button
@@ -357,7 +357,7 @@ export function HelmetCustomizer() {
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <span className="relative z-10">Finish</span>
+                Finish
               </RotatingBorder>
             </button>
             <button
@@ -365,7 +365,7 @@ export function HelmetCustomizer() {
               className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
               <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                <span className="relative z-10">Components</span>
+                Components
               </RotatingBorder>
             </button>
           </>
@@ -378,7 +378,7 @@ export function HelmetCustomizer() {
             className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
           >
             <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-              <span className="relative z-10">Color</span>
+              Color
             </RotatingBorder>
           </button>
         )}
