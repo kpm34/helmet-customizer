@@ -11,10 +11,10 @@ import { StepProgressBar, type WizardStep } from './StepProgressBar';
 import { StepNavigationButtons } from './StepNavigationButtons';
 import { ZoneTabs } from './ZoneTabs';
 import { GlassInput } from './GlassInput';
-import { RotatingBorder } from './RotatingBorder';
 import { tokens } from '@/lib/design/tokens';
 import { BASIC_COLOR_PALETTE, CFB_TEAM_PRESETS } from '@/types/helmet';
 import { HexColorPicker } from 'react-colorful';
+import { motion } from 'framer-motion';
 
 // Helper functions for HSL conversion
 function hexToHSL(hex: string): { h: number; s: number; l: number } {
@@ -310,33 +310,93 @@ export function HelmetCustomizer() {
               onClick={() => setCurrentStep(1)}
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
-              <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                Color
-              </RotatingBorder>
+              {currentStep === 1 && (
+                <motion.div
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  style={{
+                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    zIndex: 1,
+                  }}
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 2,
+                    ease: 'linear',
+                    repeat: Infinity,
+                    repeatDelay: 0,
+                  }}
+                />
+              )}
+              <span className="relative z-10">Color</span>
             </button>
             <button
               onClick={() => setCurrentStep(2)}
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
-              <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                Finish
-              </RotatingBorder>
+              {currentStep === 2 && (
+                <motion.div
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  style={{
+                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    zIndex: 1,
+                  }}
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 2,
+                    ease: 'linear',
+                    repeat: Infinity,
+                    repeatDelay: 0,
+                  }}
+                />
+              )}
+              <span className="relative z-10">Finish</span>
             </button>
             <button
               onClick={() => setCurrentStep(3)}
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
-              <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                Pattern
-              </RotatingBorder>
+              {currentStep === 3 && (
+                <motion.div
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  style={{
+                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    zIndex: 1,
+                  }}
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 2,
+                    ease: 'linear',
+                    repeat: Infinity,
+                    repeatDelay: 0,
+                  }}
+                />
+              )}
+              <span className="relative z-10">Pattern</span>
             </button>
             <button
               onClick={() => setCurrentStep(4)}
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
-              <RotatingBorder isActive={currentStep === 4} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                Logo
-              </RotatingBorder>
+              {currentStep === 4 && (
+                <motion.div
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  style={{
+                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    zIndex: 1,
+                  }}
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 2,
+                    ease: 'linear',
+                    repeat: Infinity,
+                    repeatDelay: 0,
+                  }}
+                />
+              )}
+              <span className="relative z-10">Logo</span>
             </button>
           </>
         )}
@@ -348,25 +408,70 @@ export function HelmetCustomizer() {
               onClick={() => setCurrentStep(1)}
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
-              <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                Color
-              </RotatingBorder>
+              {currentStep === 1 && (
+                <motion.div
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  style={{
+                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    zIndex: 1,
+                  }}
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 2,
+                    ease: 'linear',
+                    repeat: Infinity,
+                    repeatDelay: 0,
+                  }}
+                />
+              )}
+              <span className="relative z-10">Color</span>
             </button>
             <button
               onClick={() => setCurrentStep(2)}
               className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
-              <RotatingBorder isActive={currentStep === 2} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                Finish
-              </RotatingBorder>
+              {currentStep === 2 && (
+                <motion.div
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  style={{
+                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    zIndex: 1,
+                  }}
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 2,
+                    ease: 'linear',
+                    repeat: Infinity,
+                    repeatDelay: 0,
+                  }}
+                />
+              )}
+              <span className="relative z-10">Finish</span>
             </button>
             <button
               onClick={() => setCurrentStep(3)}
               className="flex-[2] relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
             >
-              <RotatingBorder isActive={currentStep === 3} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-                Components
-              </RotatingBorder>
+              {currentStep === 3 && (
+                <motion.div
+                  className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                  style={{
+                    background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                    zIndex: 1,
+                  }}
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 2,
+                    ease: 'linear',
+                    repeat: Infinity,
+                    repeatDelay: 0,
+                  }}
+                />
+              )}
+              <span className="relative z-10">Components</span>
             </button>
           </>
         )}
@@ -377,9 +482,24 @@ export function HelmetCustomizer() {
             onClick={() => setCurrentStep(1)}
             className="flex-1 relative py-2.5 text-center text-sm transition-all rounded-xl overflow-hidden text-gray-800 hover:text-gray-900 bg-[#D9D9D9]"
           >
-            <RotatingBorder isActive={currentStep === 1} borderColor="#60A5FA" animationDuration={2} borderRadius={12} overlayMargin={2}>
-              Color
-            </RotatingBorder>
+            {currentStep === 1 && (
+              <motion.div
+                className="absolute top-[-450%] left-0 right-0 bottom-0 h-[1000%] rounded-xl"
+                style={{
+                  background: 'conic-gradient(transparent 200deg, #60A5FA)',
+                  zIndex: 1,
+                }}
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 2,
+                  ease: 'linear',
+                  repeat: Infinity,
+                  repeatDelay: 0,
+                }}
+              />
+            )}
+            <span className="relative z-10">Color</span>
           </button>
         )}
       </div>
