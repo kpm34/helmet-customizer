@@ -320,7 +320,7 @@ export function HelmetCustomizer() {
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{
-                    duration: 2,
+                    duration: 6,
                     ease: 'linear',
                     repeat: Infinity,
                     repeatDelay: 0,
@@ -343,7 +343,7 @@ export function HelmetCustomizer() {
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{
-                    duration: 2,
+                    duration: 6,
                     ease: 'linear',
                     repeat: Infinity,
                     repeatDelay: 0,
@@ -366,7 +366,7 @@ export function HelmetCustomizer() {
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{
-                    duration: 2,
+                    duration: 6,
                     ease: 'linear',
                     repeat: Infinity,
                     repeatDelay: 0,
@@ -389,7 +389,7 @@ export function HelmetCustomizer() {
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{
-                    duration: 2,
+                    duration: 6,
                     ease: 'linear',
                     repeat: Infinity,
                     repeatDelay: 0,
@@ -418,7 +418,7 @@ export function HelmetCustomizer() {
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{
-                    duration: 2,
+                    duration: 6,
                     ease: 'linear',
                     repeat: Infinity,
                     repeatDelay: 0,
@@ -441,7 +441,7 @@ export function HelmetCustomizer() {
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{
-                    duration: 2,
+                    duration: 6,
                     ease: 'linear',
                     repeat: Infinity,
                     repeatDelay: 0,
@@ -464,7 +464,7 @@ export function HelmetCustomizer() {
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{
-                    duration: 2,
+                    duration: 6,
                     ease: 'linear',
                     repeat: Infinity,
                     repeatDelay: 0,
