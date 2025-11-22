@@ -242,6 +242,26 @@ export function HelmetCustomizer() {
       className="fixed right-0 top-0 h-full z-20 flex flex-col bg-gradient-to-b from-gray-900 to-gray-950 shadow-2xl border-l border-gray-800"
       style={{ width: `${panelWidth}px` }}
     >
+      {/* Team Presets Button - Positioned at vertical midpoint - Only on Shell */}
+      {activeZone === 'shell' && currentStep === 1 && (
+        <div className="absolute top-1/2 -translate-y-1/2 right-0 flex items-center gap-0 group z-50">
+          {/* Circular Node (Lollipop) */}
+          <button
+            onClick={() => setShowTeamPresets(true)}
+            className="w-12 h-12 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110"
+            title="Team Presets"
+          >
+            <Sparkles className="w-6 h-6" />
+            <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Team Presets
+            </span>
+          </button>
+
+          {/* Thicker Stem (2.5x = 2.5px) */}
+          <div className="h-[2.5px] w-8 bg-blue-500 group-hover:bg-blue-600 transition-all duration-200" />
+        </div>
+      )}
+
       {/* Resize Handle */}
       <div
         className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-blue-500 transition-colors z-30 group"
@@ -516,26 +536,6 @@ export function HelmetCustomizer() {
         {/* Step 1: Color Selection */}
         {currentStep === 1 && (
           <div className="space-y-3 animate-fade-in relative">
-            {/* Team Presets Button - Only on Shell - Lollipop Design from Right Border */}
-            {activeZone === 'shell' && (
-              <div className="absolute top-1/2 -translate-y-1/2 right-0 flex items-center gap-0 group z-50">
-                {/* Circular Node (Lollipop) */}
-                <button
-                  onClick={() => setShowTeamPresets(true)}
-                  className="w-12 h-12 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110"
-                  title="Team Presets"
-                >
-                  <Sparkles className="w-6 h-6" />
-                  <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Team Presets
-                  </span>
-                </button>
-
-                {/* Thicker Stem (2.5x = 2.5px) */}
-                <div className="h-[2.5px] w-8 bg-blue-500 group-hover:bg-blue-600 transition-all duration-200" />
-              </div>
-            )}
-
             <div className={activeZone === 'chinstrap' ? 'flex flex-col items-center' : ''}>
               <div className={activeZone === 'chinstrap' ? 'w-2/3' : 'w-full'}>
                 <ColorSelector
