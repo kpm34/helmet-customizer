@@ -15,12 +15,12 @@ interface RotatingBorderProps {
 
 export function RotatingBorder({
   children,
-  borderColor = '#3B82F6',
-  animationDuration = 3,
+  borderColor = '#60A5FA',
+  animationDuration = 2,
   blurRadius = 2,
-  borderRadius = 8,
-  backgroundColor = 'transparent',
-  overlayMargin = 1,
+  borderRadius = 12,
+  backgroundColor = 'rgba(156, 163, 175, 1)', // gray-400 equivalent
+  overlayMargin = 2,
   isActive = false,
 }: RotatingBorderProps) {
   if (!isActive) {
@@ -37,7 +37,7 @@ export function RotatingBorder({
         borderRadius: `${borderRadius}px`,
       }}
     >
-      {/* Rotating border using conic gradient */}
+      {/* Rotating border using conic gradient - EXACT match to example */}
       <motion.div
         style={{
           position: 'absolute',
@@ -60,7 +60,7 @@ export function RotatingBorder({
         }}
       />
 
-      {/* Blurred overlay with border */}
+      {/* Combined blurred overlay with border - EXACT match to example */}
       <div
         style={{
           position: 'absolute',
