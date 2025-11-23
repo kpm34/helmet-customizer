@@ -11,6 +11,18 @@ import { getFinishProperties } from '@/lib/constants';
 import type { Application } from '@splinetool/runtime';
 import { RotateCw } from 'lucide-react';
 
+// Tone mapping component for better PBR rendering
+function ToneMapping() {
+  const { gl } = useThree();
+
+  useEffect(() => {
+    gl.toneMapping = THREE.ACESFilmicToneMapping;
+    gl.toneMappingExposure = 1.2; // Slightly brighter for better detail
+  }, [gl]);
+
+  return null;
+}
+
 // Map zone names to object names in the GLB model
 const ZONE_OBJECT_MAPPING = {
   shell: ['Shell_Combined', 'Shell', 'shell'],
@@ -62,17 +74,25 @@ function HelmetModel({ position, scale, rotation, config }: {
               child.material.metalness = finishProps.metalness;
               child.material.roughness = finishProps.roughness;
 
-              // Enhanced material properties for better appearance
-              child.material.envMapIntensity = 1.0; // Environment map reflection
+              // Enhanced material properties optimized for spherical geometry
               child.material.clearcoat = 0.0; // No clearcoat by default
               child.material.clearcoatRoughness = 0.0;
 
-              // Adjust properties based on finish type
+              // Adjust properties based on finish type to preserve surface detail
               if (zoneConfig.finish === 'glossy') {
-                child.material.clearcoat = 0.5; // Add clearcoat for glossy
+                child.material.envMapIntensity = 1.5; // Strong reflections for glossy
+                child.material.clearcoat = 0.5;
                 child.material.clearcoatRoughness = 0.1;
               } else if (zoneConfig.finish === 'matte') {
-                child.material.envMapIntensity = 0.3; // Reduce reflections for matte
+                child.material.envMapIntensity = 0.4; // Minimal reflections for matte
+              } else if (zoneConfig.finish === 'chrome' || zoneConfig.finish === 'brushed') {
+                child.material.envMapIntensity = 2.0; // Maximum reflections for metallic
+              } else if (zoneConfig.finish === 'satin') {
+                child.material.envMapIntensity = 1.0; // Moderate reflections for satin
+                child.material.clearcoat = 0.3;
+                child.material.clearcoatRoughness = 0.2;
+              } else {
+                child.material.envMapIntensity = 1.0; // Default balanced reflections
               }
 
               child.material.needsUpdate = true;
@@ -144,23 +164,30 @@ export default function Home() {
           }}
           gl={{ alpha: true }}
         >
-          {/* Subtle diffused lighting - Spline provides main lighting */}
-          <ambientLight intensity={0.6} />
+          {/* Strong lighting for PBR materials - Spline and R3F are separate render contexts */}
+          <ambientLight intensity={0.8} />
 
-          {/* Soft hemisphere light for natural fill */}
-          <hemisphereLight args={['#ffffff', '#444444', 0.3]} />
+          {/* Hemisphere light for natural fill */}
+          <hemisphereLight args={['#ffffff', '#444444', 0.5]} />
 
-          {/* Very soft key light - front */}
-          <directionalLight position={[3, 3, 5]} intensity={0.15} />
+          {/* Strong key light from front-right */}
+          <directionalLight position={[5, 5, 8]} intensity={1.2} castShadow />
 
-          {/* Soft fill from multiple angles for even distribution */}
-          <pointLight position={[-3, 2, 3]} intensity={0.1} distance={10} decay={2} />
-          <pointLight position={[3, 2, 3]} intensity={0.1} distance={10} decay={2} />
+          {/* Fill lights for even illumination on curved surfaces */}
+          <directionalLight position={[-5, 3, 5]} intensity={0.6} />
+          <pointLight position={[0, 5, 0]} intensity={0.8} distance={15} decay={2} />
+
+          {/* Rim light for edge definition */}
+          <directionalLight position={[-3, -2, -5]} intensity={0.4} />
 
           {/* The helmet with adjustable position, scale, rotation, colors AND finishes */}
           <HelmetModel position={position} scale={scale} rotation={rotation} config={config} />
 
-          <Environment preset="studio" />
+          {/* Studio environment with enhanced intensity for better PBR/matcap detail */}
+          <Environment preset="studio" background={false} />
+
+          {/* Tone mapping for realistic PBR rendering */}
+          <ToneMapping />
         </Canvas>
       </div>
 

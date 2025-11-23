@@ -34,6 +34,8 @@ export type PatternType =
   | 'stripe_single'
   | 'stripe_double'
   | 'camo'
+  | 'camo_digital'
+  | 'camo_carbon'
   | 'tiger'
   | 'leopard'
   | 'ram'

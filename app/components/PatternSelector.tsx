@@ -1,187 +1,115 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 import { useHelmetStore, type PatternType } from '@/store/helmetStore';
-
-export interface Pattern {
-  id: PatternType;
-  name: string;
-  thumbnail: string;
-  available: boolean;
-  description?: string;
-}
-
-// Pattern definitions
-export const AVAILABLE_PATTERNS: Pattern[] = [
-  {
-    id: 'none',
-    name: 'No Pattern',
-    thumbnail: '/patterns/thumbnails/none.png', // Will create a placeholder
-    available: true,
-    description: 'Solid color, no pattern overlay',
-  },
-  {
-    id: 'stripe_single',
-    name: 'Single Stripe',
-    thumbnail: '/patterns/thumbnails/stripe_single.png',
-    available: true,
-    description: 'Single vertical stripe down the middle',
-  },
-  {
-    id: 'stripe_double',
-    name: 'Double Stripe',
-    thumbnail: '/patterns/thumbnails/stripe_double.png',
-    available: true,
-    description: 'Two vertical stripes with gap',
-  },
-  {
-    id: 'camo',
-    name: 'Camo',
-    thumbnail: '/patterns/thumbnails/camo.png',
-    available: true,
-    description: 'Camouflage pattern overlay',
-  },
-  {
-    id: 'tiger',
-    name: 'Tiger',
-    thumbnail: '/patterns/thumbnails/tiger.png',
-    available: false,
-    description: 'Tiger stripe pattern (coming soon)',
-  },
-  {
-    id: 'leopard',
-    name: 'Leopard',
-    thumbnail: '/patterns/thumbnails/leopard.png',
-    available: false,
-    description: 'Leopard spot pattern (coming soon)',
-  },
-  {
-    id: 'ram',
-    name: 'Ram',
-    thumbnail: '/patterns/thumbnails/ram.png',
-    available: false,
-    description: 'Ram horns pattern (coming soon)',
-  },
-  {
-    id: 'wolverine',
-    name: 'Wolverine',
-    thumbnail: '/patterns/thumbnails/wolverine.png',
-    available: false,
-    description: 'Wolverine claws pattern (coming soon)',
-  },
-];
+import { CircularPatternThumbnail } from './CircularPatternThumbnail';
+import { PatternAccordionSection } from './PatternAccordionSection';
+import { PatternDrawer } from './PatternDrawer';
+import {
+  PATTERNS,
+  PATTERN_CATEGORIES,
+  getPatternsByCategory,
+  getSimpleCategories,
+  getComplexCategories,
+  type PatternCategoryKey,
+} from '@/lib/constants';
 
 export default function PatternSelector() {
   const { pattern, setPattern } = useHelmetStore();
-  const [hoveredPattern, setHoveredPattern] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerCategory, setDrawerCategory] = useState<PatternCategoryKey | null>(null);
 
   const handlePatternSelect = (patternId: PatternType) => {
-    if (AVAILABLE_PATTERNS.find((p) => p.id === patternId)?.available) {
-      setPattern(patternId);
-    }
+    setPattern(patternId);
   };
 
+  const openDrawer = (category: PatternCategoryKey) => {
+    setDrawerCategory(category);
+    setDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+    // Delay clearing category to allow animation to complete
+    setTimeout(() => setDrawerCategory(null), 300);
+  };
+
+  // Get the "None" pattern
+  const nonePattern = PATTERNS.find(p => p.id === 'none');
+
+  // Get simple and complex categories
+  const simpleCategories = getSimpleCategories();
+  const complexCategories = getComplexCategories();
+
   return (
-    <div className="space-y-4">
-      {/* Pattern Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {AVAILABLE_PATTERNS.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => handlePatternSelect(p.id)}
-            onMouseEnter={() => setHoveredPattern(p.id)}
-            onMouseLeave={() => setHoveredPattern(null)}
-            disabled={!p.available}
-            className={`
-              relative p-3 rounded-lg transition-all duration-200
-              ${
-                pattern.type === p.id
-                  ? 'bg-blue-500/30 border-2 border-blue-400'
-                  : 'bg-gray-800/50 border-2 border-gray-700/50'
-              }
-              ${
-                p.available
-                  ? 'hover:border-blue-400/50 hover:bg-gray-700/50 cursor-pointer'
-                  : 'opacity-40 cursor-not-allowed'
-              }
-            `}
-          >
-            {/* Pattern Thumbnail */}
-            <div className="aspect-square bg-gray-900/50 rounded-md overflow-hidden mb-2 relative">
-              {p.id === 'none' ? (
-                <div className="w-full h-full flex items-center justify-center text-gray-500">
-                  <svg
-                    className="w-12 h-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-              ) : (
-                <Image
-                  src={p.thumbnail}
-                  alt={p.name}
-                  fill
-                  className="object-cover"
-                  onError={(e) => {
-                    // Fallback if image doesn't exist
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-              )}
+    <div className="space-y-2">
+      {/* None option (special, always visible) */}
+      {nonePattern && (
+        <div className="p-4 bg-gray-800/60 backdrop-blur-lg rounded-xl border border-gray-700/50">
+          <CircularPatternThumbnail
+            pattern={nonePattern}
+            size="small"
+            selected={pattern.type === 'none'}
+            onClick={() => handlePatternSelect('none')}
+          />
+        </div>
+      )}
 
-              {/* Coming Soon Badge */}
-              {!p.available && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-                  <span className="text-xs font-semibold text-gray-300 px-2 py-1 bg-gray-800 rounded">
-                    Soon
-                  </span>
-                </div>
-              )}
-
-              {/* Selected Indicator */}
-              {pattern.type === p.id && (
-                <div className="absolute top-1 right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-3 h-3 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
-
-            {/* Pattern Name */}
-            <div className="text-sm font-medium text-gray-200">{p.name}</div>
-
-            {/* Description on Hover */}
-            {hoveredPattern === p.id && p.description && (
-              <div className="absolute bottom-full left-0 right-0 mb-2 p-2 bg-gray-900 rounded-md shadow-lg text-xs text-gray-300 z-10">
-                {p.description}
-              </div>
-            )}
-          </button>
+      {/* Simple categories (accordion sections) */}
+      <div className="rounded-xl overflow-hidden border border-gray-700/50">
+        {simpleCategories.map(([key, category]) => (
+          <PatternAccordionSection
+            key={key}
+            categoryKey={key}
+            category={category}
+            patterns={getPatternsByCategory(key)}
+            selectedPattern={pattern.type}
+            onSelectPattern={handlePatternSelect}
+            defaultOpen={key === 'stripes'} // Stripes open by default
+          />
         ))}
       </div>
 
+      {/* Complex categories (drawer triggers) */}
+      {complexCategories
+        .filter(([_, cat]) => cat.available)
+        .map(([key, category]) => {
+          const categoryPatterns = getPatternsByCategory(key);
+          return (
+            <button
+              key={key}
+              onClick={() => openDrawer(key)}
+              className="
+                w-full p-4
+                bg-gray-800/60 hover:bg-gray-700/60
+                backdrop-blur-lg rounded-xl
+                border border-gray-700/50
+                transition-all duration-200
+                hover:border-blue-400/50
+              "
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{category.icon}</span>
+                  <div className="text-left">
+                    <div className="font-semibold text-white">{category.label}</div>
+                    <div className="text-xs text-gray-400">{category.description}</div>
+                  </div>
+                  <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-300 rounded font-medium">
+                    {categoryPatterns.length} options
+                  </span>
+                </div>
+                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+              </div>
+            </button>
+          );
+        })}
+
       {/* Pattern Intensity Slider (only show when pattern is selected) */}
       {pattern.type !== 'none' && (
-        <div className="pt-2 border-t border-gray-700/50">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+        <div className="p-4 bg-gray-800/60 backdrop-blur-lg rounded-xl border border-gray-700/50">
+          <label className="block text-sm font-medium text-gray-300 mb-3">
             Pattern Intensity
           </label>
           <input
@@ -193,23 +121,40 @@ export default function PatternSelector() {
               const intensity = parseInt(e.target.value) / 100;
               setPattern(pattern.type, intensity);
             }}
-            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer
+                     [&::-webkit-slider-thumb]:appearance-none
+                     [&::-webkit-slider-thumb]:w-4
+                     [&::-webkit-slider-thumb]:h-4
+                     [&::-webkit-slider-thumb]:rounded-full
+                     [&::-webkit-slider-thumb]:bg-blue-500
+                     [&::-webkit-slider-thumb]:cursor-pointer
+                     [&::-webkit-slider-thumb]:shadow-lg
+                     [&::-webkit-slider-thumb]:shadow-blue-500/50"
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="flex justify-between text-xs text-gray-500 mt-2">
             <span>Subtle</span>
-            <span>{Math.round(pattern.intensity * 100)}%</span>
+            <span className="text-blue-400 font-medium">{Math.round(pattern.intensity * 100)}%</span>
             <span>Bold</span>
           </div>
         </div>
       )}
 
       {/* Info Text */}
-      <div className="text-xs text-gray-500 text-center pt-2">
+      <div className="text-xs text-gray-500 text-center py-2">
         {pattern.type === 'none'
           ? 'Select a pattern overlay to customize your helmet'
-          : `${AVAILABLE_PATTERNS.find(p => p.id === pattern.type)?.name} pattern applied`
-        }
+          : `${PATTERNS.find((p) => p.id === pattern.type)?.name} pattern applied`}
       </div>
+
+      {/* Pattern Drawer */}
+      <PatternDrawer
+        isOpen={drawerOpen}
+        categoryKey={drawerCategory}
+        patterns={drawerCategory ? getPatternsByCategory(drawerCategory) : []}
+        selectedPattern={pattern.type}
+        onSelectPattern={handlePatternSelect}
+        onClose={closeDrawer}
+      />
     </div>
   );
 }

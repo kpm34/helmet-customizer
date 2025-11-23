@@ -5,7 +5,7 @@
  * to eliminate duplication across the codebase.
  */
 
-import type { HelmetZone, MaterialFinish } from '@/store/helmetStore';
+import type { HelmetZone, MaterialFinish, PatternType } from '@/store/helmetStore';
 
 // ============================================================
 // ZONE CONFIGURATION
@@ -291,4 +291,233 @@ export function isValidHexColor(color: string): boolean {
  */
 export function isValidNumber(value: any, min: number = 0, max: number = 1): boolean {
   return typeof value === 'number' && value >= min && value <= max;
+}
+
+// ============================================================
+// PATTERN CONFIGURATION
+// ============================================================
+
+/**
+ * Pattern category types
+ */
+export type PatternCategoryType = 'simple' | 'complex';
+export type PatternCategoryKey = 'stripes' | 'camo' | 'tiger' | 'leopard' | 'jaguar' | 'horns' | 'noise' | 'rusted';
+
+/**
+ * Pattern category configuration
+ */
+export interface PatternCategory {
+  label: string;
+  icon: string;
+  type: PatternCategoryType;
+  available: boolean;
+  description?: string;
+}
+
+/**
+ * Pattern configuration
+ */
+export interface Pattern {
+  id: PatternType;
+  name: string;
+  category: PatternCategoryKey | null;
+  thumbnail80?: string;
+  thumbnail120?: string;
+  texturePath?: string;
+  available: boolean;
+  description?: string;
+}
+
+/**
+ * Pattern categories configuration
+ * - simple: 2-4 patterns, shown in accordion
+ * - complex: 7-10+ patterns, shown in drawer
+ */
+export const PATTERN_CATEGORIES: Record<PatternCategoryKey, PatternCategory> = {
+  stripes: {
+    label: 'Stripes',
+    icon: '║',
+    type: 'simple',
+    available: true,
+    description: 'Classic stripe patterns'
+  },
+  camo: {
+    label: 'Camo',
+    icon: '🎨',
+    type: 'complex',
+    available: true,
+    description: 'Camouflage and tactical patterns'
+  },
+  tiger: {
+    label: 'Tiger',
+    icon: '🐅',
+    type: 'simple',
+    available: false,
+    description: 'Tiger stripe patterns (coming soon)'
+  },
+  leopard: {
+    label: 'Leopard',
+    icon: '🐆',
+    type: 'simple',
+    available: false,
+    description: 'Leopard spot patterns (coming soon)'
+  },
+  jaguar: {
+    label: 'Jaguar',
+    icon: '🐈‍⬛',
+    type: 'simple',
+    available: false,
+    description: 'Jaguar rosette patterns (coming soon)'
+  },
+  horns: {
+    label: 'Horns',
+    icon: '🦌',
+    type: 'simple',
+    available: false,
+    description: 'Ram, wolverine, and deer patterns (coming soon)'
+  },
+  noise: {
+    label: 'Noise',
+    icon: '⚡',
+    type: 'simple',
+    available: false,
+    description: 'Grunge and texture patterns (coming soon)'
+  },
+  rusted: {
+    label: 'Rusted',
+    icon: '🛡️',
+    type: 'simple',
+    available: false,
+    description: 'Weathered and battle-worn patterns (coming soon)'
+  },
+};
+
+/**
+ * Pattern definitions
+ * Add new patterns here - they will automatically appear in the UI
+ */
+export const PATTERNS: Pattern[] = [
+  // None (special - no category)
+  {
+    id: 'none',
+    name: 'None',
+    category: null,
+    thumbnail80: '/patterns/thumbnails/none.png',
+    available: true,
+    description: 'No pattern overlay'
+  },
+
+  // Stripes (simple category - accordion)
+  {
+    id: 'stripe_single',
+    name: 'Single Stripe',
+    category: 'stripes',
+    thumbnail80: '/patterns/thumbnails/stripe_single.png',
+    texturePath: '/patterns/stripe_single.png',
+    available: true,
+    description: 'Single vertical stripe down the center'
+  },
+  {
+    id: 'stripe_double',
+    name: 'Double Stripe',
+    category: 'stripes',
+    thumbnail80: '/patterns/thumbnails/stripe_double.png',
+    texturePath: '/patterns/stripe_double.png',
+    available: true,
+    description: 'Double vertical stripes with gap'
+  },
+
+  // Camo (complex category - drawer)
+  {
+    id: 'camo',
+    name: 'Woodland',
+    category: 'camo',
+    thumbnail80: '/patterns/thumbnails/camo.png',
+    thumbnail120: '/patterns/thumbnails/camo.png', // Will create 120px version
+    texturePath: '/patterns/camo.png',
+    available: true,
+    description: 'Classic woodland camouflage'
+  },
+  {
+    id: 'camo_digital',
+    name: 'Digital',
+    category: 'camo',
+    thumbnail80: '/patterns/thumbnails/camo.png', // Placeholder - will create proper thumbnail
+    thumbnail120: '/patterns/thumbnails/camo.png',
+    texturePath: '/assets/pattern-textures/pattern-albedo-2k.png',
+    available: true,
+    description: 'Digital camouflage pattern'
+  },
+  {
+    id: 'camo_carbon',
+    name: 'Carbon Fiber',
+    category: 'camo',
+    thumbnail80: '/patterns/thumbnails/camo.png', // Placeholder - will create proper thumbnail
+    thumbnail120: '/patterns/thumbnails/camo.png',
+    texturePath: '/assets/pattern-textures/carbon-fiber-matcap-1k.png',
+    available: true,
+    description: 'Woven carbon fiber texture'
+  },
+
+  // Future patterns (placeholders)
+  {
+    id: 'tiger',
+    name: 'Classic Tiger',
+    category: 'tiger',
+    available: false,
+    description: 'Classic tiger stripe pattern'
+  },
+  {
+    id: 'leopard',
+    name: 'Leopard Spots',
+    category: 'leopard',
+    available: false,
+    description: 'Classic leopard spot pattern'
+  },
+  {
+    id: 'ram',
+    name: 'Ram Horns',
+    category: 'horns',
+    available: false,
+    description: 'Stylized ram horn pattern'
+  },
+  {
+    id: 'wolverine',
+    name: 'Wolverine Claws',
+    category: 'horns',
+    available: false,
+    description: 'Wolverine claw marks'
+  },
+];
+
+/**
+ * Get patterns by category
+ */
+export function getPatternsByCategory(category: PatternCategoryKey | null): Pattern[] {
+  return PATTERNS.filter(p => p.category === category);
+}
+
+/**
+ * Get pattern by ID
+ */
+export function getPattern(id: PatternType): Pattern | undefined {
+  return PATTERNS.find(p => p.id === id);
+}
+
+/**
+ * Get all simple categories (for accordion)
+ */
+export function getSimpleCategories(): [PatternCategoryKey, PatternCategory][] {
+  return Object.entries(PATTERN_CATEGORIES).filter(
+    ([_, cat]) => cat.type === 'simple'
+  ) as [PatternCategoryKey, PatternCategory][];
+}
+
+/**
+ * Get all complex categories (for drawer)
+ */
+export function getComplexCategories(): [PatternCategoryKey, PatternCategory][] {
+  return Object.entries(PATTERN_CATEGORIES).filter(
+    ([_, cat]) => cat.type === 'complex'
+  ) as [PatternCategoryKey, PatternCategory][];
 }
