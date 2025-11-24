@@ -276,13 +276,13 @@ export function HelmetCustomizer() {
       </div>
 
       {/* Header - Gridiron Studio */}
-      <header className="flex items-center justify-between px-6 py-4 bg-[#676767]">
+      <header className="flex items-center justify-between px-4 py-2 bg-[#676767]">
         <div className="flex-1">
-          <h1 className="text-white text-2xl font-light tracking-[0.3em] leading-tight">
+          <h1 className="text-white text-xl font-light tracking-[0.3em] leading-tight">
             GRIDIRON<br />STUDIO
           </h1>
         </div>
-        <div className="flex items-center justify-center p-8" style={{ width: '512px', height: '288px' }}>
+        <div className="flex items-center justify-center p-4" style={{ width: '320px', height: '180px' }}>
           <img
             src="/logo.svg"
             alt="Logo"
