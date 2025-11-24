@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Helmet Customizer - Documentation</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --border: #333;
+      --text-primary: #ffffff;
+      --text-secondary: #888888;
+      --accent: #0066ff;
+      --accent-hover: #0052cc;
+      --success: #00ff88;
+      --warning: #ffaa00;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Circuit Animation Background */
+    #circuit-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    #circuit-canvas {
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent), #00aaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .search-box {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .nav-section {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 0;
+    }
+
+    .nav-category {
+      margin-bottom: 24px;
+    }
+
+    .nav-category-title {
+      padding: 8px 24px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-category-title:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-category-toggle {
+      font-size: 10px;
+      transition: transform 0.2s;
+    }
+
+    .nav-category.collapsed .nav-category-toggle {
+      transform: rotate(-90deg);
+    }
+
+    .nav-category.collapsed .nav-items {
+      display: none;
+    }
+
+    .nav-items {
+      margin-top: 8px;
+    }
+
+    .nav-item {
+      padding: 8px 24px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-left-color: var(--accent);
+    }
+
+    .nav-item.active {
+      background: var(--bg-tertiary);
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    .nav-item-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+    }
+
+    .nav-item-badge.new {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .content-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .breadcrumb {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .breadcrumb span {
+      margin: 0 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .content-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    /* Markdown Rendering */
+    .markdown-content {
+      max-width: 900px;
+      line-height: 1.7;
+    }
+
+    .markdown-content h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .markdown-content h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+
+    .markdown-content h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    .markdown-content p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    .markdown-content a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .markdown-content a:hover {
+      text-decoration: underline;
+    }
+
+    .markdown-content code {
+      background: var(--bg-secondary);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--success);
+    }
+
+    .markdown-content pre {
+      background: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+
+    .markdown-content pre code {
+      background: none;
+      padding: 0;
+      color: var(--text-primary);
+    }
+
+    .markdown-content ul, .markdown-content ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+      color: var(--text-secondary);
+    }
+
+    .markdown-content li {
+      margin-bottom: 8px;
+    }
+
+    .markdown-content blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin: 16px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .markdown-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      display: block;
+    }
+
+    .markdown-content th, .markdown-content td {
+      padding: 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .markdown-content th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+    }
+
+    .markdown-content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .markdown-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border);
+    }
+  </style>
+</head>
+<body>
+  <!-- Circuit Animation Background -->
+  <div id="circuit-background">
+    <canvas id="circuit-canvas"></canvas>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>Helmet Customizer</h1>
+      <p>Documentation & Tests</p>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Search documentation...">
+    </div>
+
+    <div class="nav-section" id="nav-section">
+      <!-- Navigation will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="content-header">
+      <div>
+        <div class="breadcrumb" id="breadcrumb">Home</div>
+        <h2 id="doc-title">Welcome</h2>
+      </div>
+      <div class="header-actions">
+        <button class="btn" onclick="refreshDocs()">Refresh</button>
+        <button class="btn" onclick="openInEditor()">Open in Editor</button>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <div id="content-container">
+        <div class="empty-state">
+          <div class="empty-state-icon">📚</div>
+          <h3>Select a document to view</h3>
+          <p>Choose from the navigation on the left</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Documentation structure (loaded dynamically)
+    let docStructure = {};
+    let currentDoc = null;
+
+    // Load structure from generated JSON
+    async function loadStructure() {
+      try {
+        const response = await fetch('structure.json');
+        docStructure = await response.json();
+        renderNavigation();
+      } catch (error) {
+        console.error('Failed to load structure:', error);
+        document.getElementById('nav-section').innerHTML = `
+          <div style="padding: 24px; color: #ff6666;">
+            <p>Failed to load documentation structure.</p>
+            <p style="font-size: 12px; margin-top: 8px;">Run: <code>python3 generate-structure.py</code></p>
+          </div>
+        `;
+      }
+    }
+
+    // Render navigation
+    function renderNavigation() {
+      const navSection = document.getElementById('nav-section');
+      navSection.innerHTML = '';
+
+      Object.entries(docStructure).forEach(([category, docs]) => {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'nav-category';
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'nav-category-title';
+        titleDiv.innerHTML = `
+          ${category}
+          <span class="nav-category-toggle">▼</span>
+        `;
+        titleDiv.onclick = () => categoryDiv.classList.toggle('collapsed');
+
+        const itemsDiv = document.createElement('div');
+        itemsDiv.className = 'nav-items';
+
+        docs.forEach(doc => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'nav-item';
+          itemDiv.innerHTML = `
+            <span>${doc.name}</span>
+            ${doc.badge ? `<span class="nav-item-badge ${doc.badge === 'new' ? 'new' : ''}">${doc.badge}</span>` : ''}
+          `;
+          itemDiv.onclick = (e) => loadDocument(doc, category, e);
+          itemsDiv.appendChild(itemDiv);
+        });
+
+        categoryDiv.appendChild(titleDiv);
+        categoryDiv.appendChild(itemsDiv);
+        navSection.appendChild(categoryDiv);
+      });
+    }
+
+    // Load document
+    async function loadDocument(doc, category, event) {
+      try {
+        // Update active state
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        if (event && event.target.closest('.nav-item')) {
+          event.target.closest('.nav-item').classList.add('active');
+        }
+
+        // Update breadcrumb and title
+        document.getElementById('breadcrumb').textContent = `Home > ${category}`;
+        document.getElementById('doc-title').textContent = doc.name;
+
+        // Show loading
+        const container = document.getElementById('content-container');
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Loading...</h3></div>';
+
+        // Fetch markdown
+        const response = await fetch(doc.file);
+        if (!response.ok) throw new Error('Document not found');
+
+        const markdown = await response.text();
+        const html = marked.parse(markdown);
+
+        // Render
+        container.innerHTML = `<div class="markdown-content">${html}</div>`;
+        currentDoc = doc;
+
+        // Scroll to top
+        document.querySelector('.content-body').scrollTop = 0;
+
+      } catch (error) {
+        document.getElementById('content-container').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <h3>Failed to load document</h3>
+            <p>${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Search functionality
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      let hasResults = false;
+      
+      document.querySelectorAll('.nav-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const matches = text.includes(query);
+        item.style.display = matches ? 'flex' : 'none';
+        if (matches) hasResults = true;
+      });
+
+      // Hide/show categories based on results
+      document.querySelectorAll('.nav-category').forEach(category => {
+        const items = category.querySelectorAll('.nav-item');
+        const visibleItems = Array.from(items).filter(item => item.style.display !== 'none');
+        if (query === '' || visibleItems.length > 0) {
+          category.style.display = 'block';
+        } else {
+          category.style.display = 'none';
+        }
+      });
+    });
+
+    // Refresh docs
+    async function refreshDocs() {
+      // Reload structure
+      await loadStructure();
+
+      // Reload current document
+      if (currentDoc) {
+        const breadcrumb = document.getElementById('breadcrumb').textContent;
+        const category = breadcrumb.includes(' > ') ? breadcrumb.split(' > ')[1] : 'Getting Started';
+        loadDocument(currentDoc, category);
+      }
+    }
+
+    // Open in editor
+    function openInEditor() {
+      if (currentDoc) {
+        alert('Opening in default editor...\n\nFile: ' + currentDoc.file);
+        // In a real implementation, this could use a file:// protocol or VS Code URI
+      }
+    }
+
+    // Circuit Animation
+    function initCircuitAnimation() {
+      const canvas = document.getElementById('circuit-canvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Set canvas size to match viewport
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Animation variables
+      const speed = 1;
+      const gradient = ctx.createLinearGradient(0, 0, 170, 0);
+      gradient.addColorStop("0", "#00FFFF");
+      gradient.addColorStop("0.5", "#00CED1");
+      gradient.addColorStop("1.0", "#00BFFF");
+
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = 2;
+
+      let x1 = 0;
+      let x2 = 0;
+      let y1 = 40;
+      let y2 = 180;
+      let x3 = -900;
+      let y3 = 180;
+
+      let seed1 = getRandomInt(400, 460);
+      let seed2 = getRandomInt(400, 460);
+      const rightLimit = Math.max(canvas.width, 1400);
+      const increment = 1;
+
+      function trace1(seed) {
+        ctx.strokeStyle = gradient;
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 + increment, y2);
+        
+        if (x2 > 20 && x2 < 40) {
+          y2 = y2 + increment;
+        }
+        
+        if (x2 > 200 && x2 < 270) {
+          y2 = y2 + increment;
+        }
+
+        if (x2 > 400 && x2 < seed1) {
+          y2 = y2 - increment;
+        }
+        
+        if (x2 == 480) {
+          ctx.beginPath();
+          ctx.arc(x2, y2, 4, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+        
+        if (x2 < 476 || x2 > 484) {
+          ctx.stroke();
+        }
+
+        if (x2 > 600 && x2 < seed1 + 300) {
+          y2 = y2 + increment;
+        }
+
+        ctx.beginPath();
+        x2 += increment;
+        
+        if (x2 > rightLimit) {
+          x2 = 0;
+          y2 += getRandomInt(55, 75);
+          y2 = 180;
+        }
+      }
+
+      function trace2(seed) {
+        ctx.strokeStyle = gradient;
+        ctx.moveTo(x3, y3);
+        ctx.lineTo(x3 + 1, y3);
+        
+        if (x3 > 20 && x3 < 40) {
+          y3 = y3 + increment;
+        }
+        
+        if (x3 > 200 && x3 < 270) {
+          y3 = y3 + increment;
+        }
+
+        if (x3 > 400 && x3 < seed1) {
+          y3 = y3 - increment;
+        }
+        
+        if (x3 == 480) {
+          ctx.beginPath();
+          ctx.arc(x3, y3, 4, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+
+        if (x3 > 600 && x3 < seed1 + 300) {
+          y3 = y3 + increment;
+        }
+
+        if (x3 < 476 || x3 > 484) {
+          ctx.stroke();
+        }
+        
+        ctx.beginPath();
+        x3 += increment;
+        
+        if (x3 > rightLimit) {
+          x3 = -900;
+          y3 = 180;
+          seed2 = seed1;
+        }
+      }
+
+      function drawMain() {
+        // Clear canvas with black background
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        trace1(seed1);
+        trace2(seed1);
+      }
+
+      function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      // Start animation loop
+      setInterval(drawMain, speed);
+    }
+
+    // Initialize
+    loadStructure();
+    initCircuitAnimation();
+  </script>
+</body>
+</html>

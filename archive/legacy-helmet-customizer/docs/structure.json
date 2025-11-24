@@ -1,0 +1,110 @@
+{
+  "Getting Started": [],
+  "Analysis & Research": [
+    {
+      "name": "SPLINE SCENE ANALYSIS",
+      "file": "analysis/SPLINE_SCENE_ANALYSIS.md",
+      "badge": "archive"
+    }
+  ],
+  "API Reference": [
+    {
+      "name": "SPLINE RUNTIME API",
+      "file": "api-reference/SPLINE_RUNTIME_API.md",
+      "badge": null
+    },
+    {
+      "name": "SPLINE SCENE HIERARCHY",
+      "file": "api-reference/SPLINE_SCENE_HIERARCHY.md",
+      "badge": null
+    }
+  ],
+  "Architecture": [
+    {
+      "name": "APP ARCHITECTURE",
+      "file": "architecture/APP_ARCHITECTURE.md",
+      "badge": null
+    },
+    {
+      "name": "COMPONENT REFERENCE",
+      "file": "architecture/COMPONENT_REFERENCE.md",
+      "badge": null
+    },
+    {
+      "name": "FINISH ARCHITECTURE",
+      "file": "architecture/FINISH_ARCHITECTURE.md",
+      "badge": null
+    },
+    {
+      "name": "MATERIALS COLORS REFERENCE",
+      "file": "architecture/MATERIALS_COLORS_REFERENCE.md",
+      "badge": null
+    }
+  ],
+  "Blender Automation": [
+    {
+      "name": "README",
+      "file": "blender-automation/README.md",
+      "badge": null
+    }
+  ],
+  "Implementation Guides": [
+    {
+      "name": "DEPLOYMENT",
+      "file": "guides/DEPLOYMENT.md",
+      "badge": null
+    },
+    {
+      "name": "FINISH IMPLEMENTATION STRATEGY",
+      "file": "guides/FINISH_IMPLEMENTATION_STRATEGY.md",
+      "badge": null
+    },
+    {
+      "name": "FINISH INTEGRATION EXAMPLE",
+      "file": "guides/FINISH_INTEGRATION_EXAMPLE.md",
+      "badge": null
+    },
+    {
+      "name": "MATERIAL FINISH IMPLEMENTATION",
+      "file": "guides/MATERIAL_FINISH_IMPLEMENTATION.md",
+      "badge": null
+    },
+    {
+      "name": "MATERIAL FINISH QUICK START",
+      "file": "guides/MATERIAL_FINISH_QUICK_START.md",
+      "badge": null
+    },
+    {
+      "name": "MATERIAL FINISH RESEARCH SUMMARY",
+      "file": "guides/MATERIAL_FINISH_RESEARCH_SUMMARY.md",
+      "badge": "new"
+    },
+    {
+      "name": "SPLINE MATERIAL LAYERS RESEARCH",
+      "file": "guides/SPLINE_MATERIAL_LAYERS_RESEARCH.md",
+      "badge": "new"
+    },
+    {
+      "name": "SETUP GUIDE",
+      "file": "guides/SETUP_GUIDE.md",
+      "badge": null
+    },
+    {
+      "name": "SPLINE FINISH SETUP",
+      "file": "guides/SPLINE_FINISH_SETUP.md",
+      "badge": null
+    }
+  ],
+  "Testing": [
+    {
+      "name": "QUICK TEST INTEGRATION",
+      "file": "tests/QUICK_TEST_INTEGRATION.md",
+      "badge": null
+    },
+    {
+      "name": "TEST PRODUCTION",
+      "file": "tests/TEST_PRODUCTION.md",
+      "badge": null
+    }
+  ]
+}
