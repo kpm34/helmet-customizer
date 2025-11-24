@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas, useThree } from '@react-three/fiber';
-import { useGLTF, Environment, OrbitControls, Decal, useTexture, TransformControls, Line } from '@react-three/drei';
+import { useGLTF, Environment, OrbitControls, useTexture, TransformControls, Line } from '@react-three/drei';
 import { useEffect, Suspense, useState, useRef } from 'react';
 import * as THREE from 'three';
 import { useHelmetStore, type HelmetConfig, type PatternConfig } from '@/store/helmetStore';
@@ -111,10 +111,6 @@ const ZONE_OBJECT_MAPPING = {
 
 function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: PatternConfig }) {
   const { scene, nodes } = useGLTF('/models/helmet_matte_FINAL.glb');
-  const decalRef = useRef<THREE.Group>(null);
-  const [decalPosition, setDecalPosition] = useState<[number, number, number]>([0, 3, 0]);
-  const [decalRotation, setDecalRotation] = useState<[number, number, number]>([-Math.PI / 2, 0, 0]);
-  const [decalScale, setDecalScale] = useState<[number, number, number]>([1.5, 5, 3]);
 
   // Bézier control points for stripe curve (front to back along helmet)
   const [controlPoints, setControlPoints] = useState<THREE.Vector3[]>([
@@ -305,7 +301,13 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
 
           {/* Debug: Transform controls for each control point */}
           {DEBUG_MODE && controlPoints.map((point, index) => (
-            <group key={index} ref={(el) => (controlPointRefs.current[index] = el)} position={point}>
+            <group
+              key={index}
+              ref={(el) => {
+                controlPointRefs.current[index] = el;
+              }}
+              position={point}
+            >
               <TransformControls
                 object={controlPointRefs.current[index]!}
                 mode="translate"
