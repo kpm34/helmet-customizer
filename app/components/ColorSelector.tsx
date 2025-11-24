@@ -61,10 +61,11 @@ interface ColorPickerProps {
   onChange: (color: string) => void;
   label?: string;
   showTeamPresets?: boolean;
+  showSliders?: boolean;
   onTeamPresetClick?: (preset: { primaryColor: string; secondaryColor: string; team: string }) => void;
 }
 
-export function ColorSelector({ value, onChange, label, showTeamPresets = true, onTeamPresetClick }: ColorPickerProps) {
+export function ColorSelector({ value, onChange, label, showTeamPresets = true, showSliders = false, onTeamPresetClick }: ColorPickerProps) {
   const [lastClickedTeam, setLastClickedTeam] = useState<string | null>(null);
   const presetsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -139,65 +140,48 @@ export function ColorSelector({ value, onChange, label, showTeamPresets = true, 
         />
       </div>
 
-      {/* HSL Color Sliders */}
-      <div className="space-y-2.5 pt-1">
-        {/* Hue Slider */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-medium text-gray-300">Hue</label>
-            <span className="text-xs font-mono text-gray-400">{hue}°</span>
+      {/* HSL Color Sliders - Only show if enabled */}
+      {showSliders && (
+        <div className="space-y-2.5 pt-1">
+          {/* Hue Slider */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-300">Hue</label>
+              <span className="text-xs font-mono text-gray-400">{hue}°</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="360"
+              value={hue}
+              onChange={(e) => handleSliderChange(parseInt(e.target.value), saturation, lightness)}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+              style={{
+                background: 'linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)'
+              }}
+            />
           </div>
-          <input
-            type="range"
-            min="0"
-            max="360"
-            value={hue}
-            onChange={(e) => handleSliderChange(parseInt(e.target.value), saturation, lightness)}
-            className="w-full h-2 rounded-lg appearance-none cursor-pointer"
-            style={{
-              background: 'linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)'
-            }}
-          />
-        </div>
 
-        {/* Saturation Slider */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-medium text-gray-300">Saturation</label>
-            <span className="text-xs font-mono text-gray-400">{saturation}%</span>
+          {/* Lightness Slider */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-300">Lightness</label>
+              <span className="text-xs font-mono text-gray-400">{lightness}%</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={lightness}
+              onChange={(e) => handleSliderChange(hue, saturation, parseInt(e.target.value))}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #000000, ${hslToHex(hue, saturation, 50)}, #ffffff)`
+              }}
+            />
           </div>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={saturation}
-            onChange={(e) => handleSliderChange(hue, parseInt(e.target.value), lightness)}
-            className="w-full h-2 rounded-lg appearance-none cursor-pointer"
-            style={{
-              background: `linear-gradient(to right, ${hslToHex(hue, 0, lightness)}, ${hslToHex(hue, 100, lightness)})`
-            }}
-          />
         </div>
-
-        {/* Lightness Slider */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-medium text-gray-300">Lightness</label>
-            <span className="text-xs font-mono text-gray-400">{lightness}%</span>
-          </div>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={lightness}
-            onChange={(e) => handleSliderChange(hue, saturation, parseInt(e.target.value))}
-            className="w-full h-2 rounded-lg appearance-none cursor-pointer"
-            style={{
-              background: `linear-gradient(to right, #000000, ${hslToHex(hue, saturation, 50)}, #ffffff)`
-            }}
-          />
-        </div>
-      </div>
+      )}
 
       {/* Team Color Presets with Modern Design - Only show if enabled */}
       {showTeamPresets && (

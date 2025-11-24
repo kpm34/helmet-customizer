@@ -616,6 +616,7 @@ export function HelmetCustomizer() {
                     value={config.padding.color}
                     onChange={(color) => setZoneColor('padding', color)}
                     showTeamPresets={false}
+                    showSliders={true}
                   />
                 </div>
 
@@ -635,6 +636,7 @@ export function HelmetCustomizer() {
                       value={config.hardware.color}
                       onChange={(color) => setZoneColor('hardware', color)}
                       showTeamPresets={false}
+                      showSliders={true}
                     />
                   </div>
 
