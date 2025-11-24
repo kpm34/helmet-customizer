@@ -10,6 +10,9 @@ import { getFinishProperties } from '@/lib/constants';
 // Debug mode - set to true to enable drag controls and console logging
 const DEBUG_MODE = true;
 
+// Enable stripe control point dragging (set to false to lock stripe in place)
+const ENABLE_STRIPE_CONTROLS = false;
+
 // Stripe Curve Component - follows helmet contour using Bézier curve
 function StripeCurve({
   pattern,
@@ -300,7 +303,7 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
           />
 
           {/* Debug: Transform controls for each control point */}
-          {DEBUG_MODE && controlPoints.map((point, index) => (
+          {DEBUG_MODE && ENABLE_STRIPE_CONTROLS && controlPoints.map((point, index) => (
             <group
               key={index}
               ref={(el) => {
@@ -388,12 +391,14 @@ export default function HelmetScene({ rotation }: { rotation: [number, number, n
         <ToneMapping />
       </Suspense>
       
-      <OrbitControls 
-        enablePan={false}
+      <OrbitControls
+        enablePan={true}
         enableZoom={true}
+        enableRotate={true}
         minDistance={4}
         maxDistance={12}
         target={[0, 0, 0]}
+        makeDefault
       />
     </Canvas>
   );
