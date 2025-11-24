@@ -8,7 +8,7 @@ import { useHelmetStore, type HelmetConfig, type PatternConfig } from '@/store/h
 import { getFinishProperties } from '@/lib/constants';
 
 // Debug mode - set to true to enable drag controls and console logging
-const DEBUG_MODE = true;
+const DEBUG_MODE = false; // Disabled to prevent TransformControls from blocking OrbitControls
 
 // Enable stripe control point dragging (set to false to lock stripe in place)
 const ENABLE_STRIPE_CONTROLS = false;
