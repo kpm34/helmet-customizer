@@ -624,13 +624,6 @@ export function HelmetCustomizer() {
                     showSliders={true}
                   />
                 </div>
-
-                {/* Info note about hardware */}
-                <div className="bg-gray-800/30 rounded-lg p-2.5 border border-gray-700/30">
-                  <div className="text-xs text-gray-400 text-center">
-                    💡 Hardware automatically matches facemask color
-                  </div>
-                </div>
               </div>
             ) : null}
           </div>
