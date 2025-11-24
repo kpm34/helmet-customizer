@@ -282,8 +282,12 @@ export function HelmetCustomizer() {
             GRIDIRON<br />STUDIO
           </h1>
         </div>
-        <div className="w-64 h-36 bg-[#D9D9D9] flex items-center justify-center">
-          <span className="text-gray-600 text-sm">insert logo here</span>
+        <div className="w-64 h-36 flex items-center justify-center p-4">
+          <img
+            src="/logo.svg"
+            alt="Logo"
+            className="w-full h-full object-contain"
+          />
         </div>
         <button
           onClick={() => setIsCollapsed(true)}
