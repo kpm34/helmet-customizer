@@ -29,17 +29,17 @@ export type MaterialFinish =
   | 'holographic_foil';
 
 // Pattern types
+export type PatternCategory = 'stripes' | 'animals' | 'camo';
 export type PatternType =
-  | 'none'
-  | 'stripe_single'
-  | 'stripe_double'
-  | 'camo'
-  | 'camo_digital'
-  | 'camo_carbon'
-  | 'tiger'
-  | 'leopard'
-  | 'ram'
-  | 'wolverine';
+  // Animals
+  | 'tiger' | 'ram' | 'wolverine' | 'leopard' | 'jaguar'
+  // Stripes
+  | 'stripe_single' | 'stripe_double'
+  // Camo
+  | 'camo_woodland' | 'camo_digital' | 'camo_urban' | 'camo_desert'
+  | 'camo_navy' | 'camo_tiger' | 'camo_multicam' | 'camo_carbon';
+
+export type PatternVariant = string; // e.g., 'tiger_v1', 'tiger_v2', etc.
 
 // Zone configuration
 export interface ZoneConfig {
@@ -56,11 +56,18 @@ export interface HelmetConfig {
   hardware: ZoneConfig;
 }
 
+// Pattern navigation state
+export interface PatternNavigation {
+  selectedCategory: PatternCategory | null;
+  selectedType: PatternType | null;
+  selectedVariant: PatternVariant | null;
+}
+
 // Pattern configuration
 export interface PatternConfig {
-  type: PatternType;
-  intensity: number; // 0-1
-  applyToZones: HelmetZone[];
+  type: PatternVariant | null; // Final selected pattern ID (e.g., 'tiger_v1', 'camo_woodland')
+  color: string; // For SVG overlays only
+  intensity: number; // Opacity (0-1)
 }
 
 // Store state interface
@@ -70,6 +77,9 @@ interface HelmetState {
 
   // Active zone for UI selection
   activeZone: HelmetZone;
+
+  // Pattern navigation
+  patternNav: PatternNavigation;
 
   // Pattern configuration
   pattern: PatternConfig;
@@ -81,8 +91,15 @@ interface HelmetState {
   setZoneColor: (zone: HelmetZone, color: string) => void;
   setZoneFinish: (zone: HelmetZone, finish: MaterialFinish) => void;
   setActiveZone: (zone: HelmetZone) => void;
-  setPattern: (type: PatternType, intensity?: number) => void;
-  togglePatternZone: (zone: HelmetZone) => void;
+
+  // Pattern actions
+  setPatternCategory: (category: PatternCategory | null) => void;
+  setPatternType: (type: PatternType | null) => void;
+  setPatternVariant: (variant: PatternVariant | null) => void;
+  setPatternColor: (color: string) => void;
+  setPatternIntensity: (intensity: number) => void;
+  clearPattern: () => void;
+
   setPanelWidth: (width: number) => void;
   resetToDefaults: () => void;
   loadConfig: (config: HelmetConfig) => void;
@@ -100,10 +117,15 @@ export const useHelmetStore = create<HelmetState>((set, get) => ({
   // Initial state
   config: defaultConfig,
   activeZone: 'shell',
+  patternNav: {
+    selectedCategory: null,
+    selectedType: null,
+    selectedVariant: null,
+  },
   pattern: {
-    type: 'none',
-    intensity: 0.5,
-    applyToZones: [],
+    type: null,
+    color: '#000000', // Default black for SVG overlays
+    intensity: 0.8, // Default 80% opacity
   },
   panelWidth: 384, // 96 * 4 = 384px (w-96 default)
 
@@ -136,28 +158,73 @@ export const useHelmetStore = create<HelmetState>((set, get) => ({
     set({ activeZone: zone });
   },
 
-  setPattern: (type, intensity = 0.5) => {
+  // Pattern actions
+  setPatternCategory: (category) => {
+    set((state) => ({
+      patternNav: {
+        ...state.patternNav,
+        selectedCategory: category,
+        // Reset type and variant when category changes
+        selectedType: null,
+        selectedVariant: null,
+      },
+    }));
+  },
+
+  setPatternType: (type) => {
+    set((state) => ({
+      patternNav: {
+        ...state.patternNav,
+        selectedType: type,
+        // Reset variant when type changes
+        selectedVariant: null,
+      },
+    }));
+  },
+
+  setPatternVariant: (variant) => {
+    set((state) => ({
+      patternNav: {
+        ...state.patternNav,
+        selectedVariant: variant,
+      },
+      pattern: {
+        ...state.pattern,
+        type: variant, // Set final pattern type
+      },
+    }));
+  },
+
+  setPatternColor: (color) => {
     set((state) => ({
       pattern: {
         ...state.pattern,
-        type,
+        color,
+      },
+    }));
+  },
+
+  setPatternIntensity: (intensity) => {
+    set((state) => ({
+      pattern: {
+        ...state.pattern,
         intensity,
       },
     }));
   },
 
-  togglePatternZone: (zone) => {
-    set((state) => {
-      const applyToZones = state.pattern.applyToZones.includes(zone)
-        ? state.pattern.applyToZones.filter((z) => z !== zone)
-        : [...state.pattern.applyToZones, zone];
-
-      return {
-        pattern: {
-          ...state.pattern,
-          applyToZones,
-        },
-      };
+  clearPattern: () => {
+    set({
+      patternNav: {
+        selectedCategory: null,
+        selectedType: null,
+        selectedVariant: null,
+      },
+      pattern: {
+        type: null,
+        color: '#000000',
+        intensity: 0.8,
+      },
     });
   },
 
@@ -169,10 +236,15 @@ export const useHelmetStore = create<HelmetState>((set, get) => ({
     set({
       config: defaultConfig,
       activeZone: 'shell',
+      patternNav: {
+        selectedCategory: null,
+        selectedType: null,
+        selectedVariant: null,
+      },
       pattern: {
-        type: 'none',
-        intensity: 0.5,
-        applyToZones: [],
+        type: null,
+        color: '#000000',
+        intensity: 0.8,
       },
     });
   },

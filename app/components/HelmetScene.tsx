@@ -2,7 +2,7 @@
 
 import { Canvas, useThree } from '@react-three/fiber';
 import { useGLTF, Environment, OrbitControls, Decal, useTexture } from '@react-three/drei';
-import { useEffect, Suspense } from 'react';
+import { useEffect, Suspense, useState } from 'react';
 import * as THREE from 'three';
 import { useHelmetStore, type HelmetConfig, type PatternConfig } from '@/store/helmetStore';
 import { getFinishProperties } from '@/lib/constants';
@@ -29,7 +29,7 @@ const ZONE_OBJECT_MAPPING = {
 };
 
 function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: PatternConfig }) {
-  const { scene, nodes } = useGLTF('/models/helmet_glossy_VERSION_A.glb');
+  const { scene, nodes } = useGLTF('/models/helmet_matte_VERSION_A.glb');
 
   // Load stripe textures
   const stripeTextures = useTexture({
@@ -49,12 +49,14 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
   useEffect(() => {
     scene.traverse((child: any) => {
       if (child.isMesh && child.material) {
-        // Ensure we have a MeshStandardMaterial or convert to one
-        if (!(child.material instanceof THREE.MeshStandardMaterial)) {
-          child.material = new THREE.MeshStandardMaterial({
+        // Ensure we have a MeshPhysicalMaterial or convert to one
+        if (!(child.material instanceof THREE.MeshPhysicalMaterial)) {
+          child.material = new THREE.MeshPhysicalMaterial({
             color: child.material.color,
             map: child.material.map,
             normalMap: child.material.normalMap,
+            roughness: 0.5,
+            metalness: 0.5,
           });
         }
 
@@ -82,22 +84,35 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
               // Enhanced material properties optimized for spherical geometry
               child.material.clearcoat = 0.0; // No clearcoat by default
               child.material.clearcoatRoughness = 0.0;
+              child.material.sheen = 0.0;
 
               // Adjust properties based on finish type to preserve surface detail
               if (zoneConfig.finish === 'glossy') {
-                child.material.envMapIntensity = 1.5; // Strong reflections for glossy
-                child.material.clearcoat = 0.5;
-                child.material.clearcoatRoughness = 0.1;
+                child.material.envMapIntensity = 1.0;
+                child.material.clearcoat = 1.0;
+                child.material.clearcoatRoughness = 0.05;
               } else if (zoneConfig.finish === 'matte') {
-                child.material.envMapIntensity = 0.4; // Minimal reflections for matte
+                child.material.envMapIntensity = 0.5;
+                child.material.roughness = 0.8;
+                child.material.metalness = 0.0;
               } else if (zoneConfig.finish === 'chrome') {
-                child.material.envMapIntensity = 2.0; // Maximum reflections for chrome
+                child.material.envMapIntensity = 1.0;
+                child.material.roughness = 0.0;
+                child.material.metalness = 1.0;
               } else if (zoneConfig.finish === 'brushed') {
-                child.material.envMapIntensity = 1.3; // Reduced from 2.0 to soften harsh transitions
+                child.material.envMapIntensity = 0.8;
+                child.material.roughness = 0.4;
+                child.material.metalness = 0.6;
+                child.material.clearcoat = 0.1;
+                child.material.clearcoatRoughness = 0.4;
               } else if (zoneConfig.finish === 'satin') {
-                child.material.envMapIntensity = 0.9; // Reduced from 1.0 to soften transition
-                child.material.clearcoat = 0.2; // Reduced from 0.3
-                child.material.clearcoatRoughness = 0.3; // Increased from 0.2 for softer effect
+                child.material.envMapIntensity = 0.7;
+                child.material.roughness = 0.5;
+                child.material.metalness = 0.2;
+                child.material.clearcoat = 0.2;
+                child.material.clearcoatRoughness = 0.5;
+                child.material.sheen = 0.5;
+                child.material.sheenRoughness = 0.5;
               } else {
                 child.material.envMapIntensity = 1.0; // Default balanced reflections
               }
@@ -112,11 +127,17 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
   }, [scene, config]);
 
   // Find shell mesh for pattern decals
-  let shellMesh = null;
-  // @ts-ignore
-  if (nodes.Shell) shellMesh = nodes.Shell;
-  // @ts-ignore
-  else if (nodes.Shell_Combined) shellMesh = nodes.Shell_Combined;
+  const [shellMesh, setShellMesh] = useState<THREE.Mesh | null>(null);
+
+  useEffect(() => {
+    let foundShell: THREE.Mesh | null = null;
+    scene.traverse((child: any) => {
+      if (child.isMesh && (child.name.toLowerCase().includes('shell') || child.parent?.name?.toLowerCase().includes('shell'))) {
+        foundShell = child;
+      }
+    });
+    setShellMesh(foundShell);
+  }, [scene]);
 
   // Determine if we have a stripe pattern
   const hasStripePattern = pattern.type === 'stripe_single' || pattern.type === 'stripe_double';
@@ -195,7 +216,7 @@ export default function HelmetScene({ rotation }: { rotation: [number, number, n
         <group rotation={rotation} position={[-0.5, 0, 0]} scale={0.35}>
            <HelmetModel config={config} pattern={pattern} />
         </group>
-        <Environment preset="studio" background={false} />
+        <Environment preset="studio" background={false} blur={0.8} />
         <ToneMapping />
       </Suspense>
       

@@ -4,7 +4,9 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useHelmetStore, type HelmetZone } from '@/store/helmetStore';
 import { ColorSelector } from './ColorSelector';
 import { MaterialFinishSelector } from './MaterialFinishSelector';
-import PatternSelector from './PatternSelector';
+import { PatternCategorySelector } from './PatternCategorySelector';
+import { PatternTypeSelector } from './PatternTypeSelector';
+import { PatternColorPicker } from './PatternColorPicker';
 import { ZONES_CONFIG, getZoneConfig } from '@/lib/constants';
 import { PanelRightClose, PanelRightOpen, Palette, Pipette, X, Sparkles } from 'lucide-react';
 import { StepProgressBar, type WizardStep } from './StepProgressBar';
@@ -587,17 +589,15 @@ export function HelmetCustomizer() {
           <div className="space-y-3 animate-fade-in">
             {activeZone === 'shell' ? (
               // Shell Pattern Selection
-              <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-3 border border-gray-700/50">
-                <h3 className="text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                  Step 3: Add Pattern Design
-                </h3>
-                <p className="text-xs text-gray-400 mb-3">
-                  Choose a pattern overlay for your helmet
-                </p>
+              <div className="space-y-3">
+                {/* Pattern Category Selector */}
+                <PatternCategorySelector />
 
-                {/* Pattern Selector Component */}
-                <PatternSelector />
+                {/* Pattern Type Selector - shown after category selected */}
+                <PatternTypeSelector />
+
+                {/* Pattern Color Picker - shown when stripe pattern selected */}
+                <PatternColorPicker />
               </div>
             ) : activeZone === 'facemask' ? (
               // Facemask Components (Padding + Hardware)

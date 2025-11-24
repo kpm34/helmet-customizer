@@ -1,4 +1,4 @@
-import type { HelmetZone, MaterialFinish, PatternType } from '@/store/helmetStore';
+import type { HelmetZone, MaterialFinish } from '@/store/helmetStore';
 
 // CFB Team color preset
 export interface TeamColorPreset {
@@ -86,20 +86,20 @@ export const CFB_TEAM_PRESETS: TeamColorPreset[] = [
 
 // Basic color palette (non-team specific)
 export const BASIC_COLOR_PALETTE = [
-  '#000000', // Black
-  '#808080', // Grey
-  '#FFFFFF', // White
-  '#FF0000', // Red
-  '#FF6600', // Orange
-  '#0033A0', // UK Blue (dark blue)
-  '#800000', // Maroon
-  '#7BAFD4', // Carolina Blue (UNC baby blue)
-  '#00FF00', // Green
-  '#FF8C00', // Dark Orange
-  '#800080', // Purple
-  '#FF69B4', // Pink
-  '#FFFF00', // Yellow
-  '#154733', // Dark Green
+  '#000000', // Black - keep
+  '#808080', // Grey - keep
+  '#FFFFFF', // White - keep
+  '#CC0000', // Red - darker (was #FF0000)
+  '#FF6600', // Orange - keep (light orange is fine)
+  '#0033A0', // UK Blue (dark blue) - keep
+  '#660000', // Maroon - darker (was #800000)
+  '#7BAFD4', // Carolina Blue (UNC baby blue) - keep
+  '#00CC00', // Green - darker (was #00FF00)
+  '#FF8C00', // Dark Orange - keep
+  '#660099', // Purple - darker (was #800080)
+  '#CC3366', // Pink - darker (was #FF69B4)
+  '#CCCC00', // Yellow - darker (was #FFFF00)
+  '#154733', // Dark Green - keep
 ];
 
 // Camera preset positions
@@ -142,9 +142,5 @@ export interface HelmetExportConfig {
   version: string;
   timestamp: number;
   zones: Record<HelmetZone, { color: string; finish: MaterialFinish }>;
-  pattern: {
-    type: PatternType;
-    intensity: number;
-    applyToZones: HelmetZone[];
-  };
+  // Pattern config removed for refactoring
 }
