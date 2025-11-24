@@ -4,6 +4,58 @@ import { CFB_TEAM_PRESETS, BASIC_COLOR_PALETTE } from '@/types/helmet';
 import { useState, useRef, useEffect } from 'react';
 import { Palette, Sparkles } from 'lucide-react';
 
+// Helper functions to convert between hex and HSL
+function hexToHSL(hex: string): { h: number; s: number; l: number } {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return { h: 0, s: 0, l: 0 };
+
+  let r = parseInt(result[1], 16) / 255;
+  let g = parseInt(result[2], 16) / 255;
+  let b = parseInt(result[3], 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  s /= 100;
+  l /= 100;
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+
+  if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+  else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+  else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+  else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+  else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+  else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+  const toHex = (n: number) => {
+    const hex = Math.round((n + m) * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
 interface ColorPickerProps {
   value: string;
   onChange: (color: string) => void;
@@ -15,6 +67,29 @@ interface ColorPickerProps {
 export function ColorSelector({ value, onChange, label, showTeamPresets = true, onTeamPresetClick }: ColorPickerProps) {
   const [lastClickedTeam, setLastClickedTeam] = useState<string | null>(null);
   const presetsContainerRef = useRef<HTMLDivElement>(null);
+
+  // Track HSL values from current color
+  const hsl = hexToHSL(value);
+  const [hue, setHue] = useState(hsl.h);
+  const [saturation, setSaturation] = useState(hsl.s);
+  const [lightness, setLightness] = useState(hsl.l);
+
+  // Update sliders when value changes externally (e.g., from team presets)
+  useEffect(() => {
+    const newHsl = hexToHSL(value);
+    setHue(newHsl.h);
+    setSaturation(newHsl.s);
+    setLightness(newHsl.l);
+  }, [value]);
+
+  // Update color when sliders change
+  const handleSliderChange = (h: number, s: number, l: number) => {
+    setHue(h);
+    setSaturation(s);
+    setLightness(l);
+    const newHex = hslToHex(h, s, l);
+    onChange(newHex);
+  };
 
   // Allow scrolling in the CFB presets container
   useEffect(() => {
@@ -62,6 +137,66 @@ export function ColorSelector({ value, onChange, label, showTeamPresets = true, 
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
           }}
         />
+      </div>
+
+      {/* HSL Color Sliders */}
+      <div className="space-y-2.5 pt-1">
+        {/* Hue Slider */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-medium text-gray-300">Hue</label>
+            <span className="text-xs font-mono text-gray-400">{hue}°</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="360"
+            value={hue}
+            onChange={(e) => handleSliderChange(parseInt(e.target.value), saturation, lightness)}
+            className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+            style={{
+              background: 'linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)'
+            }}
+          />
+        </div>
+
+        {/* Saturation Slider */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-medium text-gray-300">Saturation</label>
+            <span className="text-xs font-mono text-gray-400">{saturation}%</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={saturation}
+            onChange={(e) => handleSliderChange(hue, parseInt(e.target.value), lightness)}
+            className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+            style={{
+              background: `linear-gradient(to right, ${hslToHex(hue, 0, lightness)}, ${hslToHex(hue, 100, lightness)})`
+            }}
+          />
+        </div>
+
+        {/* Lightness Slider */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-medium text-gray-300">Lightness</label>
+            <span className="text-xs font-mono text-gray-400">{lightness}%</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={lightness}
+            onChange={(e) => handleSliderChange(hue, saturation, parseInt(e.target.value))}
+            className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+            style={{
+              background: `linear-gradient(to right, #000000, ${hslToHex(hue, saturation, 50)}, #ffffff)`
+            }}
+          />
+        </div>
       </div>
 
       {/* Team Color Presets with Modern Design - Only show if enabled */}
