@@ -282,11 +282,12 @@ export function HelmetCustomizer() {
             GRIDIRON<br />STUDIO
           </h1>
         </div>
-        <div className="flex items-center justify-center p-8" style={{ width: '768px', height: '432px' }}>
+        <div className="flex items-center justify-center p-8" style={{ width: '512px', height: '288px' }}>
           <img
             src="/logo.svg"
             alt="Logo"
             className="w-full h-full object-contain"
+            style={{ transform: 'scale(1.5)' }}
           />
         </div>
         <button
