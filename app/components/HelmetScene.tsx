@@ -183,7 +183,7 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
         <Decal
           position={[0, 1, 0]} // Move up to top of head
           rotation={[-Math.PI / 2, 0, 0]} // Rotate -90 deg X to look DOWN
-          scale={[4, 4, 4]}
+          scale={[4, 15, 6]} // X=Width(4), Y=Length(15), Z=Depth(6)
           mesh={{ current: shellMesh } as any}
           renderOrder={1}
         >
