@@ -29,7 +29,7 @@ const ZONE_OBJECT_MAPPING = {
 };
 
 function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: PatternConfig }) {
-  const { scene, nodes } = useGLTF('/models/helmet_matte_VERSION_A.glb');
+  const { scene, nodes } = useGLTF('/models/helmet_matte_FINAL.glb');
 
   // Load stripe textures
   const stripeTextures = useTexture({
@@ -181,9 +181,9 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
       {/* Stripe pattern overlay as decal */}
       {hasStripePattern && stripeTexture && shellMesh && (
         <Decal
-          position={[0, 0, 0]}
-          rotation={[0, 0, 0]} // Ensure correct orientation if needed
-          scale={[10, 10, 10]}
+          position={[0, 1, 0]} // Move up to top of head
+          rotation={[-Math.PI / 2, 0, 0]} // Rotate -90 deg X to look DOWN
+          scale={[4, 4, 4]}
           mesh={{ current: shellMesh } as any}
           renderOrder={1}
         >
