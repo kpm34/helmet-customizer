@@ -42,6 +42,9 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
     Object.values(stripeTextures).forEach((texture) => {
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.needsUpdate = true;
+      texture.center.set(0.5, 0.5); // Center the texture
+      texture.repeat.set(1, 1); // Ensure no tiling
+      texture.rotation = 0; // Reset rotation
     });
   }, [stripeTextures]);
 
@@ -66,11 +69,18 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
         child.material.polygonOffsetUnits = 1;
 
         // Apply zone-specific colors and finishes
-        const objectName = child.name || child.parent?.name || '';
+        // Check both object name and parent name against zone mapping to handle GLB hierarchy variations
+        const objectName = child.name || '';
+        const parentName = child.parent?.name || '';
 
         // Find which zone this object belongs to
         for (const [zone, objectNames] of Object.entries(ZONE_OBJECT_MAPPING)) {
-          if (objectNames.some(name => objectName.includes(name))) {
+          // Check if object name OR parent name contains any of the zone identifiers
+          const isMatch = objectNames.some(name => 
+            objectName.includes(name) || parentName.includes(name)
+          );
+
+          if (isMatch) {
             const zoneConfig = config[zone as keyof HelmetConfig];
             if (zoneConfig) {
               // Apply color
@@ -154,7 +164,13 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
         intensity: pattern.intensity,
         hasTexture: !!stripeTexture,
         hasShellMesh: !!shellMesh,
+        shellMeshName: shellMesh?.name,
+        shellMeshParent: shellMesh?.parent?.name
       });
+      // Force decal update
+      if (stripeTexture) {
+         stripeTexture.needsUpdate = true;
+      }
     }
   }, [hasStripePattern, pattern, stripeTexture, shellMesh]);
 
@@ -166,21 +182,22 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
       {hasStripePattern && stripeTexture && shellMesh && (
         <Decal
           position={[0, 0, 0]}
-          rotation={[0, 0, 0]}
-          scale={[3, 3, 3]}
+          rotation={[0, 0, 0]} // Ensure correct orientation if needed
+          scale={[10, 10, 10]}
           mesh={{ current: shellMesh } as any}
+          renderOrder={1}
         >
           <meshStandardMaterial
             transparent
             map={stripeTexture}
             polygonOffset
-            polygonOffsetFactor={-10}
+            polygonOffsetFactor={-1}
             color={new THREE.Color(pattern.color)}
             opacity={pattern.intensity}
-            roughness={0.1}
+            roughness={0.2}
             metalness={0.0}
             depthWrite={false}
-            alphaTest={0.1}
+            depthTest={true}
           />
         </Decal>
       )}
