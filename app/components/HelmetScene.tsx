@@ -1,11 +1,14 @@
 'use client';
 
 import { Canvas, useThree } from '@react-three/fiber';
-import { useGLTF, Environment, OrbitControls, Decal, useTexture } from '@react-three/drei';
-import { useEffect, Suspense, useState } from 'react';
+import { useGLTF, Environment, OrbitControls, Decal, useTexture, TransformControls } from '@react-three/drei';
+import { useEffect, Suspense, useState, useRef } from 'react';
 import * as THREE from 'three';
 import { useHelmetStore, type HelmetConfig, type PatternConfig } from '@/store/helmetStore';
 import { getFinishProperties } from '@/lib/constants';
+
+// Debug mode - set to true to enable drag controls and console logging
+const DEBUG_MODE = true;
 
 // Tone mapping component for better PBR rendering
 function ToneMapping() {
@@ -30,6 +33,10 @@ const ZONE_OBJECT_MAPPING = {
 
 function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: PatternConfig }) {
   const { scene, nodes } = useGLTF('/models/helmet_matte_FINAL.glb');
+  const decalRef = useRef<THREE.Group>(null);
+  const [decalPosition, setDecalPosition] = useState<[number, number, number]>([0, 3, 0]);
+  const [decalRotation, setDecalRotation] = useState<[number, number, number]>([-Math.PI / 2, 0, 0]);
+  const [decalScale, setDecalScale] = useState<[number, number, number]>([1.5, 5, 3]);
 
   // Load stripe textures
   const stripeTextures = useTexture({
@@ -155,7 +162,21 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
     ? stripeTextures[pattern.type as 'stripe_single' | 'stripe_double']
     : null;
 
-  // Debug logging
+  // Debug logging - log transform changes
+  useEffect(() => {
+    if (DEBUG_MODE && hasStripePattern && decalRef.current) {
+      console.log('🎯 STRIPE DECAL TRANSFORM:', {
+        position: decalPosition,
+        rotation: decalRotation.map(r => `${(r * 180 / Math.PI).toFixed(1)}°`),
+        scale: decalScale,
+        type: pattern.type,
+        color: pattern.color,
+        intensity: pattern.intensity,
+      });
+    }
+  }, [decalPosition, decalRotation, decalScale, hasStripePattern, pattern]);
+
+  // Original debug logging
   useEffect(() => {
     if (hasStripePattern) {
       console.log('Stripe pattern active:', {
@@ -180,26 +201,78 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
 
       {/* Stripe pattern overlay as decal */}
       {hasStripePattern && stripeTexture && shellMesh && (
-        <Decal
-          position={[0, 3, 0]} // Top of helmet centerline
-          rotation={[-Math.PI / 2, 0, 0]} // Rotate -90° on X to project down
-          scale={[1.5, 5, 3]} // X=Width(1.5), Y=Length(5), Z=Depth(3)
-          mesh={{ current: shellMesh } as any}
-          renderOrder={1}
-        >
-          <meshStandardMaterial
-            transparent
-            map={stripeTexture}
-            polygonOffset
-            polygonOffsetFactor={-1}
-            color={new THREE.Color(pattern.color)}
-            opacity={pattern.intensity}
-            roughness={0.2}
-            metalness={0.0}
-            depthWrite={false}
-            depthTest={true}
-          />
-        </Decal>
+        <>
+          <group ref={decalRef} position={decalPosition} rotation={decalRotation} scale={decalScale}>
+            <Decal
+              position={[0, 0, 0]}
+              rotation={[0, 0, 0]}
+              scale={[1, 1, 1]}
+              mesh={{ current: shellMesh } as any}
+              renderOrder={1}
+            >
+              <meshStandardMaterial
+                transparent
+                map={stripeTexture}
+                polygonOffset
+                polygonOffsetFactor={-1}
+                color={new THREE.Color(pattern.color)}
+                opacity={pattern.intensity}
+                roughness={0.2}
+                metalness={0.0}
+                depthWrite={false}
+                depthTest={true}
+              />
+            </Decal>
+          </group>
+
+          {/* Debug Transform Controls - only visible when DEBUG_MODE is true */}
+          {DEBUG_MODE && (
+            <TransformControls
+              object={decalRef.current!}
+              mode="translate"
+              onObjectChange={() => {
+                if (decalRef.current) {
+                  const pos = decalRef.current.position;
+                  const rot = decalRef.current.rotation;
+                  const scale = decalRef.current.scale;
+
+                  setDecalPosition([pos.x, pos.y, pos.z]);
+                  setDecalRotation([rot.x, rot.y, rot.z]);
+                  setDecalScale([scale.x, scale.y, scale.z]);
+                }
+              }}
+            />
+          )}
+        </>
+      )}
+
+      {/* Debug: Visual reference markers at key positions */}
+      {DEBUG_MODE && (
+        <>
+          {/* Center marker (origin) */}
+          <mesh position={[0, 0, 0]}>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshBasicMaterial color="red" />
+          </mesh>
+
+          {/* Top center marker */}
+          <mesh position={[0, 3, 0]}>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshBasicMaterial color="green" />
+          </mesh>
+
+          {/* Front marker */}
+          <mesh position={[0, 2, 2]}>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshBasicMaterial color="blue" />
+          </mesh>
+
+          {/* Back marker */}
+          <mesh position={[0, 2, -2]}>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshBasicMaterial color="yellow" />
+          </mesh>
+        </>
       )}
     </>
   );
