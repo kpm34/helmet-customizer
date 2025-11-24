@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas, useThree } from '@react-three/fiber';
-import { useGLTF, Environment, OrbitControls, Decal, useTexture, TransformControls } from '@react-three/drei';
+import { useGLTF, Environment, OrbitControls, Decal, useTexture, TransformControls, Line } from '@react-three/drei';
 import { useEffect, Suspense, useState, useRef } from 'react';
 import * as THREE from 'three';
 import { useHelmetStore, type HelmetConfig, type PatternConfig } from '@/store/helmetStore';
@@ -9,6 +9,84 @@ import { getFinishProperties } from '@/lib/constants';
 
 // Debug mode - set to true to enable drag controls and console logging
 const DEBUG_MODE = true;
+
+// Stripe Curve Component - follows helmet contour using Bézier curve
+function StripeCurve({
+  pattern,
+  controlPoints,
+  setControlPoints
+}: {
+  pattern: PatternConfig;
+  controlPoints: THREE.Vector3[];
+  setControlPoints: (points: THREE.Vector3[]) => void;
+}) {
+  const [texture] = useTexture([pattern.type === 'stripe_single' ? '/patterns/stripe_single.png' : '/patterns/stripe_double.png']);
+
+  // Create Bézier curve from control points
+  const curve = new THREE.CubicBezierCurve3(
+    controlPoints[0],
+    controlPoints[1],
+    controlPoints[2],
+    controlPoints[3]
+  );
+
+  // Generate points along the curve
+  const points = curve.getPoints(50);
+
+  // Create geometry for the stripe tube
+  const tubeGeometry = new THREE.TubeGeometry(
+    new THREE.CatmullRomCurve3(points),
+    50, // tubular segments
+    0.15, // radius (stripe width)
+    8, // radial segments
+    false // closed
+  );
+
+  return (
+    <>
+      {/* The actual stripe tube */}
+      <mesh geometry={tubeGeometry}>
+        <meshStandardMaterial
+          map={texture}
+          color={new THREE.Color(pattern.color)}
+          transparent
+          opacity={pattern.intensity}
+          roughness={0.2}
+          metalness={0.0}
+        />
+      </mesh>
+
+      {/* Debug: Control point markers */}
+      {DEBUG_MODE && controlPoints.map((point, index) => (
+        <group key={index} position={point}>
+          <mesh>
+            <sphereGeometry args={[0.15, 16, 16]} />
+            <meshBasicMaterial
+              color={['red', 'orange', 'yellow', 'green'][index]}
+              transparent
+              opacity={0.7}
+            />
+          </mesh>
+          {/* Labels */}
+          <mesh position={[0, 0.3, 0]}>
+            <sphereGeometry args={[0.05, 8, 8]} />
+            <meshBasicMaterial color="white" />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Debug: Curve visualization */}
+      {DEBUG_MODE && (
+        <Line
+          points={points}
+          color="cyan"
+          lineWidth={2}
+          dashed={false}
+        />
+      )}
+    </>
+  );
+}
 
 // Tone mapping component for better PBR rendering
 function ToneMapping() {
@@ -37,6 +115,16 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
   const [decalPosition, setDecalPosition] = useState<[number, number, number]>([0, 3, 0]);
   const [decalRotation, setDecalRotation] = useState<[number, number, number]>([-Math.PI / 2, 0, 0]);
   const [decalScale, setDecalScale] = useState<[number, number, number]>([1.5, 5, 3]);
+
+  // Bézier control points for stripe curve (front to back along helmet)
+  const [controlPoints, setControlPoints] = useState<THREE.Vector3[]>([
+    new THREE.Vector3(0, 1.5, 2.5),   // Front (red)
+    new THREE.Vector3(0, 2.8, 1.2),   // Front-top control (orange)
+    new THREE.Vector3(0, 3.2, -0.5),  // Back-top control (yellow)
+    new THREE.Vector3(0, 2.2, -2.0),  // Back (green)
+  ]);
+
+  const controlPointRefs = useRef<(THREE.Group | null)[]>([null, null, null, null]);
 
   // Load stripe textures
   const stripeTextures = useTexture({
@@ -162,19 +250,26 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
     ? stripeTextures[pattern.type as 'stripe_single' | 'stripe_double']
     : null;
 
-  // Debug logging - log transform changes
+  // Debug logging - log control point positions
   useEffect(() => {
-    if (DEBUG_MODE && hasStripePattern && decalRef.current) {
-      console.log('🎯 STRIPE DECAL TRANSFORM:', {
-        position: decalPosition,
-        rotation: decalRotation.map(r => `${(r * 180 / Math.PI).toFixed(1)}°`),
-        scale: decalScale,
+    if (DEBUG_MODE && hasStripePattern) {
+      console.log('🎯 STRIPE BÉZIER CONTROL POINTS:', {
+        point0_front: controlPoints[0].toArray(),
+        point1_frontTop: controlPoints[1].toArray(),
+        point2_backTop: controlPoints[2].toArray(),
+        point3_back: controlPoints[3].toArray(),
         type: pattern.type,
         color: pattern.color,
         intensity: pattern.intensity,
       });
+      console.log('📋 Copy this for code:', `[
+  new THREE.Vector3(${controlPoints[0].x.toFixed(2)}, ${controlPoints[0].y.toFixed(2)}, ${controlPoints[0].z.toFixed(2)}),
+  new THREE.Vector3(${controlPoints[1].x.toFixed(2)}, ${controlPoints[1].y.toFixed(2)}, ${controlPoints[1].z.toFixed(2)}),
+  new THREE.Vector3(${controlPoints[2].x.toFixed(2)}, ${controlPoints[2].y.toFixed(2)}, ${controlPoints[2].z.toFixed(2)}),
+  new THREE.Vector3(${controlPoints[3].x.toFixed(2)}, ${controlPoints[3].y.toFixed(2)}, ${controlPoints[3].z.toFixed(2)}),
+]`);
     }
-  }, [decalPosition, decalRotation, decalScale, hasStripePattern, pattern]);
+  }, [controlPoints, hasStripePattern, pattern]);
 
   // Original debug logging
   useEffect(() => {
@@ -199,50 +294,33 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
     <>
       <primitive object={scene} />
 
-      {/* Stripe pattern overlay as decal */}
-      {hasStripePattern && stripeTexture && shellMesh && (
+      {/* Stripe pattern using Bézier curve */}
+      {hasStripePattern && stripeTexture && (
         <>
-          <group ref={decalRef} position={decalPosition} rotation={decalRotation} scale={decalScale}>
-            <Decal
-              position={[0, 0, 0]}
-              rotation={[0, 0, 0]}
-              scale={[1, 1, 1]}
-              mesh={{ current: shellMesh } as any}
-              renderOrder={1}
-            >
-              <meshStandardMaterial
-                transparent
-                map={stripeTexture}
-                polygonOffset
-                polygonOffsetFactor={-1}
-                color={new THREE.Color(pattern.color)}
-                opacity={pattern.intensity}
-                roughness={0.2}
-                metalness={0.0}
-                depthWrite={false}
-                depthTest={true}
+          <StripeCurve
+            pattern={pattern}
+            controlPoints={controlPoints}
+            setControlPoints={setControlPoints}
+          />
+
+          {/* Debug: Transform controls for each control point */}
+          {DEBUG_MODE && controlPoints.map((point, index) => (
+            <group key={index} ref={(el) => (controlPointRefs.current[index] = el)} position={point}>
+              <TransformControls
+                object={controlPointRefs.current[index]!}
+                mode="translate"
+                size={0.5}
+                onObjectChange={() => {
+                  if (controlPointRefs.current[index]) {
+                    const pos = controlPointRefs.current[index]!.position;
+                    const newPoints = [...controlPoints];
+                    newPoints[index] = new THREE.Vector3(pos.x, pos.y, pos.z);
+                    setControlPoints(newPoints);
+                  }
+                }}
               />
-            </Decal>
-          </group>
-
-          {/* Debug Transform Controls - only visible when DEBUG_MODE is true */}
-          {DEBUG_MODE && (
-            <TransformControls
-              object={decalRef.current!}
-              mode="translate"
-              onObjectChange={() => {
-                if (decalRef.current) {
-                  const pos = decalRef.current.position;
-                  const rot = decalRef.current.rotation;
-                  const scale = decalRef.current.scale;
-
-                  setDecalPosition([pos.x, pos.y, pos.z]);
-                  setDecalRotation([rot.x, rot.y, rot.z]);
-                  setDecalScale([scale.x, scale.y, scale.z]);
-                }
-              }}
-            />
-          )}
+            </group>
+          ))}
         </>
       )}
 
@@ -252,25 +330,23 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
           {/* Center marker (origin) */}
           <mesh position={[0, 0, 0]}>
             <sphereGeometry args={[0.1, 16, 16]} />
-            <meshBasicMaterial color="red" />
+            <meshBasicMaterial color="white" />
           </mesh>
 
-          {/* Top center marker */}
+          {/* Helmet outline reference points */}
           <mesh position={[0, 3, 0]}>
-            <sphereGeometry args={[0.1, 16, 16]} />
-            <meshBasicMaterial color="green" />
+            <sphereGeometry args={[0.08, 16, 16]} />
+            <meshBasicMaterial color="purple" />
           </mesh>
 
-          {/* Front marker */}
-          <mesh position={[0, 2, 2]}>
-            <sphereGeometry args={[0.1, 16, 16]} />
+          <mesh position={[0, 2, 2.5]}>
+            <sphereGeometry args={[0.08, 16, 16]} />
             <meshBasicMaterial color="blue" />
           </mesh>
 
-          {/* Back marker */}
-          <mesh position={[0, 2, -2]}>
-            <sphereGeometry args={[0.1, 16, 16]} />
-            <meshBasicMaterial color="yellow" />
+          <mesh position={[0, 2, -2.5]}>
+            <sphereGeometry args={[0.08, 16, 16]} />
+            <meshBasicMaterial color="magenta" />
           </mesh>
         </>
       )}
