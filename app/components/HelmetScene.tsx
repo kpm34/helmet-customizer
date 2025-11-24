@@ -181,9 +181,9 @@ function HelmetModel({ config, pattern }: { config: HelmetConfig; pattern: Patte
       {/* Stripe pattern overlay as decal */}
       {hasStripePattern && stripeTexture && shellMesh && (
         <Decal
-          position={[0, 2.5, 0]} // Centered on top, moved up to Y=2.5
-          rotation={[0, 0, 0]} // No rotation - flat on top surface
-          scale={[1.2, 4, 1]} // X=Width(1.2), Y=Length(4), Z=Depth(1) - narrower stripe
+          position={[0, 3, 0]} // Top of helmet centerline
+          rotation={[-Math.PI / 2, 0, 0]} // Rotate -90° on X to project down
+          scale={[1.5, 5, 3]} // X=Width(1.5), Y=Length(5), Z=Depth(3)
           mesh={{ current: shellMesh } as any}
           renderOrder={1}
         >
