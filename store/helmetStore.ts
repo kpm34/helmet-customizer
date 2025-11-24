@@ -131,15 +131,25 @@ export const useHelmetStore = create<HelmetState>((set, get) => ({
 
   // Actions
   setZoneColor: (zone, color) => {
-    set((state) => ({
-      config: {
+    set((state) => {
+      const newConfig = {
         ...state.config,
         [zone]: {
           ...state.config[zone],
           color,
         },
-      },
-    }));
+      };
+
+      // Auto-sync hardware color with facemask and set to matte
+      if (zone === 'facemask') {
+        newConfig.hardware = {
+          color: color,
+          finish: 'matte',
+        };
+      }
+
+      return { config: newConfig };
+    });
   },
 
   setZoneFinish: (zone, finish) => {

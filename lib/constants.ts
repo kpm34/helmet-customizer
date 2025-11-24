@@ -256,8 +256,8 @@ export const DEFAULT_HELMET_CONFIG = {
     finish: 'matte' as MaterialFinish,
   },
   hardware: {
-    color: '#C0C0C0', // Silver
-    finish: 'chrome' as MaterialFinish,
+    color: '#7F7F7F', // Match facemask default
+    finish: 'matte' as MaterialFinish, // Always matte
   },
 };
 

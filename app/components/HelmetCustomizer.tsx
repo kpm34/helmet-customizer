@@ -605,9 +605,9 @@ export function HelmetCustomizer() {
                 <PatternColorPicker />
               </div>
             ) : activeZone === 'facemask' ? (
-              // Facemask Components (Padding + Hardware)
+              // Facemask Components (Padding only - Hardware auto-syncs with facemask)
               <div className="space-y-3">
-                {/* Top Half: Padding */}
+                {/* Padding */}
                 <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-3 border border-gray-700/50">
                   <h3 className="text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
@@ -625,31 +625,11 @@ export function HelmetCustomizer() {
                   />
                 </div>
 
-                {/* Bottom Half: Hardware */}
-                <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-3 border border-gray-700/50">
-                  <h3 className="text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                    Hardware
-                  </h3>
-                  <p className="text-xs text-gray-400 mb-3">
-                    Customize hardware color and finish
-                  </p>
-
-                  {/* Hardware Color */}
-                  <div className="mb-3">
-                    <ColorSelector
-                      value={config.hardware.color}
-                      onChange={(color) => setZoneColor('hardware', color)}
-                      showTeamPresets={false}
-                      showSliders={true}
-                    />
+                {/* Info note about hardware */}
+                <div className="bg-gray-800/30 rounded-lg p-2.5 border border-gray-700/30">
+                  <div className="text-xs text-gray-400 text-center">
+                    💡 Hardware automatically matches facemask color
                   </div>
-
-                  {/* Hardware Finish */}
-                  <MaterialFinishSelector
-                    value={config.hardware.finish}
-                    onChange={(finish) => setZoneFinish('hardware', finish)}
-                  />
                 </div>
               </div>
             ) : null}
