@@ -240,8 +240,8 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
  */
 export const DEFAULT_HELMET_CONFIG = {
   shell: {
-    color: '#FFFFFF', // White
-    finish: 'glossy' as MaterialFinish,
+    color: '#000000', // Black
+    finish: 'matte' as MaterialFinish,
   },
   facemask: {
     color: '#7F7F7F', // Medium gray
